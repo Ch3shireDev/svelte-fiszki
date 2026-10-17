@@ -10,5 +10,13 @@ export default defineConfig({
 				base: (process.env.BASE_PATH ?? '') as '' | `/${string}`
 			}
 		})
-	]
+	],
+	css: {
+		preprocessorOptions: {
+			scss: {
+				quietDeps: true,
+				silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function']
+			}
+		}
+  }
 });

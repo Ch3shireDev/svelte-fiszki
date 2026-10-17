@@ -1,4 +1,8 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+  import { resolve } from '$app/paths';
+</script>
 
-<p>Now with GitHub Actions integration!</p>
+<h1>Fiszki z pytaniami rekrutacyjnymi</h1>
+<p>Losowe pytania rekrutacyjne z zakresu .NET, Python, JavaScript, SQL i system design.</p>
+
+<p>Go to <a href={resolve("/questions")}>Questions</a> or <a href={resolve("/finish")}>Finish</a></p>
