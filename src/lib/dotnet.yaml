@@ -1,0 +1,552 @@
+- id: 1
+  text: What is C#? What is the difference between C# and .NET?
+  answer: |
+    - C# is an object-oriented programming language which runs on the .NET framework.
+    - .NET is a framework for building and running software's and applications.
+
+- id: 2
+  text: What are the advantages of Object-Oriented Programming?
+  answer: |
+    Advantages of OOPS:
+    1. Reuse of code using inheritance.
+    2. Flexibility of code using polymorphism.
+    3. Secure application by using Encapsulation.
+    4. Easily scalable from small to large applications.
+    5. Easier troubleshooting of code because of modularity.
+
+- id: 3
+  text: What are the limitations of Object-Oriented Programming?
+  answer: It is not suitable for small applications.
+
+- id: 4
+  text: What are Classes and Objects?
+  answer: |
+    A class is a LOGICAL UNIT or BLUEPRINT. It contains fields, methods and properties.
+    1. A constructor is a method in the class which gets executed when a class object is created.
+    2. A field is a variable of any type. It is basically the data.
+    3. A property is a member that provides helps in read and write of private field.
+    4. A method is a code block that contains a series of statements.
+- text: What are the types of classes in C#?
+- text: Is it possible to prevent object creation of a class in C#?
+- text: What is Property?
+- text: What is the difference between Property and Function?
+- text: What are Namespaces?
+- text: What is Inheritance? When to use Inheritance?
+- text: What are the different types of Inheritance?
+- text: Does C# support Multiple Inheritance? How can you implement multiple inheritance in C#?
+- text: How to prevent a class from being Inherited?
+- text: Are private class members inherited to the derived class?
+- text: What is Abstraction? How to implement abstraction in real applications?
+- text: What is Encapsulation? How to implement encapsulation in real applications?
+- text: What is the difference between Abstraction and Encapsulation?
+- text: What is Polymorphism and what are its types? When to use polymorphism?
+- text: What is Method Overloading? In how many ways a method can be overloaded?
+- text: When should you use method overloading in real applications?
+- text: If two methods are same except return type, then methods are overloaded or what willl happen?
+- text: What is the difference between Overloading and Overriding?
+- text: What is the use of Overriding? When should I override the method in real applications?
+- text: If a method is marked as virtual, do we must have to "override" it from the child class?
+- text: What is the difference between Method Overriding and Method Hiding?
+- text: What is the difference between an Abstract class and an Interface (atleast 4)?
+- text: When to use Interface and when Abstract class in real applications?
+- text: Why to create Interfaces in real applications?
+- text: Can we define body of Interfaces methods? When to define methods in Interfaces?
+- text: Can you create an instance of an Abstract class or an Interface?
+- text: Do Interface can have a Constructor?
+- text: Do abstract class have Constructors in C#?
+- text: What is the difference between abstraction and abstract class?
+- text: Can Abstract class be Sealed or Static in C#?
+- text: Can you declare abstract methods as private in C#?
+- text: Does Abstract class support multiple Inheritance?
+- text: What are Access Specifiers?
+- text: What is internal access modifier? Show example.
+- text: What is the default access modifier in a class?
+- text: What is Boxing and Unboxing? Where to use Boxing and Unboxing in real applications?
+- text: Which one is explicit Boxing or Unboxing?
+- text: Is Boxing and Unboxing good for performance?
+- text: What are the basic string operations in C#?
+- text: What is the difference between “String” and “StringBuilder”?
+- text: When to use String and when StringBuilder in real applications?
+- text: What is String Interpolation in C#?
+- text: What are the Loop types in C#? When to use what in real applications?
+- text: What is the difference between “continue” and “break” statement?
+- text: What are the alternative ways of writing if-else conditions? When to use what?
+- text: How to implement Exception Handling in C#?
+- text: Can we execute multiple Catch blocks?
+- text: When to use Finally in real applications?
+- text: Can we have only “Try” block without “Catch” block in real applications?
+- text: What is the difference between Finally and Finalize?
+- text: What is the difference between “throw ex” and “throw”? Which one to use in real applications?
+- text: Explain Generics in C#? When and why to use them in real applications?
+- text: What are Collections in C# and what are their types?
+- text: What is the difference between Array and ArrayList (atleast 2)?
+- text: What is the difference between Arraylist and Hashtable?
+- text: What is the difference between List and Dictionary Collections?
+- text: What is IEnumerable in C#?
+- text: What is the difference between IEnumerable and IEnumerator in C#?
+- text: What is the difference between IEnumerable and IQueryable in C#? Why to use IQueryable in sql queries?
+- text: What is a Constructor? When to use constructor in real applications?
+- text: What are the types of constructor?
+- text: What is Default constructor?
+- text: What is Parameterized constructor?
+- text: What is Static constructor? What is the use in real applications?
+- text: Can we have parameters or access modifier in static constructor?
+- text: What is Copy constructor?
+- text: What is Private constructor? What is the use?
+- text: What is Constructor overloading?
+- text: What is Destructor?
+- text: Can you create object of class with private constructor in C#?
+- text: If base class and child class both have constructor which one will be called first, when derived class object is created?
+- text: What is a Method in C#?
+- text: What is the difference between Pass by Value and Pass by Reference Parameters?
+- text: How to return more than one value from a method in C#?
+- text: What is the difference between “out” and “ref” parameters?
+- text: What is “params” keyword? When to use params keyword in real applications?
+- text: What are optional parameters in a method?
+- text: What are named parameters in a method?
+- text: What are Extension Methods in C#? When to use extension methods in real applications?
+- text: What are Delegates in C#? When to use delegates in real applications?
+- text: What are Multicast Delegates?
+- text: What are Anonymous Delegates in C#?
+- text: What are the differences between Events and Delegates?
+- text: What is ‘this’ keyword in C#? When to use it in real applications?
+- text: What is the purpose of “using” keyword in C#?
+- text: Can we use Using keyword with other classes apart from DBConnection?
+- text: What is the difference between “is” and “as” operators?
+- text: What is the difference between “Readonly” and “Constant” variables (atleast 3)?
+- text: What is “Static" class? When to use static class in real application?
+- text: What is the difference between “var” and “dynamic” in C#?
+- text: What is Enum keyword used for?
+- text: Is it possible to inherit Enum in C#?
+- text: What is the use of Yield keyword in C#?
+- text: What is LINQ? When to use LINQ in real applications?
+- text: What are the advantages & disadvantages of LINQ?
+- text: What is Lambda Expressions? What is the use in real applications?
+- text: What is the difference between First and FirstOrDefault methods in LINQ?
+- text: What are the important components of .NET framework?
+- text: What is an Assembly? What are the different types of assembly in .NET?
+- text: What is GAC?
+- text: What is Reflection?
+- text: What are Serialization and Deserialization? What are the types of serialization?
+- text: What is meant by Globalization and Localization?
+- text: What are Window Services?
+- text: What is Garbage Collection(GC)?
+- text: What are Generations in garbage collection?
+- text: What is the difference between “Dispose” and “Finalize”?
+- text: What is the difference between “Finalize” and “Finally” methods?
+- text: Can we force Garbage Collector to run?
+- text: What is the difference between Process and Thread?
+- text: Explain Multithreading?
+- text: What is the difference between synchronous and asynchronous programming? What is the role of Task?
+- text: What is the difference between Threads and Tasks? What are the advantages of Tasks over Threads?
+- text: What is the role of Async and Await?
+- text: What is the difference between DBMS and RDBMS?
+- text: What is a Constraint in SQL? What are the types of constraints?
+- text: What is the difference between Primary key and Unique key?
+- text: What are Triggers and types of triggers?
+- text: What is a View?
+- text: What is the difference between Having clause and Where clause?
+- text: What is Sub query or Nested query or Inner query in SQL?
+- text: What is Auto Increment/ Identity column in SQL Server?
+- text: What are Joins in SQL?
+- text: What are the types of Joins in SQL Server?
+- text: What is Self-Join?
+- text: What are Indexes in SQL Server?
+- text: What is Clustered index?
+- text: What is Non-Clustered index?
+- text: What is the difference between Clustered and Non-Clustered index?
+- text: How to create Clustered and Non-Clustered index in a table?
+- text: In which column you will apply the indexing to optimize this query.  “select id, class from student where name=”happy””? What is the difference between Stored Procedure and Functions (at least 3)?
+- text: How to optimize a Stored Procedure or SQL Query?
+- text: What is a Cursor? Why to avoid them?
+- text: What is the difference between scope_identity and @@identity?
+- text: What is CTE in SQL Server?
+- text: What is the difference between Delete, Truncate and Drop commands?
+- text: How to get the Nth highest salary of an employee?
+- text: What are ACID properties?
+- text: What are Magic Tables in SQL Server?
+- text: What is MVC? Explain MVC Life cycle.
+- text: What are the advantages of MVC over Web Forms (atleast 3)?
+- text: What are the different return types of a controller Action method?
+- text: What are Filters and their types in MVC?
+- text: What is Authentication and Authorization in ASP.NET MVC?
+- text: What are the types of Authentication in ASP.NET MVC?
+- text: What is Output Caching in MVC? How to implement it?
+- text: What is Routing in MVC?
+- text: Explain Attribute Based Routing in MVC?
+- text: What is the difference between ViewData, ViewBag & TempData?
+- text: How can we pass the data from controller to view in MVC?
+- text: What is Partial View?
+- text: What are Areas in MVC?
+- text: How Validation works in MVC? What is Data Annotation?
+- text: Explain the concept of MVC Scaffolding?
+- text: What is Bundling and Minification in MVC?
+- text: How to implement Security in web applications in MVC?
+- text: What are the events in Page Life Cycle? In which event are the controls fully loaded?
+- text: What is the difference between Server.Transfer() and Response.Redirect()?
+- text: What are the different types of Caching?
+- text: What are the types of state management?
+- text: Where the ViewState is stored after the page postback?
+- text: What are the different ways to store session state in asp.net?
+- text: What is cookie less session?
+- text: How to force all the validation controls to run in a page in web forms?
+- text: What are the main components of ADO.NET?
+- text: What is Connected architecture and Disconnected architecture?
+- text: What are the different Execute Methods of ADO.NET?
+- text: What are the Authentication techniques used to connect to SQL Server?
+- text: What is ORM? What are the different types of ORM?
+- text: What is Entity Framework?
+- text: How will you differentiate ADO.NET from Entity Framework?
+- text: How Entity Framework works? OR How to setup EF?
+- text: What is meant by DBContext and DBSet?
+- text: What are the different types of application development approaches used with EF?
+- text: What is the difference between LINQ to SQL and Entity Framework?
+- text: What is Web API? What is the purpose of Web API?
+- text: What are Web API advantages over WCF and web serivces?
+- text: What are HTTP verbs or HTTP methods?
+- text: What is the difference Rest API and Web API?
+- text: What are REST guidelines? What is the difference between Rest and Restful?
+- text: Is it possible to use WCF as Restful services?
+- text: How to consume Web API from a .NET MVC application?
+- text: What is the difference between Web API and MVC Controller?
+- text: What are the types of authentication techniques in web api?
+- text: What is Basic Authentication in Web API?
+- text: What is API Key Authentication in Web API?
+- text: What is Token based authentication?
+- text: What is JWT Authentication?
+- text: What are the parts of JWT token?
+- text: Where JWT token reside in the request?
+- text: How to test Web API? What are the tools?
+- text: What are main Return Types supported in Web API?
+- text: What is the difference between HTTPResponseMessage and IHttpActionResult?
+- text: What is the difference between IActionResult and IHttpActionResult?
+- text: What is Content Negotiation in Web API?
+- text: What is MediaTypeFormatter class in Web API?
+- text: What are Response Codes in Web API?
+- text: What is .NET Core?
+- text: What is .NET Standard?
+- text: What are the advantages of .NET Core over .NET framework?
+- text: What is the role of Program.cs file in ASP.NET Core?
+- text: What is the role of ConfigureServices method?
+- text: What is the role of Configure method?
+- text: Describe the complete Request Processing Pipeline for ASP.NET Core MVC?
+- text: What is the difference between .NET Core and .NET 5?
+- text: What is Metapackage? What is the name of Metapackage provided by ASP.NET Core?
+- text: What is Dependency Injection?
+- text: How to implement Dependency injection in .NET Core?
+- text: What are the advantages of Dependency Injection in .NET Core?
+- text: How to use Dependency Injection in Views in ASP.NET Core?
+- text: What are the types of Service Lifetimes of an object/ instance in ASP.NET Core?
+- text: What is AddSingleton, AddScoped and AddTransient method?
+- text: What is Middleware in ASP.NET Core? What is custom middleware?
+- text: How ASP.NET Core Middleware is different from HttpModule?
+- text: What is Request Delegate in .NET Core?
+- text: What is Run(), Use() and Map() method?
+- text: What are the types of Hosting in ASP.NET Core? What is In process and Out of process hosting?
+- text: What is Kestrel? What is the difference between Kestrel and IIS?
+- text: What is Routing? Explain attribute routing in ASP.NET Core?
+- text: Explain default project structure in ASP.NET Core application?
+- text: How ASP.NET Core serve static files?
+- text: What are the roles of Appsettings.Json and Launchsetting.Json file in ASP.NET Core?
+- text: What are the various techniques to save configuration settings in ASP.NET Core?
+- text: What is CORS? Why is CORS restriction is required? How to fix CORS error?
+- text: What is In-Memory caching & Distributed Caching?
+- text: How to handle errors in ASP.NET Core?
+- text: What are Razor pages in .NET Core?
+- text: What are SOLID Principles? What is the difference between SOLID Principles and Design Patterns?
+- text: What is Single Responsibility Principle?
+- text: What is Open-closed Principle?
+- text: What is Liskov Substitution Principle?
+- text: What is Interface Segregation Principle?
+- text: What is Dependency Inversion Principle?
+- text: What is DRY principle?
+- text: What are Design Patterns and what problem they solve?
+- text: What are the types of Design Patterns?
+- text: What are Creational Design Patterns?
+- text: What are Structural Design Patterns?
+- text: What are Behavioral Design Patterns?
+- text: What is Singleton Design Pattern?
+- text: How to make singleton pattern thread safe?
+- text: What is Factory pattern? Why to use factory pattern?
+- text: How to implement Factory method pattern?
+- text: What is Abstract Factory pattern?
+- text: What are the must-know pre-requisites for solving basic coding problems?
+- text: What are the steps or approach for solving coding problems?
+- text: Write a function to calculate the sum of all elements in an array.
+- text: Write a function to calculate the average of an array of numbers.
+- text: Write a function to find the smallest number in an array.
+- text: Write a function to find the largest number in an array.
+- text: Write a function to find the second largest number in an array.
+- text: What are the top 5 important array functions used in coding problems?
+- text: Write a function to check whether two arrays are same or not?
+- text: Write a function to check if a given array is sorted in ascending order or not.
+- text: Write a function to merge two arrays into a single sorted array.
+- text: Write a function to remove a specific element from an array.
+- text: Write a function that counts the number of characters in a string?
+- text: How to iterate a string?
+- text: Write a function that returns the reverse of a string?
+- text: Write a function that checks whether a given string is a palindrome or not?
+- text: What are the important methods of String class?
+- text: Write a function that returns the longest word in the sentence.
+- text: Write a function to remove all whitespace characters from a string.
+- text: Write a function that counts the number of vowels in a string?
+- text: Write a function that checks whether two strings are anagrams or not?
+- text: Write a function to calculate the factorial of a number.
+- text: What is the difference between ++i and i++?
+- text: Write a function that checks whether a number is prime or not?
+- text: How to swap two numbers in C#?
+- text: Write a function to calculate the GCD for two numbers.
+- text: Write a function to sum the digits of a number.
+- text: Write a function to calculate the Fibonacci sequence up to a given number.
+- text: Write a function to sort an array of numbers in ascending order(Bubble Sort).
+- text: Write a function to search an element in any array(Binary Search)?
+- text: What is the difference between a class and a structure?
+- text: What is operator overloading?
+- text: Can you call the base class method without creating an instance?
+- text: What are virtual functions and pure virtual functions?
+- text: Which oops concept exposes only the necessary information to the calling functions?
+- text: Is it always necessary to create objects from class?
+- text: What is early and late binding?
+- text: Which oops concept is used as a reuse mechanism?
+- text: In try block if we add return statement whether finally block is executed?
+- text: What you mean by inner exception?
+- text: List out some of the exceptions?
+- text: What is the difference between stack and queue collections?
+- text: Explain jagged arrays?
+- text: Explain multidimensional arrays?
+- text: Explain indexers?
+- text: What is the difference between methods – “system.array.clone()” and “system.array.copyto()”?
+- text: What are value type and reference types?
+- text: Can we override private virtual method?
+- text: Explain circular reference?
+- text: Explain object pool?
+- text: What are the types of delegates?
+- text: What are the three types of generic delegates?
+- text: What are the uses of delegates?
+- text: Can we use delegates for asynchronous method calls?
+- text: What is an escape sequence? Name some string escape sequences in c#.
+- text: What are regular expressions?
+- text: Why to use lock statement?
+- text: What is “extern” keyword?
+- text: What is “sizeof” operator?
+- text: Can we use “this” inside a static method?
+- text: What is the difference between ctype and directcast?
+- text: Which string method is used for concatenation of two strings?
+- text: What is parsing? How to parse a date time string?
+- text: Explain partial class?
+- text: Explain anonymous type?
+- text: Explain get and set accessor properties?
+- text: What is the difference between var and dynamic in c#?
+- text: What is covariance in c#?
+- text: What is jit?
+- text: What is msil?
+- text: What is meant by managed and unmanaged code?
+- text: What is difference between namespace and assembly?
+- text: What is manifest?
+- text: Where is version information stored of an assembly?
+- text: Is versioning applicable to private assemblies?
+- text: What is the application domain?
+- text: Explain cas (code access security).
+- text: What are synchronous and asynchronous operations?
+- text: What is multi-tasking?
+- text: Name some properties of thread class.
+- text: What are the different states of a thread?
+- text: Can we have multiple threads in one app domain?
+- text: Which namespace has threading?
+- text: Explain lock, monitors, and mutex object in threading.
+- text: What is thread.sleep () in threading?
+- text: What is suspend and resume in threading?
+- text: What the way to stop a long running thread?
+- text: Why we need multi-threading in our project?
+- text: How to start a thread in c#?
+- text: What is race condition?
+- text: What is livelock?
+- text: What is immutable object?
+- text: How managed code is executed?
+- text: What is the difference between system exceptions and application exceptions?
+- text: What is xsd?
+- text: In which assembly is the mvc framework defined?
+- text: Is it possible to share a view across multiple controllers?
+- text: What is route in mvc? What is default route in mvc?
+- text: Where are the routing rules defined in an asp.net mvc application?
+- text: What is validation summary in mvc?
+- text: Differences between razor and aspx view engine in mvc?
+- text: What are the main razor syntax rules?
+- text: How do you implement forms authentication in mvc?
+- text: How we can register the area in asp.net mvc?
+- text: Explain the need of display mode in mvc?
+- text: What is route constraints in mvc?
+- text: What are the folders in mvc application solutions?
+- text: What are the methods of handling an error in mvc?
+- text: What is viewstart?
+- text: How can we done custom error page in mvc?
+- text: What is server side validation in mvc?
+- text: What is the use of remote validation in mvc?
+- text: Explain rendersection in mvc?
+- text: What is the significance of nonactionattribute?
+- text: How route table is created in asp.net mvc?
+- text: Asp.net mvc application, makes use of settings at 2 places for routing to work correctly. What are these 2 places?
+- text: What is the use of the following default route?
+- text: What is the difference between adding routes, to a webforms application and to an mvc application?
+- text: If i have multiple filters implemented, what is the order in which these filters get executed?
+- text: Which filter executes first in an asp.net mvc application?
+- text: What are the levels at which filters can be applied in an asp.net mvc application?
+- text: Is it possible to create a custom filter?
+- text: What filters are executed in the end?
+- text: Is it possible to cancel filter execution?
+- text: What type of filter does outputcacheattribute class represents?
+- text: What are the 2 popular asp.net mvc view engines?
+- text: What symbol would you use to denote, the start of a code block in razor views?
+- text: What symbol would you use to denote, the start of a code block in aspx views?
+- text: What are sections?
+- text: What are the file extensions for razor views?
+- text: How do you specify comments using razor syntax?
+- text: Is it possible to combine asp.net webforms and asp.mvc and develop a single web application?
+- text: What is the use of viewmodel in mvc?
+- text: Explain bundle.config in mvc4?
+- text: How we can handle the exception at controller level in asp.net mvc?
+- text: Does tempdata hold the data for other request in asp.net mvc?
+- text: Explain keep method in tempdata in asp.net mvc?
+- text: Explain peek method in tempdata in asp.net mvc?
+- text: What are child actions in asp.net mvc?
+- text: Explain the tools used for unit testing in asp.net mvc?
+- text: Can i use razor code in javascript in asp.net mvc?
+- text: How can i return string result from action in asp.net mvc?
+- text: How to return the json from action method in asp.net mvc?
+- text: Give an example for authorization filters in an asp.net mvc application?
+- text: What is data annotation validator attributes in mvc?
+- text: What are the exception filters in mvc?
+- text: Which approach provides better support for test driven development – asp.net mvc or asp.net webforms?
+- text: What's the use of response.output.write()?
+- text: In which event of page cycle is the viewstate available?
+- text: From which base class all web forms are inherited?
+- text: Which validator control you use if you need to make sure the values in two different controls matched?
+- text: What is viewstate?
+- text: How long the items in viewstate exists?
+- text: What are the different validators in asp.net?
+- text: How you can add an event handler?
+- text: Which type of caching will be used if we want to cache the portion of a page instead of whole page?
+- text: Can we have a web application running without web.config file?
+- text: Can we add code files of different languages in app_code folder?
+- text: What is protected configuration?
+- text: Write code to send e-mail from an asp.net application?
+- text: How can we prevent browser from caching an aspx page?
+- text: What is the good practice to implement validations in aspx page?
+- text: What are the event handlers that we can have in global.asax file?
+- text: Which protocol is used to call a web service?
+- text: Explain role based security?
+- text: How can we apply themes to an asp.net application?
+- text: What is redirectpermanent in asp.net?
+- text: Explain the working of passport authentication.
+- text: What are the advantages of passport authentication?
+- text: What are the asp.net security controls?
+- text: How do you register javascript for webcontrols ?
+- text: Differentiate strong typing and weak typing
+- text: List all templates of the repeater control.
+- text: List the major built-in objects in asp.net?
+- text: What is the appsettings section in the web.config file?
+- text: Which namespaces are necessary to create a localized application?
+- text: What are the different types of cookies in asp.net?
+- text: What is the file extension of web service?
+- text: Is it possible to create web application with both webforms and mvc?
+- text: Can we have multiple web config files for an asp.net application?
+- text: What is the difference between web config and machine config?
+- text: What is cross page posting?
+- text: What is object pooling?
+- text: What is connection pooling?
+- text: What is the difference between datareader and dataset?
+- text: What are all components of ado.net data provider?
+- text: Is it possible to load multiple tables in a dataset?
+- text: What are different layers of ado.net?
+- text: What are all the classes that are available in system.data namespace?
+- text: What are the data providers in ado.net?
+- text: What is the difference between executescalar and executenonquery?
+- text: Which method is used by command class to execute sql statements that return single value?
+- text: What is denormalization.
+- text: What are all the different normalizations?
+- text: What is a relationship and what are they?
+- text: What are the types of subquery?
+- text: What are local and global variables and their differences?
+- text: What is data integrity?
+- text: What is datawarehouse?
+- text: What is cross-join?
+- text: What is collation?
+- text: What are all different types of collation sensitivity?
+- text: Advantages and disadvantages of stored procedure?
+- text: What is online transaction processing (oltp)?
+- text: What is clause?
+- text: What is recursive stored procedure?
+- text: What is union, minus and interact commands?
+- text: What is an alias command?
+- text: How can you create an empty table from an existing table?
+- text: How to fetch common records from two tables?
+- text: How to fetch alternate records from a table?
+- text: How to select unique records from a table?
+- text: What is the command used to fetch first 5 characters of the string?
+- text: What are all types of user defined functions?
+- text: What are aggregate and scalar functions?
+- text: Which operator is used in query for pattern matching?
+- text: Define magic tables in sql server?
+- text: What is prototype design pattern?
+- text: What is builder design pattern?
+- text: What is adapter design pattern?
+- text: What is bridge design pattern?
+- text: What is composite design pattern?
+- text: What is decorator design pattern?
+- text: What is facade design pattern?
+- text: What is flyweight design pattern?
+- text: What is proxy design pattern?
+- text: Is it right that asp.net web api has replaced wcf?
+- text: Web api supports which protocol?
+- text: Which .net framework supports web api?
+- text: Web api uses which of the following open-source library for json serialization?
+- text: By default, web api sends http response with which of the following status code for all uncaught exception?
+- text: What is soap?
+- text: What is the benefit of using rest in web api?
+- text: How can we use web api with asp.net web form?
+- text: How you can return view from asp.net web api method?
+- text: How to register exception filter globally?
+- text: How can you restrict access methods to specific http verbs in web api?
+- text: Who can consume webapi?
+- text: What are web services?
+- text: What are the features of web services?
+- text: What the components of a web service?
+- text: How does a web service work?
+- text: What is the purpose of xml in a web service?
+- text: What are the benefits of web services?
+- text: What do you mean by interoperability of web services?
+- text: What do you mean by loosely coupled architecture of web services?
+- text: What is http?
+- text: What is wsdl?
+- text: What is uddi?
+- text: Explain what is wcf?
+- text: Mention what are the main components of wcf?
+- text: Explain how does wcf works?
+- text: Explain what is the difference between asmx web services and wcf?
+- text: What are the transport schemas does wcf supports?
+- text: Mention what are the ways of hosting a wcf service?
+- text: Mention the address syntax and the different formats of wcf transport scheme?
+- text: In wcf what are duplex contracts?
+- text: Mention what are the different instance modes in wcf?
+- text: Explain what is soa?
+- text: What are the types of data contracts in wcf?
+- text: What are the three types of transaction manager wcf supports?
+- text: Name the namespace that is used to access wcf service?
+- text: What is soa stands for?
+- text: What is host in asp.net core?
+- text: Describe the generic host and web host?
+- text: Describe the servers in asp.net core?
+- text: How configuration works in asp.net core?
+- text: How to read values from appsettings.json file?
+- text: What is the options pattern in asp.net core?
+- text: How to use multiple environments in asp.net core?
+- text: How asp.net core serve static files?
+- text: Explain session and state management in asp.net core?
+- text: Can asp.net application be run in docker containers?
+- text: Explain the caching or response caching in asp.net core?
+- text: What is in-memory cache?
+- text: What is distributed caching?
+- text: What is xsrf or csrf? How to prevent cross-site request forgery (xsrf/csrf) attacks in asp.net core?
+- text: Explain session and state management in asp.net core.
+- text: How to access httpcontext in asp.net core?
+- text: Explain the caching and response caching in asp.net core.

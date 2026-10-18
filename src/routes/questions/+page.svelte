@@ -1,19 +1,147 @@
 <script lang="ts">
-  import { resolve } from '$app/paths';
-  import { questions } from './questions.ts';
+	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
+	import { browser } from '$app/env';
+	import { fly } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
+	import { prefersReducedMotion } from 'svelte/motion';
 
-  const randomQuestions = questions.sort(() => Math.random() - 0.5);
+	import { parse } from 'yaml';
+	import type { Question as QuestionType } from '#lib/question.type.ts';
+	import dotnetRaw from '#lib/dotnet.yaml?raw';
+
+	import Question from '#lib/Question.svelte';
+
+	const questions: QuestionType[] = parse(dotnetRaw).sort(() => Math.random() - 0.5);
+
+	const titles: Record<string, string> = {
+		dotnet: 'Pytania z .NET',
+		python: 'Pytania z Pythona',
+		javascript: 'Pytania z JavaScript',
+		sql: 'Pytania z SQL',
+		'system-design': 'Pytania z projektowania systemów'
+	};
+
+	let category = $derived((browser && page.url.searchParams.get('category')) || 'all');
+	let title = $derived(titles[category] ?? 'Pytania rekrutacyjne');
+
+	let index = $state(0);
+	let direction = $state<1 | -1>(1);
+
+	let current = $derived(questions[index]);
+	let isFirst = $derived(index === 0);
+	let isLast = $derived(index === questions.length - 1);
+	let progress = $derived(((index + 1) / questions.length) * 100);
+
+	const DISTANCE = 140;
+	let duration = $derived(prefersReducedMotion.current ? 0 : 380);
+
+	function go(step: 1 | -1) {
+		const next = index + step;
+		if (next < 0 || next >= questions.length) return;
+		direction = step;
+		index = next;
+	}
+
+	function onkeydown(e: KeyboardEvent) {
+		if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+		if (e.key === 'ArrowRight') go(1);
+		if (e.key === 'ArrowLeft') go(-1);
+	}
+
+	let touchStartX = 0;
+
+	function ontouchstart(e: TouchEvent) {
+		touchStartX = e.changedTouches[0].clientX;
+	}
+
+	function ontouchend(e: TouchEvent) {
+		const dx = e.changedTouches[0].clientX - touchStartX;
+		if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+	}
 </script>
 
-<h1>Questions</h1>
+<svelte:window {onkeydown} />
 
-<p>Hello, you've reached the questions page!</p>
+<div class="container">
+	<h1>{title}</h1>
 
-<p>Here are the questions, in random order:</p>
-<ul>
-  {#each randomQuestions as question}
-    <li>{question}</li>
-  {/each}
-</ul>
+	<div class="d-flex align-items-center gap-3 mt-3">
+		<span class="text-body-secondary small text-nowrap counter">
+			Pytanie {index + 1} z {questions.length}
+		</span>
+		<div class="progress flex-grow-1" style="height: 4px">
+			<div class="progress-bar" style:width="{progress}%"></div>
+		</div>
+	</div>
 
-<p>Go to <a href={resolve("/")}>Home</a> or <a href={resolve("/finish")}>Finish</a></p>
+	<div class="stage py-3" {ontouchstart} {ontouchend}>
+		{#key current.id}
+			<div
+				class="slide"
+				in:fly={{ x: DISTANCE * direction, duration, easing: cubicOut }}
+				out:fly={{ x: -DISTANCE * direction, duration, easing: cubicOut }}
+			>
+				<Question question={current} />
+			</div>
+		{/key}
+	</div>
+
+	<div class="d-flex justify-content-between pt-3 gap-3">
+		<button class="btn btn-secondary nav-btn" onclick={() => go(-1)} disabled={isFirst}>
+			<span class="arrow" aria-hidden="true">←</span>
+			<span class="d-none d-sm-inline">Poprzednie</span>
+		</button>
+		<button class="btn btn-primary nav-btn" onclick={() => go(1)} disabled={isLast}>
+			<span class="d-none d-sm-inline">Następne</span>
+			<span class="arrow" aria-hidden="true">→</span>
+		</button>
+	</div>
+
+	<p class="pt-4 small text-body-secondary d-none d-md-block">
+		Podpowiedź: strzałki ← → na klawiaturze też działają.
+	</p>
+
+	<p class="pt-3"><a href={resolve('/')}>Wróć do strony głównej</a></p>
+</div>
+
+<style>
+	.stage {
+		display: grid;
+		overflow-x: clip;
+		touch-action: pan-y;
+	}
+
+	.slide {
+		grid-area: 1 / 1;
+	}
+
+	.counter {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.progress-bar {
+		transition: width 0.35s ease;
+	}
+
+	.nav-btn {
+		min-width: 3.5rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.arrow {
+		display: inline-block;
+		transition: transform 0.2s;
+	}
+
+	.nav-btn:not(:disabled):hover .arrow {
+		transform: translateX(var(--nudge, 3px));
+	}
+
+	.btn-secondary.nav-btn {
+		--nudge: -3px;
+	}
+</style>
