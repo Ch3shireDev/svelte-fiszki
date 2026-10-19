@@ -5,6 +5,12 @@
 	import { cubicOut, backOut } from 'svelte/easing';
 	import { prefersReducedMotion } from 'svelte/motion';
 	import { score } from '#lib/score.svelte.ts';
+	function mark(isCorrect: boolean) {
+		if (answer === isCorrect) return;
+		if (answer !== null) score.record(answer, -1);
+		answer = isCorrect;
+		score.record(isCorrect, 1);
+	}
 
 	let { question }: { question: Question } = $props();
 
@@ -19,13 +25,6 @@
 
 	function toggleAnswer() {
 		showAnswer = !showAnswer;
-	}
-
-	function mark(isCorrect: boolean) {
-		if (answer === isCorrect) return;
-		if (answer !== null) score.record(answer, -1);
-		answer = isCorrect;
-		score.record(isCorrect, 1);
 	}
 </script>
 

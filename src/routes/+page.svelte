@@ -26,4 +26,24 @@
 			>Przejdź do pytań z projektowania systemów</a
 		>
 	</li>
+	<li>
+		<a href={resolve('/quizzes?category=dotnet')}>Przejdź do zadań z .NET</a>
+	</li>
+	<li>
+		<a href={resolve('/quizzes?category=python')}>Przejdź do zadań z Pythona</a>
+	</li>
+	<li>
+		<a href={resolve('/quizzes?category=javascript')}>Przejdź do zadań z JavaScript</a>
+	</li>
+	<li>
+		<a href={resolve('/quizzes?category=angular')}>Przejdź do zadań z Angulara</a>
+	</li>
+	<li>
+		<a href={resolve('/quizzes?category=sql')}>Przejdź do zadań z SQL</a>
+	</li>
+	<li>
+		<a href={resolve('/quizzes?category=system-design')}
+			>Przejdź do zadań z projektowania systemów</a
+		>
+	</li>
 </ul>

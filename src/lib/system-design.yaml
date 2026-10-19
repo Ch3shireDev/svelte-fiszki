@@ -12,14 +12,14 @@
     Wymagania funkcjonalne opisują, co system robi, np. "użytkownik może wystawić fakturę".
     Niefunkcjonalne opisują, jak dobrze to robi: wydajność, dostępność, skalowalność, bezpieczeństwo, spójność, koszty.
     Te drugie najbardziej wpływają na architekturę.
-    Warto je wyrażać liczbowo, np. p99 < 200 ms, dostępność 99,9%.
+    Warto je wyrażać liczbowo, np. `p99 < 200` ms, dostępność 99,9%.
 
 - id: 3
   text: Jak robić szacunki typu back-of-the-envelope?
   answer: |
     Zaczyna się od liczby użytkowników aktywnych dziennie i liczby akcji na użytkownika.
     Dzień ma około 86 400 sekund, więc 1 mln żądań dziennie to około 12 żądań na sekundę średnio; szczyt przyjmuje się 2-10 razy wyżej.
-    Rozmiar danych = liczba rekordów x rozmiar rekordu x okres przechowywania, plus replikacja.
+    Rozmiar danych `=` liczba rekordów x rozmiar rekordu x okres przechowywania, plus replikacja.
     Celem jest rząd wielkości, który decyduje np. o tym, czy wystarczy jedna baza, czy trzeba shardować.
 
 - id: 4
@@ -89,7 +89,7 @@
 - id: 12
   text: Czym jest sharding (partycjonowanie poziome)?
   answer: |
-    Sharding dzieli dane między wiele baz według klucza, np. tenant_id lub user_id.
+    Sharding dzieli dane między wiele baz według klucza, np. `tenant_id` lub `user_id`.
     Każdy shard przechowuje część danych, więc rośnie przepustowość zapisu i pojemność.
     Strategie: zakresowa (range), haszowa (hash) i oparta na katalogu (lookup).
     Wyzwania to gorące shardy, zapytania przekrojowe, transakcje między shardami i resharding.
@@ -99,7 +99,7 @@
   answer: |
     Consistent hashing rozmieszcza węzły i klucze na wirtualnym pierścieniu haszy.
     Klucz trafia do pierwszego węzła zgodnie z ruchem wskazówek zegara.
-    Dodanie lub usunięcie węzła przenosi tylko niewielką część kluczy, a nie prawie wszystkie jak przy hash % N.
+    Dodanie lub usunięcie węzła przenosi tylko niewielką część kluczy, a nie prawie wszystkie jak przy `hash % N`.
     Wirtualne węzły wyrównują rozkład; stosuje się go w cache rozproszonych, Cassandrze i load balancerach.
 
 - id: 14
@@ -132,7 +132,7 @@
     Gdy popularny wpis w cache wygaśnie, wiele żądań jednocześnie trafia do bazy, by go odtworzyć, i przeciąża ją.
     Rozwiązania: blokada lub single-flight (tylko jedno żądanie odtwarza wpis), losowe TTL (jitter) i wcześniejsze odświeżanie w tle.
     Pomaga też serwowanie nieaktualnej wartości podczas odświeżania (stale-while-revalidate).
-    HybridCache w .NET 9 ma wbudowaną ochronę przed stampede.
+    `HybridCache` w .NET 9 ma wbudowaną ochronę przed stampede.
 
 - id: 18
   text: Czym jest CDN?
@@ -249,17 +249,17 @@
 - id: 32
   text: Jak projektować dobre REST API?
   answer: |
-    Zasoby jako rzeczowniki w liczbie mnogiej (/invoices/123), operacje przez metody HTTP i poprawne kody statusu.
-    Stronicowanie, filtrowanie i sortowanie przez parametry zapytania; błędy w spójnym formacie (np. ProblemDetails, RFC 9457).
+    Zasoby jako rzeczowniki w liczbie mnogiej (`/invoices/123`), operacje przez metody HTTP i poprawne kody statusu.
+    Stronicowanie, filtrowanie i sortowanie przez parametry zapytania; błędy w spójnym formacie (np. `ProblemDetails`, RFC 9457).
     Wersjonowanie API (w URL lub nagłówku) i zachowanie kompatybilności wstecznej.
-    Idempotentne PUT i DELETE, klucze idempotentności dla POST, dokumentacja OpenAPI.
+    Idempotentne `PUT` i `DELETE`, klucze idempotentności dla `POST`, dokumentacja OpenAPI.
 
 - id: 33
   text: Jak wersjonować API?
   answer: |
-    W ścieżce URL (/v1/invoices) - najprostsze i najczytelniejsze.
-    W nagłówku (Api-Version) lub w typie mediów (Accept: application/vnd.firma.v2+json).
-    W parametrze zapytania (?api-version=2.0), co stosuje np. Azure.
+    W ścieżce URL (`/v1/invoices`) - najprostsze i najczytelniejsze.
+    W nagłówku (Api-Version) lub w typie mediów (Accept: `application/vnd.firma.v2+json`).
+    W parametrze zapytania (`?api-version=2.0`), co stosuje np. Azure.
     Najlepiej unikać łamania kontraktu: dodawać pola zamiast zmieniać istniejące i utrzymywać stare wersje przez okres przejściowy.
 
 - id: 34
@@ -276,7 +276,7 @@
     Circuit Breaker przerywa wywołania do usługi, która często zawodzi, zamiast ją dalej obciążać.
     Ma stany: Closed (normalnie), Open (od razu zwraca błąd) i Half-Open (przepuszcza próbne żądania).
     Zapobiega kaskadowym awariom i daje usłudze czas na powrót.
-    W .NET implementuje go Polly, a Microsoft.Extensions.Http.Resilience dodaje go do HttpClient.
+    W .NET implementuje go Polly, a `Microsoft.Extensions.Http.Resilience` dodaje go do `HttpClient`.
 
 - id: 36
   text: Jak poprawnie implementować ponowienia (retry)?
@@ -313,7 +313,7 @@
 - id: 40
   text: Czym jest Event Sourcing?
   answer: |
-    Event Sourcing zapisuje stan jako sekwencję zdarzeń (np. FakturaWystawiona, PłatnośćZaksięgowana), a nie jako bieżący stan.
+    Event Sourcing zapisuje stan jako sekwencję zdarzeń (np. `FakturaWystawiona`, `PłatnośćZaksięgowana`), a nie jako bieżący stan.
     Aktualny stan odtwarza się przez odtworzenie zdarzeń, często wspierane snapshotami.
     Daje pełną historię zmian, audyt i możliwość odtworzenia stanu z dowolnej chwili.
     Wyzwania to wersjonowanie zdarzeń, złożoność zapytań (zwykle łączy się go z CQRS) i krzywa uczenia.
@@ -385,7 +385,7 @@
 - id: 49
   text: Jak zaprojektować skracacz linków (URL shortener)?
   answer: |
-    API: POST /links tworzy krótki kod, GET /{code} zwraca przekierowanie 301 lub 302.
+    API: `POST /links` tworzy krótki kod, `GET /{code}` zwraca przekierowanie 301 lub 302.
     Kod generuje się przez kodowanie Base62 unikalnego licznika (np. z rozproszonego generatora ID) lub hash z obsługą kolizji.
     Odczyty dominują nad zapisami, więc kluczowy jest cache (Redis, CDN) przed bazą klucz-wartość.
     Do omówienia: niestandardowe aliasy, wygasanie linków, analityka kliknięć (asynchronicznie przez kolejkę) i ochrona przed nadużyciami.
@@ -418,7 +418,7 @@
   text: Jak zaprojektować czat w czasie rzeczywistym?
   answer: |
     Klienci utrzymują trwałe połączenia WebSocket (np. przez SignalR) z serwerami bramek.
-    Wiadomości zapisuje się do bazy zoptymalizowanej pod zapis i odczyt per konwersacja (np. klucz: id rozmowy + czas).
+    Wiadomości zapisuje się do bazy zoptymalizowanej pod zapis i odczyt per konwersacja (np. klucz: id rozmowy `+` czas).
     Między serwerami wiadomości rozsyła się przez pub/sub (Redis, Kafka), bo odbiorca może być połączony z innym serwerem.
     Do omówienia: status online, potwierdzenia doręczenia i przeczytania, powiadomienia push dla offline, czaty grupowe i kolejność wiadomości.
 
@@ -457,7 +457,7 @@
 - id: 58
   text: Jak projektować system multi-tenant?
   answer: |
-    Model izolacji: wspólna baza ze wspólnym schematem i kolumną TenantId, schemat per tenant albo baza per tenant.
+    Model izolacji: wspólna baza ze wspólnym schematem i kolumną `TenantId`, schemat per tenant albo baza per tenant.
     Wspólna baza jest najtańsza, ale wymaga ścisłego filtrowania (globalne filtry, Row-Level Security) i grozi "hałaśliwym sąsiadem".
     Baza per tenant daje najlepszą izolację i łatwe przywracanie danych klienta, ale zwiększa koszty i złożoność migracji.
     Tenant ustala się z tokenu lub domeny i propaguje przez cały request, w tym do logów i cache.
@@ -484,7 +484,7 @@
     Kubernetes to platforma orkiestracji kontenerów: uruchamia, skaluje i nadzoruje aplikacje na klastrze maszyn.
     Zapewnia self-healing (restart i przenoszenie podów), service discovery, load balancing i rolling updates.
     Autoskalowanie realizują HPA (pody) i cluster autoscaler (węzły).
-    Konfigurację i sekrety przekazuje się przez ConfigMap i Secret, a ruch zewnętrzny przez Ingress lub Gateway API.
+    Konfigurację i sekrety przekazuje się przez `ConfigMap` i Secret, a ruch zewnętrzny przez Ingress lub Gateway API.
 
 - id: 62
   text: Czym jest service mesh?
@@ -508,7 +508,7 @@
     Sesja po stronie serwera wymaga współdzielonego magazynu sesji lub sticky sessions przy wielu instancjach.
     Tokeny (JWT) są samowystarczalne - każda instancja weryfikuje podpis bez odpytywania wspólnego magazynu.
     Wadą JWT jest trudne natychmiastowe unieważnienie, więc stosuje się krótkie access tokeny i refresh tokeny.
-    Dla aplikacji SPA w przeglądarce popularny jest wzorzec BFF z ciasteczkiem HttpOnly zamiast tokenu w JavaScript.
+    Dla aplikacji SPA w przeglądarce popularny jest wzorzec BFF z ciasteczkiem `HttpOnly` zamiast tokenu w JavaScript.
 
 - id: 65
   text: Czym jest backpressure?
@@ -516,7 +516,7 @@
     Backpressure to mechanizm, w którym wolniejszy konsument sygnalizuje producentowi, by zwolnił.
     Bez niego kolejki i bufory rosną bez ograniczeń, aż system się przeciąży lub zabraknie pamięci.
     Realizuje się go przez ograniczone kolejki, odrzucanie żądań (load shedding, 503), limity współbieżności i strumienie z kontrolą przepływu.
-    W .NET pomocne są System.Threading.Channels z ograniczoną pojemnością.
+    W .NET pomocne są `System.Threading.Channels` z ograniczoną pojemnością.
 
 - id: 66
   text: Czym jest problem dual write i jak go uniknąć?
@@ -529,7 +529,7 @@
 - id: 67
   text: Czym jest Change Data Capture (CDC)?
   answer: |
-    CDC przechwytuje zmiany w bazie danych (INSERT, UPDATE, DELETE) i udostępnia je jako strumień zdarzeń.
+    CDC przechwytuje zmiany w bazie danych (`INSERT`, `UPDATE`, `DELETE`) i udostępnia je jako strumień zdarzeń.
     Zwykle odczytuje log transakcji, więc nie obciąża aplikacji i nie wymaga zmian w kodzie.
     SQL Server ma wbudowane CDC i Change Tracking; Debezium przesyła zmiany do Kafki.
     Stosuje się je do synchronizacji z hurtownią danych, cache, wyszukiwarką i do integracji między systemami.

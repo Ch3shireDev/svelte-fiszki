@@ -18,29 +18,37 @@
 
 	import angularRaw from '#lib/angular.yaml?raw';
 
-	let category = $derived((browser && page.url.searchParams.get('category')) || 'all');
+	const category = $derived((browser && page.url.searchParams.get('category')) || 'all');
+
+	const isDotnet = $derived(category === 'dotnet');
+	const isAngular = $derived(category === 'angular');
+	const isPython = $derived(category === 'python');
+	const isJavascript = $derived(category === 'javascript');
+	const isSql = $derived(category === 'sql');
+	const isSystemDesign = $derived(category === 'system-design');
+	const isAll = $derived(category === 'all');
 
 	let questions: QuestionType[] = [];
 
-	if (category === 'dotnet') {
+	if (isDotnet) {
 		questions.push(...parse(dotnetRaw)); //.sort(() => Math.random() - 0.5));
 	}
-	if (category === 'angular') {
+	if (isAngular) {
 		questions.push(...parse(angularRaw)); //.sort(() => Math.random() - 0.5));
 	}
-	if (category === 'python') {
+	if (isPython) {
 		questions.push(...parse(pythonRaw)); //.sort(() => Math.random() - 0.5));
 	}
-	if (category === 'javascript') {
+	if (isJavascript) {
 		questions.push(...parse(javascriptRaw)); //.sort(() => Math.random() - 0.5));
 	}
-	if (category === 'sql') {
+	if (isSql) {
 		questions.push(...parse(sqlRaw)); //.sort(() => Math.random() - 0.5));
 	}
-	if (category === 'system-design') {
+	if (isSystemDesign) {
 		questions.push(...parse(systemDesignRaw)); //.sort(() => Math.random() - 0.5));
 	}
-	if (category === 'all') {
+	if (isAll) {
 		questions.push(...parse(dotnetRaw)); //.sort(() => Math.random() - 0.5));
 		questions.push(...parse(angularRaw)); //.sort(() => Math.random() - 0.5));
 		questions.push(...parse(pythonRaw)); //.sort(() => Math.random() - 0.5));
@@ -110,7 +118,7 @@
 		</div>
 	</div>
 
-	<div class="stage py-3" {ontouchstart} {ontouchend}>
+	<div class="stage py-3" {ontouchstart} {ontouchend} role="region">
 		{#key current.id}
 			<div
 				class="slide"

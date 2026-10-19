@@ -1,0 +1,1019 @@
+- id: 1
+  question: Jaki będzie wynik wyrażenia `"5" + 1` w Pythonie?
+  answers:
+    - text: "\"51\""
+      correct: false
+    - text: "\"6\""
+      correct: false
+    - text: "6"
+      correct: false
+    - text: "`TypeError`"
+      correct: true
+  explanation: |
+    Python jest silnie typowany i nie konwertuje niejawnie stringa na liczbę ani odwrotnie.
+    "51" dałby JavaScript, a 6 wymagałoby jawnej konwersji `int("5") + 1`.
+
+- id: 2
+  question: Co oznacza, że Python jest typowany dynamicznie?
+  answers:
+    - text: Typ jest związany z wartością, a nie zmienną, i sprawdzany w czasie wykonania
+      correct: true
+    - text: Zmienne nie mają żadnych typów, a interpreter traktuje wszystko jako stringi
+      correct: false
+    - text: Typy zmiennych są sprawdzane przez kompilator przed uruchomieniem programu
+      correct: false
+    - text: Typ zmiennej musi być zadeklarowany przy jej pierwszym użyciu
+      correct: false
+  explanation: |
+    Ta sama zmienna może wskazywać kolejno na `int` i `str`, a błąd typów pojawi się dopiero przy wykonaniu.
+    Statyczne sprawdzanie zapewniają dopiero zewnętrzne narzędzia jak mypy, wartości mają konkretne typy, a deklaracja typu nie jest wymagana.
+
+- id: 3
+  question: Jaką precyzję ma typ `int` w Pythonie?
+  answers:
+    - text: 32 bity, tak jak `int` w C#
+      correct: false
+    - text: 64 bity ze znakiem, jak long w C#
+      correct: false
+    - text: 53 bity, tak jak liczby w JavaScript
+      correct: false
+    - text: Dowolną, ograniczoną tylko pamięcią
+      correct: true
+  explanation: |
+    Python automatycznie obsługuje dowolnie duże liczby całkowite, np. `2 ** 1000`.
+    Ograniczenia 32, 64 czy 53 bitów dotyczą innych języków, a nie typu `int` w Pythonie.
+
+- id: 4
+  question: Który typ jest mutowalny?
+  answers:
+    - text: "`frozenset`"
+      correct: false
+    - text: "`str`"
+      correct: false
+    - text: "`list`"
+      correct: true
+    - text: "`tuple`"
+      correct: false
+  explanation: |
+    Listę można modyfikować w miejscu (append, sort, przypisanie elementu).
+    `tuple`, `str` i `frozenset` są niemutowalne - "zmiana" tworzy nowy obiekt.
+
+- id: 5
+  question: Dlaczego krotka może być kluczem słownika, a lista nie?
+  answers:
+    - text: Bo krotki są szybsze w iteracji niż listy, a słownik wymaga szybkich kluczy
+      correct: false
+    - text: Bo listy są zawsze dłuższe niż krotki
+      correct: false
+    - text: Bo słowniki akceptują tylko typy zapisane w nawiasach okrągłych
+      correct: false
+    - text: Bo krotka jest niemutowalna i hashowalna
+      correct: true
+  explanation: |
+    Klucz słownika musi mieć stały hash, a lista może się zmienić po dodaniu do słownika.
+    Szybkość iteracji, nawiasy czy długość nie mają tu znaczenia.
+
+- id: 6
+  question: Od której wersji Pythona słownik gwarantuje zachowanie kolejności wstawiania?
+  answers:
+    - text: "3.7"
+      correct: true
+    - text: Słownik nigdy nie gwarantuje kolejności
+      correct: false
+    - text: "2.7"
+      correct: false
+    - text: "3.12"
+      correct: false
+  explanation: |
+    W CPython 3.6 była to cecha implementacji, a od 3.7 stała się częścią specyfikacji języka.
+    W Pythonie 2.7 kolejność nie była gwarantowana (do tego służył `OrderedDict`).
+
+- id: 7
+  question: Czym różni się operator `is` od `==`?
+  answers:
+    - text: "`is` działa tylko na liczbach, a `==` na wszystkich typach"
+      correct: false
+    - text: "`==` sprawdza, czy to ten sam obiekt, a `is` porównuje wartości"
+      correct: false
+    - text: "`is` sprawdza, czy to ten sam obiekt, a `==` porównuje wartości"
+      correct: true
+    - text: Nie ma różnicy - `is` to alias operatora `==`
+      correct: false
+  explanation: |
+    `is` porównuje tożsamość obiektów, dlatego używa się go do x `is None`.
+    Odwrócenie ról jest błędne, `is` działa na każdym typie, a internowanie małych liczb sprawia, że `is` na liczbach daje mylące wyniki.
+
+- id: 8
+  question: Jak sprawdzić, czy zmienna ma wartość `None`?
+  answers:
+    - text: "`x == None` jako jedyny poprawny sposób"
+      correct: false
+    - text: "`x.isNone()`"
+      correct: false
+    - text: x `is None`
+      correct: true
+    - text: "`type(x) == \"None\"`"
+      correct: false
+  explanation: |
+    `None` jest singletonem, więc porównuje się go przez `is` - PEP 8 tak zaleca.
+    `x == None` działa, ale może zostać nadpisane przez `__eq__`, metoda `isNone` nie istnieje, a `type(x)` zwraca typ, a nie string.
+
+- id: 9
+  question: Co zwróci `[x * 2 for x in range(4) if x % 2 == 0]`?
+  answers:
+    - text: "`[2, 6]`"
+      correct: false
+    - text: "`[0, 4]`"
+      correct: true
+    - text: "`[0, 2, 4, 6]`"
+      correct: false
+    - text: "`[0, 1, 2, 3]`"
+      correct: false
+  explanation: |
+    `range(4)` daje 0, 1, 2, 3, warunek zostawia 0 i 2, a po pomnożeniu otrzymujemy 0 i 4.
+    `[0, 2, 4, 6]` to wynik bez filtra, a `[2, 6]` to podwojone liczby nieparzyste.
+
+- id: 10
+  question: Jaka jest główna zaleta generatora nad listą?
+  answers:
+    - text: Pozwala na wielokrotne przejście po tych samych danych bez ponownego liczenia
+      correct: false
+    - text: Działa szybciej przy dostępie po indeksie
+      correct: false
+    - text: Automatycznie sortuje zwracane wartości
+      correct: false
+    - text: Produkuje wartości leniwie, bez trzymania ich w pamięci
+      correct: true
+  explanation: |
+    Generator nadaje się do dużych plików i strumieni, bo wartości powstają w trakcie iteracji.
+    Generator jest jednorazowy, nie wspiera indeksowania i nie sortuje danych.
+
+- id: 11
+  question: Co się stanie przy drugim przejściu pętlą `for` po tym samym obiekcie generatora?
+  answers:
+    - text: Pętla się nie wykona, bo generator jest wyczerpany
+      correct: true
+    - text: Generator zacznie od początku
+      correct: false
+    - text: Zostanie rzucony nieobsłużony wyjątek `StopIteration` poza pętlą
+      correct: false
+    - text: Pętla zwróci te same wartości z cache
+      correct: false
+  explanation: |
+    Iterator, w tym generator, przechodzi przez dane tylko raz - po wyczerpaniu kolejne `next()` od razu rzucają `StopIteration`, którą `for` obsługuje po cichu.
+    Generator się nie resetuje ani nie cache'uje wartości.
+
+- id: 12
+  question: Czym jest `*args` w definicji funkcji?
+  answers:
+    - text: Krotką z dodatkowymi argumentami pozycyjnymi
+      correct: true
+    - text: Listą wszystkich argumentów, także nazwanych
+      correct: false
+    - text: Wskaźnikiem na pierwszy argument funkcji
+      correct: false
+    - text: Słownikiem z dodatkowymi argumentami nazwanymi
+      correct: false
+  explanation: |
+    `*args` zbiera nadmiarowe argumenty pozycyjne w krotkę.
+    Argumenty nazwane zbiera `**kwargs` w słownik, a Python nie ma wskaźników.
+
+- id: 13
+  question: Jaki problem powoduje definicja `def add(item, items=[])`?
+  answers:
+    - text: Lista jest tworzona raz i współdzielona między wywołaniami
+      correct: true
+    - text: Lista jest kopiowana przy każdym wywołaniu, co spowalnia funkcję
+      correct: false
+    - text: Parametr items staje się tylko do odczytu
+      correct: false
+    - text: Kompilator zgłasza błąd składni
+      correct: false
+  explanation: |
+    Wartość domyślna jest obliczana raz, przy definicji funkcji, więc elementy kumulują się między wywołaniami.
+    Poprawny wzorzec to `items=None` i utworzenie listy w ciele funkcji.
+
+- id: 14
+  question: Co oznacza `/` w sygnaturze `def f(a, b, /, c)`?
+  answers:
+    - text: Parametry a i b są tylko pozycyjne
+      correct: true
+    - text: Funkcja zwraca wynik dzielenia a przez b
+      correct: false
+    - text: Parametr c jest opcjonalny
+      correct: false
+    - text: Parametry a i b są tylko nazwane
+      correct: false
+  explanation: |
+    Parametrów przed `/` nie można przekazać po nazwie - przydaje się to, by móc zmieniać ich nazwy bez łamania API.
+    Parametry tylko nazwane oznacza się `*`, a `/` nie ma związku z opcjonalnością ani dzieleniem.
+
+- id: 15
+  question: Kiedy PEP 8 odradza używanie lambdy?
+  answers:
+    - text: Gdy przypisuje się ją do zmiennej
+      correct: true
+    - text: Zawsze - lambdy są przestarzałe od Pythona 3.10
+      correct: false
+    - text: Gdy używa się jej w map lub filter
+      correct: false
+    - text: Gdy przekazuje się ją jako argument key do funkcji sorted
+      correct: false
+  explanation: |
+    `f = lambda` x: `x * 2` nie ma zalet nad `def f(x)`, a traci czytelną nazwę w tracebackach.
+    Lambda jako krótki argument funkcji jest idiomatyczna, a nie jest przestarzała.
+
+- id: 16
+  question: Czym jest dekorator w Pythonie?
+  answers:
+    - text: Słowem kluczowym oznaczającym funkcję jako publiczną dla innych modułów
+      correct: false
+    - text: Komentarzem dokumentującym funkcję
+      correct: false
+    - text: Klasą bazową, po której dziedziczą wszystkie funkcje
+      correct: false
+    - text: Funkcją, która przyjmuje funkcję i zwraca jej nową wersję
+      correct: true
+  explanation: |
+    `@dekorator` nad definicją to skrót `f = dekorator(f)` - stosuje się go do logowania, cache czy rejestracji tras.
+    Funkcje nie dziedziczą po dekoratorach, dokumentację zawiera docstring, a Python nie ma słowa kluczowego public.
+
+- id: 17
+  question: Po co w dekoratorze używa się `functools.wraps`?
+  answers:
+    - text: Aby dekorator mógł przyjmować argumenty
+      correct: false
+    - text: Aby dekorator działał asynchronicznie
+      correct: false
+    - text: Aby przyspieszyć wywołanie dekorowanej funkcji przez cache wyników
+      correct: false
+    - text: Aby zachować nazwę i docstring oryginału
+      correct: true
+  explanation: |
+    Bez wraps funkcja-opakowanie przesłania `__name__` i `__doc__` oryginału, co utrudnia debugowanie i dokumentację.
+    wraps nie wpływa na asynchroniczność, wydajność ani obsługę argumentów dekoratora.
+
+- id: 18
+  question: Które słowo kluczowe pozwala zmodyfikować zmienną funkcji otaczającej w funkcji zagnieżdżonej?
+  answers:
+    - text: outer
+      correct: false
+    - text: static
+      correct: false
+    - text: "`global`"
+      correct: false
+    - text: "`nonlocal`"
+      correct: true
+  explanation: |
+    `nonlocal` wskazuje zmienną z najbliższego zasięgu funkcji otaczającej.
+    `global` dotyczy zmiennej modułu, a static i outer nie są słowami kluczowymi Pythona.
+
+- id: 19
+  question: W jakiej kolejności Python wyszukuje nazwy (reguła LEGB)?
+  answers:
+    - text: Built-in, Global, Enclosing, Local
+      correct: false
+    - text: Local, Enclosing, Global, Built-in
+      correct: true
+    - text: Local, Global, Enclosing, Built-in
+      correct: false
+    - text: Global, Local, Built-in, Enclosing
+      correct: false
+  explanation: |
+    Najpierw zasięg lokalny, potem funkcji otaczających, modułu, a na końcu wbudowane nazwy jak `len` czy `print`.
+    Pozostałe kolejności nie odpowiadają regule LEGB.
+
+- id: 20
+  question: Do czego typowo służy `@classmethod`?
+  answers:
+    - text: Do wymuszenia nadpisania metody w podklasie
+      correct: false
+    - text: Do alternatywnych konstruktorów, np. `User.from_dict(data)`
+      correct: true
+    - text: Do oznaczania metod prywatnych klasy
+      correct: false
+    - text: Do metod, które nie mają dostępu ani do instancji, ani do klasy
+      correct: false
+  explanation: |
+    classmethod dostaje `cls`, więc tworzy instancję właściwej klasy, także w podklasach.
+    Metody bez dostępu do instancji i klasy to staticmethod, prywatność to konwencja `_nazwa`, a wymuszenie nadpisania daje `@abstractmethod`.
+
+- id: 21
+  question: Którą metodę wywołuje `print(obj)`, gdy klasa definiuje i `__str__`, i `__repr__`?
+  answers:
+    - text: "`__print__`"
+      correct: false
+    - text: "`__format__` jako pierwszą"
+      correct: false
+    - text: "`__str__`"
+      correct: true
+    - text: "`__repr__`"
+      correct: false
+  explanation: |
+    `print` i `str()` używają `__str__`, a `__repr__` jest zapasowe i służy do reprezentacji dla programisty.
+    `__format__` wywołuje `format()` i f-stringi, a `__print__` nie istnieje.
+
+- id: 22
+  question: Która metoda specjalna tworzy nową instancję obiektu, zanim zostanie zainicjalizowana?
+  answers:
+    - text: "`__call__`"
+      correct: false
+    - text: "`__init__`"
+      correct: false
+    - text: "`__new__`"
+      correct: true
+    - text: "`__create__`"
+      correct: false
+  explanation: |
+    `__new__` tworzy i zwraca obiekt, a `__init__` go inicjalizuje.
+    `__create__` nie istnieje, a `__call__` pozwala wywoływać instancję jak funkcję.
+
+- id: 23
+  question: Jakim algorytmem Python ustala kolejność szukania metod przy dziedziczeniu wielokrotnym?
+  answers:
+    - text: Kolejnością importów modułów
+      correct: false
+    - text: C3 linearization
+      correct: true
+    - text: Przeszukiwaniem w głąb bez eliminacji duplikatów
+      correct: false
+    - text: Alfabetyczną kolejnością nazw klas
+      correct: false
+  explanation: |
+    Wynik dostępny w `Klasa.__mro__` gwarantuje spójną kolejność, a `super()` wywołuje następną klasę w MRO.
+    Naiwny DFS był stosowany w starych klasach Pythona 2, a nazwy klas i importy nie mają wpływu.
+
+- id: 24
+  question: Co robi dekorator `@property`?
+  answers:
+    - text: Wymusza walidację typu na podstawie adnotacji
+      correct: false
+    - text: Tworzy właściwość statyczną współdzieloną przez wszystkie instancje
+      correct: false
+    - text: Zamienia atrybut w stałą, której nie można odczytać
+      correct: false
+    - text: Zamienia metodę w atrybut wyliczany przy dostępie
+      correct: true
+  explanation: |
+    `@property` pozwala dodać logikę odczytu (a z `@x.setter` - zapisu) bez zmiany API klasy.
+    Nie tworzy stałych ani atrybutów statycznych i nie waliduje typów z adnotacji.
+
+- id: 25
+  question: Co automatycznie generuje dekorator `@dataclass`?
+  answers:
+    - text: Metody `__init__`, `__repr__` i `__eq__` z adnotacji pól
+      correct: true
+    - text: Interfejs REST API dla klasy
+      correct: false
+    - text: Walidację typów wszystkich pól w czasie wykonania na podstawie adnotacji
+      correct: false
+    - text: Tabelę w bazie danych na podstawie pól klasy
+      correct: false
+  explanation: |
+    `@dataclass` usuwa powtarzalny kod - opcje frozen, order i slots dodają kolejne zachowania.
+    Tabel bazy nie tworzy (to rola ORM), nie waliduje typów (do tego jest np. Pydantic) i nie generuje API.
+
+- id: 26
+  question: Jak poprawnie ustawić pustą listę jako wartość domyślną pola dataclass?
+  answers:
+    - text: "items: `list = list`"
+      correct: false
+    - text: "items: `list = field(default_factory=list)`"
+      correct: true
+    - text: "`items: list = []`"
+      correct: false
+    - text: "items: `list = None`, a lista tworzy się sama"
+      correct: false
+  explanation: |
+    `default_factory` wywołuje `list()` dla każdej instancji, więc instancje nie współdzielą listy.
+    Mutowalna wartość domyślna `[]` jest odrzucana przez `dataclass`, `list` to sam typ, a `None` nie zamieni się automatycznie w listę.
+
+- id: 27
+  question: Co daje zdefiniowanie `__slots__` w klasie?
+  answers:
+    - text: Automatyczne serializowanie obiektów do JSON
+      correct: false
+    - text: Mniejsze zużycie pamięci i stały zestaw atrybutów
+      correct: true
+    - text: Bezpieczeństwo wątkowe dla wszystkich atrybutów instancji bez blokad
+      correct: false
+    - text: Możliwość dziedziczenia po wielu klasach naraz
+      correct: false
+  explanation: |
+    Zamiast dynamicznego `__dict__` instancja ma stały zestaw atrybutów - przydaje się przy milionach obiektów.
+    `__slots__` nie serializuje, nie synchronizuje dostępu i nie ma związku z dziedziczeniem wielokrotnym.
+
+- id: 28
+  question: Co się stanie przy próbie utworzenia instancji klasy ABC z niezaimplementowaną metodą `@abstractmethod`?
+  answers:
+    - text: Python automatycznie wygeneruje pustą implementację
+      correct: false
+    - text: Metoda abstrakcyjna zwróci `None`
+      correct: false
+    - text: Zostanie rzucony `TypeError`
+      correct: true
+    - text: Instancja zostanie utworzona, a błąd pojawi się przy wywołaniu metody
+      correct: false
+  explanation: |
+    ABC blokuje tworzenie instancji, dopóki wszystkie metody abstrakcyjne nie zostaną zaimplementowane.
+    Błąd nie jest odkładany do wywołania, a Python nie tworzy implementacji automatycznie.
+
+- id: 29
+  question: Co pozwala opisać `typing.Protocol`?
+  answers:
+    - text: Klasę bazową, po której muszą jawnie dziedziczyć wszystkie implementacje
+      correct: false
+    - text: Kolejność wywoływania metod obiektu
+      correct: false
+    - text: Kontrakt strukturalny oparty na metodach, bez dziedziczenia
+      correct: true
+    - text: Protokół sieciowy, np. HTTP lub TCP
+      correct: false
+  explanation: |
+    Protocol to formalny zapis duck typingu dla statycznych narzędzi jak mypy.
+    Nie dotyczy protokołów sieciowych, nie wymaga dziedziczenia (to cecha ABC) i nie opisuje kolejności wywołań.
+
+- id: 30
+  question: Co gwarantuje instrukcja `with open('plik.txt') as` f?
+  answers:
+    - text: Zamknięcie pliku po wyjściu z bloku, także przy wyjątku
+      correct: true
+    - text: Wczytanie całego pliku do pamięci przed wejściem do bloku
+      correct: false
+    - text: Otwarcie pliku w trybie tylko do odczytu na wyłączność
+      correct: false
+    - text: Automatyczne utworzenie kopii zapasowej pliku
+      correct: false
+  explanation: |
+    Context manager wywołuje `__exit__` niezależnie od tego, jak blok się zakończy.
+    `with` nie blokuje pliku na wyłączność, nie wczytuje go od razu i nie tworzy kopii.
+
+- id: 31
+  question: Jak najprościej napisać własny context manager?
+  answers:
+    - text: Funkcją z `@contextlib.contextmanager` i `yield`
+      correct: true
+    - text: Klasą z metodą `__call__` wywoływaną przy wejściu do bloku
+      correct: false
+    - text: Funkcją z dekoratorem `@property` i metodą setter
+      correct: false
+    - text: Klasą dziedziczącą po `Exception`
+      correct: false
+  explanation: |
+    Kod przed `yield` to wejście, a po `yield` (najlepiej w `finally`) - sprzątanie.
+    Alternatywą jest klasa z `__enter__` i `__exit__`, a dziedziczenie po `Exception`, `@property` czy `__call__` nie tworzą context managera.
+
+- id: 32
+  question: Kiedy wykonuje się blok `else` w konstrukcji `try/except/else`?
+  answers:
+    - text: Gdy wystąpił wyjątek, który nie pasuje do żadnego `except`
+      correct: false
+    - text: Zawsze, niezależnie od wyjątków
+      correct: false
+    - text: Gdy w bloku `try` nie wystąpił wyjątek
+      correct: true
+    - text: Tylko gdy blok `except` rzucił nowy wyjątek
+      correct: false
+  explanation: |
+    `else` oddziela kod, który ma się wykonać po sukcesie, od kodu chronionego przez `try`.
+    Kod wykonywany zawsze to `finally`, a nieobsłużony wyjątek po prostu propaguje się dalej.
+
+- id: 33
+  question: Do czego służy `raise NowyWyjątek(...) from err`?
+  answers:
+    - text: Do ponowienia operacji, która rzuciła err
+      correct: false
+    - text: Do zachowania łańcucha przyczyn wyjątków
+      correct: true
+    - text: Do rzucenia obu wyjątków jednocześnie w `ExceptionGroup`
+      correct: false
+    - text: Do zignorowania oryginalnego wyjątku bez śladu w tracebacku
+      correct: false
+  explanation: |
+    Traceback pokaże wtedy oba wyjątki z informacją, że jeden był bezpośrednią przyczyną drugiego.
+    Ukrycie przyczyny wymaga `from None`, `from` nie ponawia operacji, a wiele wyjątków naraz obsługuje `ExceptionGroup`.
+
+- id: 34
+  question: Którą zasadę stylu obsługi błędów preferuje Python?
+  answers:
+    - text: Zwracanie kodów błędów zamiast wyjątków
+      correct: false
+    - text: LBYL - zawsze sprawdź wszystkie warunki przed wykonaniem
+      correct: false
+    - text: Ignorowanie błędów i logowanie ich na końcu programu
+      correct: false
+    - text: EAFP - spróbuj wykonać operację i obsłuż wyjątek
+      correct: true
+  explanation: |
+    EAFP (Easier to Ask Forgiveness than Permission) jest idiomatyczny i unika wyścigów między sprawdzeniem a użyciem.
+    LBYL bywa stosowany, ale nie jest preferowany, a kody błędów i ignorowanie błędów nie są stylem Pythona.
+
+- id: 35
+  question: Co blokuje GIL w CPythonie?
+  answers:
+    - text: Równoległe wykonywanie bajtkodu przez wiele wątków
+      correct: true
+    - text: Używanie bibliotek napisanych w C
+      correct: false
+    - text: Operacje wejścia-wyjścia na plikach
+      correct: false
+    - text: Uruchamianie wielu procesów Pythona jednocześnie na jednej maszynie
+      correct: false
+  explanation: |
+    Tylko jeden wątek naraz wykonuje bajtkod, więc wątki nie przyspieszają obliczeń CPU-bound.
+    Procesy mają osobne GIL-e, GIL jest zwalniany przy I/O, a biblioteki w C (np. NumPy) mogą go zwalniać.
+
+- id: 36
+  question: Co wprowadził Python 3.13 w kontekście GIL?
+  answers:
+    - text: Automatyczne przenoszenie wątków do osobnych procesów
+      correct: false
+    - text: Eksperymentalną wersję free-threaded bez GIL
+      correct: true
+    - text: Całkowite usunięcie GIL ze standardowego CPythona
+      correct: false
+    - text: GIL dla każdego modułu osobno
+      correct: false
+  explanation: |
+    Wersja free-threaded jest osobnym buildem - w 3.14 stała się oficjalnie wspierana, ale domyślny build nadal ma GIL.
+    GIL per moduł i automatyczne przenoszenie wątków do procesów nie istnieją.
+
+- id: 37
+  question: Co wybrać do obliczeń CPU-bound w standardowym CPythonie?
+  answers:
+    - text: asyncio z wieloma korutynami
+      correct: false
+    - text: multiprocessing
+      correct: true
+    - text: "`time.sleep` między obliczeniami"
+      correct: false
+    - text: threading z wieloma wątkami roboczymi
+      correct: false
+  explanation: |
+    Osobne procesy mają własne interpretery i GIL-e, więc mogą liczyć równolegle na wielu rdzeniach.
+    Wątki i korutyny są ograniczone przez GIL przy obliczeniach, a sleep tylko spowalnia.
+
+- id: 38
+  question: Co się stanie, gdy w korutynie asyncio wywołasz `time.sleep(5)`?
+  answers:
+    - text: Zostanie rzucony wyjątek `RuntimeError`
+      correct: false
+    - text: Cała pętla zdarzeń zostanie zablokowana na 5 sekund
+      correct: true
+    - text: Tylko ta korutyna poczeka, a inne będą działać dalej
+      correct: false
+    - text: Python automatycznie zamieni to na `await asyncio.sleep(5)`
+      correct: false
+  explanation: |
+    `time.sleep` blokuje wątek, na którym działa pętla zdarzeń, więc żadna inna korutyna się nie wykona.
+    Nieblokujące oczekiwanie daje `await asyncio.sleep(5)`, a Python niczego nie podmienia automatycznie.
+
+- id: 39
+  question: Jak uruchomić kilka korutyn równolegle w nowoczesnym asyncio (3.11+)?
+  answers:
+    - text: "`asyncio.TaskGroup` lub `asyncio.gather`"
+      correct: true
+    - text: "`asyncio.run` osobno dla każdej korutyny"
+      correct: false
+    - text: "`threading.Thread` dla każdej korutyny"
+      correct: false
+    - text: Kolejnymi `await` w pętli `for`
+      correct: false
+  explanation: |
+    `TaskGroup` uruchamia zadania równolegle i poprawnie obsługuje błędy, a gather to starszy sposób.
+    Kolejne `await` wykonują się sekwencyjnie, wątki nie są potrzebne, a `asyncio.run` tworzy nową pętlę i nie służy do równoległości.
+
+- id: 40
+  question: Czy interpreter Pythona wymusza type hints w czasie wykonania?
+  answers:
+    - text: Tak - błędny typ argumentu zawsze rzuca `TypeError` przy wywołaniu funkcji
+      correct: false
+    - text: Nie - służą głównie do analizy statycznej i podpowiedzi IDE
+      correct: true
+    - text: Tak, od Pythona 3.12 domyślnie
+      correct: false
+    - text: Tak, ale tylko w trybie python -O
+      correct: false
+  explanation: |
+    `def f(x: int)` można wywołać z napisem - błąd wychwyci dopiero mypy lub pyright.
+    Biblioteki jak Pydantic czy FastAPI odczytują adnotacje i walidują dane same, ale nie robi tego interpreter.
+
+- id: 41
+  question: Jak zapisać typ "int albo None" w nowoczesnym Pythonie (3.10+)?
+  answers:
+    - text: "`int or None`"
+      correct: false
+    - text: "`int`?"
+      correct: false
+    - text: "`Optional[int]` jako jedyny poprawny zapis"
+      correct: false
+    - text: "`int | None`"
+      correct: true
+  explanation: |
+    Operator `|` dla typów wprowadził PEP 604 - `Optional[int]` nadal działa, ale nie jest jedynym zapisem.
+    `int or None` to wyrażenie logiczne zwracające `int`, a `int`? to składnia z C# czy TypeScriptu.
+
+- id: 42
+  question: Do czego służy Pydantic?
+  answers:
+    - text: Do zarządzania zależnościami projektu
+      correct: false
+    - text: Do statycznej analizy typów w edytorze, jako zamiennik mypy
+      correct: false
+    - text: Do testów jednostkowych z mockowaniem
+      correct: false
+    - text: Do walidacji danych na podstawie type hints
+      correct: true
+  explanation: |
+    Model dziedziczący po `BaseModel` waliduje i konwertuje dane przy tworzeniu - jest podstawą FastAPI.
+    Statyczną analizę robią mypy i pyright, zależności - uv czy Poetry, a testy - pytest.
+
+- id: 43
+  question: Co dzieje się z modułem przy jego drugim imporcie w tym samym procesie?
+  answers:
+    - text: Rzuca `ImportError`
+      correct: false
+    - text: Jest pobierany z cache `sys.modules`
+      correct: true
+    - text: Jest wykonywany ponownie od początku, a stare obiekty są usuwane
+      correct: false
+    - text: Tworzy nową, niezależną kopię modułu
+      correct: false
+  explanation: |
+    Kod modułu wykonuje się tylko przy pierwszym imporcie, a kolejne importy zwracają ten sam obiekt.
+    Ponowne wykonanie wymaga `importlib.reload`.
+
+- id: 44
+  question: Kiedy `__name__ == "__main__"` jest prawdą?
+  answers:
+    - text: Gdy plik jest uruchamiany bezpośrednio
+      correct: true
+    - text: Zawsze w pierwszym zaimportowanym module
+      correct: false
+    - text: Gdy plik znajduje się w głównym katalogu projektu obok `pyproject.toml`
+      correct: false
+    - text: Gdy plik nazywa się `main.py`
+      correct: false
+  explanation: |
+    Przy imporcie `__name__` zawiera nazwę modułu, więc warunek pozwala uruchomić `main()` tylko przy bezpośrednim wywołaniu.
+    Nazwa pliku i jego położenie nie mają znaczenia.
+
+- id: 45
+  question: Do czego służy python -m venv `.venv`?
+  answers:
+    - text: Do uruchomienia testów w wirtualnej maszynie
+      correct: false
+    - text: Do utworzenia izolowanego środowiska z pakietami projektu
+      correct: true
+    - text: Do instalacji najnowszej wersji Pythona
+      correct: false
+    - text: Do skompilowania projektu do pliku wykonywalnego w katalogu `.venv`
+      correct: false
+  explanation: |
+    Środowisko wirtualne zapobiega konfliktom wersji bibliotek między projektami.
+    Nie kompiluje projektu, nie instaluje Pythona i nie ma związku z maszynami wirtualnymi.
+
+- id: 46
+  question: Który plik jest nowoczesnym standardem opisu projektu i zależności w Pythonie?
+  answers:
+    - text: "`requirements.lock`"
+      correct: false
+    - text: "`setup.cfg` jako jedyny wspierany format"
+      correct: false
+    - text: "`pyproject.toml`"
+      correct: true
+    - text: "`package.json`"
+      correct: false
+  explanation: |
+    PEP 621 definiuje metadane projektu w `pyproject.toml`, z którego korzystają uv, Poetry, PDM i pip.
+    `setup.cfg` to starszy format, `package.json` należy do ekosystemu Node.js, a `requirements.lock` nie jest standardem.
+
+- id: 47
+  question: W jaki sposób CPython zwalnia pamięć?
+  answers:
+    - text: Wyłącznie przez algorytm mark-and-sweep, bez żadnego zliczania referencji
+      correct: false
+    - text: Przez zwalnianie całej pamięci dopiero przy zakończeniu programu
+      correct: false
+    - text: Przez zliczanie referencji i cykliczny garbage collector
+      correct: true
+    - text: Przez ręczne wywołanie `del` dla każdego obiektu
+      correct: false
+  explanation: |
+    Obiekt jest zwalniany, gdy licznik referencji spada do zera, a moduł gc usuwa cykle.
+    `del` usuwa tylko nazwę (referencję), a nie wymusza zwolnienia obiektu, a pamięć jest zwalniana na bieżąco.
+
+- id: 48
+  question: Jak utworzyć głęboką kopię zagnieżdżonej listy?
+  answers:
+    - text: "`copy.deepcopy(lista)`"
+      correct: true
+    - text: "`list(lista)`"
+      correct: false
+    - text: "`lista[:]`"
+      correct: false
+    - text: "`lista.copy()`"
+      correct: false
+  explanation: |
+    deepcopy rekurencyjnie kopiuje całą strukturę.
+    `copy()`, `[:]` i `list()` tworzą płytkie kopie, więc zagnieżdżone listy pozostają współdzielone.
+
+- id: 49
+  question: Co wypisze `print(f"{x=}")` dla `x = 5`?
+  answers:
+    - text: "`x = 5` z spacjami wokół znaku równości"
+      correct: false
+    - text: "`x=5`"
+      correct: true
+    - text: "5"
+      correct: false
+    - text: "`{x=}`"
+      correct: false
+  explanation: |
+    Składnia `z = w` f-stringu (od 3.8) wypisuje wyrażenie i jego wartość - przydaje się do debugowania.
+    Spacje pojawiłyby się tylko przy zapisie `f"{x = }"`.
+
+- id: 50
+  question: Co zwraca `"Python"[::-1]`?
+  answers:
+    - text: "\"n\""
+      correct: false
+    - text: "`\"nohtyP\"`"
+      correct: true
+    - text: "\"P\""
+      correct: false
+    - text: "\"Python\""
+      correct: false
+  explanation: |
+    Krok -1 przechodzi przez sekwencję od końca, odwracając ją.
+    "P" to `s[0]`, "n" to `s[-1]`, a niezmieniony string dałby `s[::1]`.
+
+- id: 51
+  question: Co robi `zip(a, b, strict=True)`, gdy listy mają różne długości?
+  answers:
+    - text: Ucina wynik do długości krótszej listy
+      correct: false
+    - text: Rzuca `ValueError`
+      correct: true
+    - text: Powtarza elementy krótszej listy
+      correct: false
+    - text: Uzupełnia krótszą listę wartościami `None`
+      correct: false
+  explanation: |
+    `strict=True` (od 3.10) wymaga równej długości iterowanych sekwencji.
+    Ucinanie do krótszej to domyślne zachowanie zip, a uzupełnianie `None` to `itertools.zip_longest`.
+
+- id: 52
+  question: Która klasa z modułu collections zlicza wystąpienia elementów?
+  answers:
+    - text: deque
+      correct: false
+    - text: "`OrderedDict`"
+      correct: false
+    - text: defaultdict
+      correct: false
+    - text: Counter
+      correct: true
+  explanation: |
+    `Counter(words).most_common(3)` zwraca trzy najczęstsze elementy.
+    defaultdict daje wartość domyślną dla brakujących kluczy, deque to kolejka dwustronna, a `OrderedDict` - słownik z dodatkowymi operacjami na kolejności.
+
+- id: 53
+  question: Co jest warunkiem poprawnego działania `itertools.groupby`?
+  answers:
+    - text: Dane muszą być posortowane po kluczu
+      correct: true
+    - text: Dane muszą być listą lub krotką, a nie generatorem
+      correct: false
+    - text: Klucze muszą być typu string
+      correct: false
+    - text: Grup może być maksymalnie 256
+      correct: false
+  explanation: |
+    groupby grupuje tylko kolejne elementy o tym samym kluczu, więc nieposortowane dane dadzą wiele małych grup.
+    Klucze mogą być dowolne, wejściem może być dowolny iterator, a liczba grup nie jest ograniczona.
+
+- id: 54
+  question: Do czego służy `functools.lru_cache`?
+  answers:
+    - text: Do przyspieszania importu modułów
+      correct: false
+    - text: Do cache'owania odpowiedzi HTTP w przeglądarce użytkownika
+      correct: false
+    - text: Do memoizacji wyników funkcji
+      correct: true
+    - text: Do przechowywania danych w Redis
+      correct: false
+  explanation: |
+    Dekorator zapamiętuje wyniki, więc np. rekurencyjne Fibonacci działa wtedy w czasie liniowym - argumenty muszą być hashowalne.
+    Nie ma związku z cache przeglądarki, Redisem ani importami.
+
+- id: 55
+  question: Co odróżnia `match/case` od prostego switcha?
+  answers:
+    - text: "`match/case` wymaga `break` na końcu każdego `case`"
+      correct: false
+    - text: "`match/case` jest szybszy, bo zawsze kompiluje się do tablicy skoków"
+      correct: false
+    - text: "`match/case` działa tylko z liczbami całkowitymi"
+      correct: false
+    - text: Dopasowanie strukturalne z wyciąganiem wartości
+      correct: true
+  explanation: |
+    `case {"type": "user", "id": id}`: dopasowuje kształt danych i od razu przypisuje id.
+    Działa z dowolnymi typami, nie wymaga `break` (nie ma przechodzenia do kolejnych `case`) i nie jest z definicji tablicą skoków.
+
+- id: 56
+  question: Do czego służy operator `:=`?
+  answers:
+    - text: Do deklaracji stałej, której nie można zmienić
+      correct: false
+    - text: Do przypisania wartości domyślnej, gdy zmienna ma wartość `None`
+      correct: false
+    - text: Do przypisania wartości w środku wyrażenia
+      correct: true
+    - text: Do porównania tożsamości obiektów
+      correct: false
+  explanation: |
+    Operator walrus (od 3.8) pozwala nie liczyć tej samej wartości dwa razy, np. w pętlach `while`.
+    Python nie ma stałych, tożsamość porównuje `is`, a wartości domyślne przypisuje się np. przez `x = x or` domyślna.
+
+- id: 57
+  question: Czym jest metaklasa?
+  answers:
+    - text: Klasą przechowującą metadane w bazie danych
+      correct: false
+    - text: Klasą klasy, która kontroluje tworzenie klas
+      correct: true
+    - text: Klasą bazową generowaną automatycznie przez dekorator dataclass
+      correct: false
+    - text: Klasą abstrakcyjną bez żadnych metod
+      correct: false
+  explanation: |
+    Domyślną metaklasą jest type, a własne metaklasy wykorzystuje np. Django ORM.
+    Klasa abstrakcyjna, metadane w bazie i klasy z dataclass to inne pojęcia - w większości przypadków zamiast metaklasy wystarczy `__init_subclass__`.
+
+- id: 58
+  question: Na jakim mechanizmie zbudowane są property, classmethod i staticmethod?
+  answers:
+    - text: Na metaklasach z modułu abc
+      correct: false
+    - text: Na słownikach `__slots__`
+      correct: false
+    - text: Na dekoratorach z modułu functools
+      correct: false
+    - text: Na deskryptorach
+      correct: true
+  explanation: |
+    Deskryptor przechwytuje dostęp do atrybutu klasy, co pozwala wielokrotnie używać logiki atrybutów.
+    Metaklasy kontrolują tworzenie klas, functools zawiera pomocnicze dekoratory, a `__slots__` ogranicza zestaw atrybutów.
+
+- id: 59
+  question: Jak w pytest wykonuje się sprzątanie po teście w `fixture`?
+  answers:
+    - text: Funkcją o nazwie `finally_` w pliku testu
+      correct: false
+    - text: Metodą `tearDown` w klasie `TestCase` jako jedynym sposobem
+      correct: false
+    - text: Kodem umieszczonym po `yield` w funkcji `fixture`
+      correct: true
+    - text: Dekoratorem `@pytest.cleanup`
+      correct: false
+  explanation: |
+    Fixture z `yield` przygotowuje zasób przed `yield`, a sprząta po nim (alternatywą jest `request.addfinalizer`).
+    `tearDown` to styl unittest, a `@pytest.cleanup` i `finally_` nie istnieją.
+
+- id: 60
+  question: Gdzie w pytest umieszcza się fixtures współdzielone przez wiele plików testów?
+  answers:
+    - text: W pliku `__init__.py` w katalogu testów
+      correct: false
+    - text: W pliku `pytest.ini`
+      correct: false
+    - text: W pliku `conftest.py`
+      correct: true
+    - text: W pliku `setup.py`
+      correct: false
+  explanation: |
+    pytest automatycznie wczytuje `conftest.py` i udostępnia zdefiniowane w nim fixtures testom w tym katalogu i podkatalogach.
+    `setup.py` służy do pakowania, `__init__.py` oznacza pakiet, a `pytest.ini` zawiera konfigurację, nie fixtures.
+
+- id: 61
+  question: Jaką konwencję nazewnictwa funkcji i zmiennych zaleca PEP 8?
+  answers:
+    - text: kebab-case
+      correct: false
+    - text: PascalCase
+      correct: false
+    - text: "`snake_case`"
+      correct: true
+    - text: camelCase
+      correct: false
+  explanation: |
+    Funkcje i zmienne zapisuje się jak `calculate_total`, a PascalCase stosuje się dla klas.
+    camelCase jest typowy dla JavaScriptu i Javy, a kebab-case nie jest poprawnym identyfikatorem w Pythonie.
+
+- id: 62
+  question: Który framework webowy Pythona opiera się na type hints i Pydantic oraz generuje dokumentację OpenAPI?
+  answers:
+    - text: Django
+      correct: false
+    - text: Flask
+      correct: false
+    - text: FastAPI
+      correct: true
+    - text: Tornado
+      correct: false
+  explanation: |
+    FastAPI waliduje dane na podstawie adnotacji i automatycznie udostępnia Swagger UI.
+    Django to pełny framework z ORM i panelem admina, Flask - lekki mikroframework, a Tornado - asynchroniczny serwer i framework bez tej integracji.
+
+- id: 63
+  question: Czym ASGI różni się od WSGI?
+  answers:
+    - text: ASGI jest asynchroniczny, a WSGI synchroniczny
+      correct: true
+    - text: ASGI to serwer, a WSGI to framework
+      correct: false
+    - text: WSGI jest nowszy i zastąpił ASGI
+      correct: false
+    - text: ASGI działa tylko z Django, a WSGI z każdym frameworkiem webowym
+      correct: false
+  explanation: |
+    ASGI (Uvicorn, Hypercorn) obsługuje `async/await` i długie połączenia, a WSGI (Gunicorn) - tylko synchroniczne żądania.
+    WSGI jest starszy, ASGI wspierają FastAPI, Starlette i Django, a oba to standardy interfejsu, a nie serwery czy frameworki.
+
+- id: 64
+  question: Jak bezpiecznie przekazać parametr do zapytania SQL w pyodbc?
+  answers:
+    - text: "`cursor.execute(f\"SELECT * FROM Users WHERE Id = {user_id}\")`"
+      correct: false
+    - text: "`cursor.execute(\"SELECT * FROM Users WHERE Id = \" + str(user_id))`"
+      correct: false
+    - text: "`cursor.execute(\"SELECT * FROM Users WHERE Id = %s\" % user_id)`"
+      correct: false
+    - text: "`cursor.execute(\"SELECT * FROM Users WHERE Id = ?\", user_id)`"
+      correct: true
+  explanation: |
+    Znak ? to parametr przekazywany osobno od tekstu zapytania, więc nie może zmienić jego struktury.
+    f-string, konkatenacja i formatowanie `%` doklejają wartość do SQL, co otwiera drogę do SQL Injection.
+
+- id: 65
+  question: Dlaczego operacje wektorowe w NumPy są szybsze niż pętle w Pythonie?
+  answers:
+    - text: Bo NumPy automatycznie uruchamia obliczenia na karcie graficznej
+      correct: false
+    - text: Bo NumPy wyłącza garbage collector na czas obliczeń
+      correct: false
+    - text: Bo pętle w Pythonie są ograniczone do 1000 iteracji na sekundę
+      correct: false
+    - text: Bo są zaimplementowane w C i działają na ciągłych blokach pamięci
+      correct: true
+  explanation: |
+    Pętla w Pythonie interpretuje każdą operację osobno, a NumPy wykonuje całą operację na tablicy w zoptymalizowanym kodzie natywnym.
+    NumPy nie używa domyślnie GPU, nie wyłącza GC, a pętle w Pythonie nie mają takiego limitu.
+
+- id: 66
+  question: Jakie kodowanie warto zawsze jawnie podawać przy otwieraniu plików tekstowych?
+  answers:
+    - text: Kodowania nie podaje się - Python zawsze używa UTF-8
+      correct: false
+    - text: "`encoding='ascii'`"
+      correct: false
+    - text: "`encoding='utf-8'`"
+      correct: true
+    - text: "`encoding='binary'`"
+      correct: false
+  explanation: |
+    Domyślne kodowanie zależy od systemu (na Windows bywało cp1250), więc jawne UTF-8 zapobiega błędom z polskimi znakami.
+    ASCII nie obsłuży polskich znaków, 'binary' nie jest kodowaniem, a domyślny UTF-8 we wszystkich systemach to dopiero kierunek zmian (tryb UTF-8 w nowszych wersjach).
+
+- id: 67
+  question: Co wprowadził Python 3.14?
+  answers:
+    - text: t-stringi i leniwie wyliczane adnotacje
+      correct: true
+    - text: Słowa kluczowe `async` i `await`
+      correct: false
+    - text: Instrukcję `match/case`
+      correct: false
+    - text: Operator walrus `:= i` f-stringi z debugowaniem
+      correct: false
+  explanation: |
+    t-stringi (PEP 750) dają dostęp do części szablonu przed złożeniem stringa, a adnotacje są wyliczane dopiero przy odczycie.
+    Walrus pojawił się w 3.8, f-stringi w 3.6, `match` w 3.10, a `async/await` w 3.5.
+
+- id: 68
+  question: Które narzędzie łączy funkcje lintera i formattera i zastępuje flake8 oraz isort?
+  answers:
+    - text: tox
+      correct: false
+    - text: mypy
+      correct: false
+    - text: pytest
+      correct: false
+    - text: Ruff
+      correct: true
+  explanation: |
+    Ruff napisany w Rust jest wielokrotnie szybszy od klasycznych narzędzi.
+    mypy sprawdza typy, pytest uruchamia testy, a tox testuje w wielu środowiskach.

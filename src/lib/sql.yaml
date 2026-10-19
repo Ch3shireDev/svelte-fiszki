@@ -9,105 +9,105 @@
 - id: 2
   text: Czym różnią się DDL, DML, DCL i TCL?
   answer: |
-    DDL (Data Definition Language) definiuje strukturę: CREATE, ALTER, DROP, TRUNCATE.
-    DML (Data Manipulation Language) operuje na danych: SELECT, INSERT, UPDATE, DELETE, MERGE.
-    DCL (Data Control Language) zarządza uprawnieniami: GRANT, REVOKE, DENY.
-    TCL (Transaction Control Language) steruje transakcjami: BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVE TRANSACTION.
+    DDL (Data Definition Language) definiuje strukturę: `CREATE`, `ALTER`, `DROP`, `TRUNCATE`.
+    DML (Data Manipulation Language) operuje na danych: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `MERGE`.
+    DCL (Data Control Language) zarządza uprawnieniami: `GRANT`, `REVOKE`, `DENY`.
+    TCL (Transaction Control Language) steruje transakcjami: `BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVE TRANSACTION`.
 
 - id: 3
-  text: Jaka jest logiczna kolejność wykonywania zapytania SELECT?
+  text: Jaka jest logiczna kolejność wykonywania zapytania `SELECT`?
   answer: |
-    FROM i JOIN, potem WHERE, GROUP BY, HAVING, SELECT, DISTINCT, ORDER BY, a na końcu TOP/OFFSET-FETCH.
-    Dlatego aliasu kolumny z SELECT nie można użyć w WHERE, ale można w ORDER BY.
+    `FROM` i `JOIN`, potem `WHERE`, `GROUP BY`, `HAVING`, `SELECT`, `DISTINCT`, `ORDER BY`, a na końcu TOP/OFFSET-FETCH.
+    Dlatego aliasu kolumny z `SELECT` nie można użyć w `WHERE`, ale można w `ORDER BY`.
     To kolejność logiczna - fizycznie optymalizator może wykonać operacje inaczej, zachowując ten sam wynik.
 
 - id: 4
-  text: Czym różnią się typy CHAR, VARCHAR, NCHAR i NVARCHAR?
+  text: Czym różnią się typy CHAR, `VARCHAR`, NCHAR i `NVARCHAR`?
   answer: |
-    CHAR(n) ma stałą długość i jest dopełniany spacjami, VARCHAR(n) ma zmienną długość.
-    NCHAR i NVARCHAR przechowują Unicode (UTF-16), więc obsługują polskie znaki niezależnie od collation, ale zajmują 2 bajty na znak.
-    VARCHAR(MAX) i NVARCHAR(MAX) pozwalają przechowywać do 2 GB.
-    Od SQL Server 2019 VARCHAR z collation UTF-8 (_UTF8) jest alternatywą dla NVARCHAR.
+    `CHAR(n)` ma stałą długość i jest dopełniany spacjami, `VARCHAR(n)` ma zmienną długość.
+    NCHAR i `NVARCHAR` przechowują Unicode (UTF-16), więc obsługują polskie znaki niezależnie od collation, ale zajmują 2 bajty na znak.
+    `VARCHAR(MAX)` i `NVARCHAR(MAX)` pozwalają przechowywać do 2 GB.
+    Od SQL Server 2019 `VARCHAR` z collation UTF-8 (`_UTF8`) jest alternatywą dla `NVARCHAR`.
 
 - id: 5
-  text: Czym różnią się typy DATETIME, DATETIME2, DATE i DATETIMEOFFSET?
+  text: Czym różnią się typy `DATETIME`, `DATETIME2`, DATE i DATETIMEOFFSET?
   answer: |
-    DATETIME to starszy typ z dokładnością około 3,33 ms i zakresem od 1753 roku.
-    DATETIME2 ma dokładność do 100 ns, większy zakres i jest zalecany dla nowych tabel.
+    `DATETIME` to starszy typ z dokładnością około 3,33 ms i zakresem od 1753 roku.
+    `DATETIME2` ma dokładność do 100 ns, większy zakres i jest zalecany dla nowych tabel.
     DATE przechowuje samą datę, a TIME samą godzinę.
     DATETIMEOFFSET zawiera dodatkowo przesunięcie strefy czasowej - przydaje się w systemach wielostrefowych.
 
 - id: 6
-  text: Czym jest NULL i jak się z nim pracuje?
+  text: Czym jest `NULL` i jak się z nim pracuje?
   answer: |
-    NULL oznacza brak wartości lub wartość nieznaną - to nie zero ani pusty string.
-    Porównanie z NULL przez = zwraca UNKNOWN, więc trzeba używać IS NULL i IS NOT NULL.
-    Funkcje ISNULL i COALESCE zastępują NULL wartością domyślną; COALESCE jest standardem ANSI i przyjmuje wiele argumentów.
-    Funkcje agregujące (poza COUNT(*)) ignorują NULL, co wpływa np. na AVG.
+    `NULL` oznacza brak wartości lub wartość nieznaną - to nie zero ani pusty string.
+    Porównanie z `NULL` przez `=` zwraca UNKNOWN, więc trzeba używać `IS NULL` i `IS NOT NULL`.
+    Funkcje `ISNULL` i `COALESCE` zastępują `NULL` wartością domyślną; `COALESCE` jest standardem ANSI i przyjmuje wiele argumentów.
+    Funkcje agregujące (poza `COUNT(*)`) ignorują `NULL`, co wpływa np. na `AVG`.
 
 - id: 7
-  text: Czym różni się COUNT(*) od COUNT(kolumna) i COUNT(DISTINCT kolumna)?
+  text: Czym różni się `COUNT(*)` od `COUNT(kolumna)` i `COUNT(DISTINCT kolumna)`?
   answer: |
-    COUNT(*) liczy wszystkie wiersze, łącznie z tymi, które mają NULL.
-    COUNT(kolumna) liczy tylko wiersze, w których kolumna nie jest NULL.
-    COUNT(DISTINCT kolumna) liczy unikalne wartości różne od NULL.
-    Dla dużych tabel istnieje też COUNT_BIG oraz APPROX_COUNT_DISTINCT do szybkiego przybliżenia.
+    `COUNT(*)` liczy wszystkie wiersze, łącznie z tymi, które mają `NULL`.
+    `COUNT(kolumna)` liczy tylko wiersze, w których kolumna nie jest `NULL`.
+    `COUNT(DISTINCT kolumna)` liczy unikalne wartości różne od `NULL`.
+    Dla dużych tabel istnieje też `COUNT_BIG` oraz `APPROX_COUNT_DISTINCT` do szybkiego przybliżenia.
 
 - id: 8
-  text: Czym różni się UNION od UNION ALL?
+  text: Czym różni się `UNION` od `UNION ALL`?
   answer: |
-    UNION łączy wyniki zapytań i usuwa duplikaty, co wymaga sortowania lub hashowania.
-    UNION ALL łączy wyniki bez usuwania duplikatów, więc jest szybszy.
-    Jeśli wiadomo, że duplikatów nie ma lub są dopuszczalne, należy używać UNION ALL.
+    `UNION` łączy wyniki zapytań i usuwa duplikaty, co wymaga sortowania lub hashowania.
+    `UNION ALL` łączy wyniki bez usuwania duplikatów, więc jest szybszy.
+    Jeśli wiadomo, że duplikatów nie ma lub są dopuszczalne, należy używać `UNION ALL`.
     Oba wymagają tej samej liczby kolumn o zgodnych typach.
 
 - id: 9
-  text: Czym różni się EXISTS od IN?
+  text: Czym różni się `EXISTS` od `IN`?
   answer: |
-    IN sprawdza, czy wartość znajduje się na liście lub w wyniku podzapytania.
-    EXISTS sprawdza, czy podzapytanie zwraca co najmniej jeden wiersz, i może przerwać szukanie po pierwszym trafieniu.
-    Przy NOT IN pułapką jest NULL w podzapytaniu - wtedy wynik jest pusty; NOT EXISTS nie ma tego problemu.
+    `IN` sprawdza, czy wartość znajduje się na liście lub w wyniku podzapytania.
+    `EXISTS` sprawdza, czy podzapytanie zwraca co najmniej jeden wiersz, i może przerwać szukanie po pierwszym trafieniu.
+    Przy `NOT IN` pułapką jest `NULL` w podzapytaniu - wtedy wynik jest pusty; `NOT EXISTS` nie ma tego problemu.
     Współczesny optymalizator często generuje dla obu podobne plany (semi join).
 
 - id: 10
   text: Czym są funkcje okna (window functions)?
   answer: |
-    Funkcje okna wykonują obliczenia na zbiorze wierszy powiązanych z bieżącym wierszem, nie redukując liczby wierszy jak GROUP BY.
-    Definiuje się je klauzulą OVER z PARTITION BY (grupowanie) i ORDER BY (kolejność).
-    Przykłady: ROW_NUMBER, RANK, DENSE_RANK, NTILE, LAG, LEAD, FIRST_VALUE, SUM() OVER.
+    Funkcje okna wykonują obliczenia na zbiorze wierszy powiązanych z bieżącym wierszem, nie redukując liczby wierszy jak `GROUP BY`.
+    Definiuje się je klauzulą `OVER` z `PARTITION BY` (grupowanie) i `ORDER BY` (kolejność).
+    Przykłady: `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `NTILE`, `LAG`, `LEAD`, `FIRST_VALUE`, `SUM() OVER`.
     Służą do rankingów, sum narastających, porównań z poprzednim wierszem i deduplikacji.
 
 - id: 11
-  text: Czym różnią się ROW_NUMBER, RANK i DENSE_RANK?
+  text: Czym różnią się `ROW_NUMBER`, `RANK` i `DENSE_RANK`?
   answer: |
-    ROW_NUMBER nadaje unikalne, kolejne numery, nawet przy remisach (1, 2, 3, 4).
-    RANK nadaje remisom ten sam numer i zostawia lukę (1, 2, 2, 4).
-    DENSE_RANK nadaje remisom ten sam numer bez luk (1, 2, 2, 3).
-    Do wyszukiwania N-tej wartości zwykle używa się DENSE_RANK, do deduplikacji - ROW_NUMBER.
+    `ROW_NUMBER` nadaje unikalne, kolejne numery, nawet przy remisach (1, 2, 3, 4).
+    `RANK` nadaje remisom ten sam numer i zostawia lukę (1, 2, 2, 4).
+    `DENSE_RANK` nadaje remisom ten sam numer bez luk (1, 2, 2, 3).
+    Do wyszukiwania N-tej wartości zwykle używa się `DENSE_RANK`, do deduplikacji - `ROW_NUMBER`.
 
 - id: 12
-  text: Do czego służą LAG i LEAD?
+  text: Do czego służą `LAG` i `LEAD`?
   answer: |
-    LAG zwraca wartość z poprzedniego wiersza, a LEAD z następnego, w ramach okna określonego przez OVER.
+    `LAG` zwraca wartość z poprzedniego wiersza, a `LEAD` z następnego, w ramach okna określonego przez `OVER`.
     Pozwalają porównać wiersz z sąsiednim bez self-joina.
-    Przykład: LAG(Amount, 1, 0) OVER (PARTITION BY CustomerId ORDER BY OrderDate) - poprzednie zamówienie klienta.
+    Przykład: `LAG(Amount, 1, 0)` `OVER` (`PARTITION BY CustomerId ORDER BY OrderDate`) - poprzednie zamówienie klienta.
     Typowe zastosowania to zmiany miesiąc do miesiąca i wykrywanie przerw w sekwencjach.
 
 - id: 13
   text: Jak obliczyć sumę narastającą (running total)?
   answer: |
-    Najprościej przez funkcję okna: SUM(Amount) OVER (ORDER BY OrderDate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW).
-    Jawne ROWS jest zalecane, bo domyślne RANGE jest wolniejsze i inaczej traktuje remisy.
-    PARTITION BY pozwala liczyć sumę osobno dla każdej grupy, np. klienta.
+    Najprościej przez funkcję okna: `SUM(Amount) OVER` (`ORDER BY OrderDate ROWS BETWEEN` UNBOUNDED PRECEDING `AND` CURRENT ROW).
+    Jawne `ROWS` jest zalecane, bo domyślne RANGE jest wolniejsze i inaczej traktuje remisy.
+    `PARTITION BY` pozwala liczyć sumę osobno dla każdej grupy, np. klienta.
     Dawniej robiło się to self-joinem lub kursorem, co było znacznie wolniejsze.
 
 - id: 14
-  text: Czym różni się tabela tymczasowa (#temp) od zmiennej tabelarycznej (@table)?
+  text: Czym różni się tabela tymczasowa (`#temp`) od zmiennej tabelarycznej (`@table`)?
   answer: |
-    Tabela #temp jest tworzona w tempdb, ma statystyki, może mieć indeksy i istnieje do końca sesji lub procedury.
-    Zmienna @table też żyje w tempdb, ale ma ograniczone statystyki i zakres batcha, a jej zmiany nie są wycofywane przez ROLLBACK.
-    Dla dużych zbiorów danych lepsza jest #temp, bo optymalizator ma lepsze szacunki.
-    ##globalna tabela tymczasowa jest widoczna dla wszystkich sesji.
+    Tabela `#temp` jest tworzona w tempdb, ma statystyki, może mieć indeksy i istnieje do końca sesji lub procedury.
+    Zmienna `@table` też żyje w tempdb, ale ma ograniczone statystyki i zakres batcha, a jej zmiany nie są wycofywane przez `ROLLBACK`.
+    Dla dużych zbiorów danych lepsza jest `#temp`, bo optymalizator ma lepsze szacunki.
+    Tabela tymczasowa `##globalna` jest widoczna dla wszystkich sesji.
 
 - id: 15
   text: Czym różni się CTE od tabeli tymczasowej?
@@ -120,77 +120,77 @@
 - id: 16
   text: Jak napisać rekurencyjne CTE?
   answer: |
-    Składa się z części kotwicy (anchor), UNION ALL i części rekurencyjnej odwołującej się do samego CTE.
-    Przykład: WITH Tree AS (SELECT Id, ParentId, 0 AS Lvl FROM Categories WHERE ParentId IS NULL UNION ALL SELECT c.Id, c.ParentId, t.Lvl + 1 FROM Categories c JOIN Tree t ON c.ParentId = t.Id) SELECT * FROM Tree;
-    Domyślny limit rekurencji to 100, zmienia się go przez OPTION (MAXRECURSION n).
+    Składa się z części kotwicy (anchor), `UNION ALL` i części rekurencyjnej odwołującej się do samego CTE.
+    Przykład: `WITH Tree AS (SELECT Id, ParentId, 0 AS Lvl FROM Categories WHERE ParentId IS NULL UNION ALL SELECT c.Id, c.ParentId, t.Lvl + 1 FROM Categories c JOIN Tree t ON c.ParentId = t.Id) SELECT * FROM Tree;`
+    Domyślny limit rekurencji to 100, zmienia się go przez `OPTION` (MAXRECURSION n).
     Stosuje się je do hierarchii, drzew kategorii i generowania sekwencji.
 
 - id: 17
-  text: Czym jest instrukcja MERGE?
+  text: Czym jest instrukcja `MERGE`?
   answer: |
-    MERGE wykonuje INSERT, UPDATE i DELETE w jednym poleceniu, porównując tabelę docelową ze źródłem.
-    Składa się z klauzul WHEN MATCHED, WHEN NOT MATCHED BY TARGET i WHEN NOT MATCHED BY SOURCE.
+    `MERGE` wykonuje `INSERT`, `UPDATE` i `DELETE` w jednym poleceniu, porównując tabelę docelową ze źródłem.
+    Składa się z klauzul `WHEN` MATCHED, `WHEN NOT` MATCHED `BY` TARGET i `WHEN NOT` MATCHED `BY` SOURCE.
     Przydaje się do synchronizacji danych i wzorca upsert.
-    Ma znane błędy i problemy ze współbieżnością, więc wielu ekspertów zaleca osobne UPDATE i INSERT z HOLDLOCK.
+    Ma znane błędy i problemy ze współbieżnością, więc wielu ekspertów zaleca osobne `UPDATE` i `INSERT` z `HOLDLOCK`.
 
 - id: 18
-  text: Do czego służy klauzula OUTPUT?
+  text: Do czego służy klauzula `OUTPUT`?
   answer: |
-    OUTPUT zwraca wiersze zmienione przez INSERT, UPDATE, DELETE lub MERGE.
+    `OUTPUT` zwraca wiersze zmienione przez `INSERT`, `UPDATE`, `DELETE` lub `MERGE`.
     Korzysta z wirtualnych tabel inserted i deleted.
-    Przykład: INSERT INTO Orders (...) OUTPUT inserted.Id VALUES (...); zwraca wygenerowane Id.
+    Przykład: `INSERT INTO Orders (...) OUTPUT inserted.Id VALUES` (...); zwraca wygenerowane Id.
     Wynik można zapisać do tabeli lub zmiennej tabelarycznej, np. na potrzeby audytu.
 
 - id: 19
-  text: Czym są CROSS APPLY i OUTER APPLY?
+  text: Czym są `CROSS APPLY` i `OUTER APPLY`?
   answer: |
-    APPLY wywołuje wyrażenie tabelaryczne (np. funkcję TVF lub podzapytanie) dla każdego wiersza z lewej strony.
-    CROSS APPLY działa jak INNER JOIN - pomija wiersze bez wyniku.
-    OUTER APPLY działa jak LEFT JOIN - zachowuje wiersze, uzupełniając NULL.
-    Typowe użycie: pobranie N ostatnich zamówień dla każdego klienta przez TOP w podzapytaniu.
+    `APPLY` wywołuje wyrażenie tabelaryczne (np. funkcję TVF lub podzapytanie) dla każdego wiersza z lewej strony.
+    `CROSS APPLY` działa jak `INNER JOIN` - pomija wiersze bez wyniku.
+    `OUTER APPLY` działa jak `LEFT JOIN` - zachowuje wiersze, uzupełniając `NULL`.
+    Typowe użycie: pobranie N ostatnich zamówień dla każdego klienta przez `TOP` w podzapytaniu.
 
 - id: 20
-  text: Czym jest PIVOT i UNPIVOT?
+  text: Czym jest `PIVOT` i `UNPIVOT`?
   answer: |
-    PIVOT zamienia wiersze na kolumny, agregując wartości, np. sprzedaż z miesiącami jako kolumnami.
-    UNPIVOT robi odwrotnie - zamienia kolumny na wiersze.
-    Lista kolumn w PIVOT musi być znana z góry, więc dynamiczny PIVOT wymaga dynamicznego SQL.
-    Często czytelniejszą alternatywą jest agregacja warunkowa: SUM(CASE WHEN Month = 1 THEN Amount END).
+    `PIVOT` zamienia wiersze na kolumny, agregując wartości, np. sprzedaż z miesiącami jako kolumnami.
+    `UNPIVOT` robi odwrotnie - zamienia kolumny na wiersze.
+    Lista kolumn w `PIVOT` musi być znana z góry, więc dynamiczny `PIVOT` wymaga dynamicznego SQL.
+    Często czytelniejszą alternatywą jest agregacja warunkowa: `SUM(CASE WHEN Month = 1 THEN Amount END)`.
 
 - id: 21
   text: Czym jest dynamiczny SQL i jak go bezpiecznie używać?
   answer: |
     Dynamiczny SQL to zapytanie budowane jako tekst i wykonywane w czasie działania.
-    Bezpiecznie wykonuje się go przez sp_executesql z parametrami, a nie przez EXEC z doklejaniem wartości.
+    Bezpiecznie wykonuje się go przez `sp_executesql` z parametrami, a nie przez `EXEC` z doklejaniem wartości.
     Nazwy obiektów (tabel, kolumn) nie mogą być parametrami, więc trzeba je walidować i opakować funkcją QUOTENAME.
-    sp_executesql pozwala też na ponowne użycie planów wykonania.
+    `sp_executesql` pozwala też na ponowne użycie planów wykonania.
 
 - id: 22
   text: Czym jest SQL Injection i jak się przed nim chronić?
   answer: |
     SQL Injection to atak polegający na wstrzyknięciu złośliwego kodu SQL przez dane wejściowe doklejane do zapytania.
     Chronią przed nim zapytania parametryzowane - w ADO.NET, Dapper czy EF Core.
-    W dynamicznym SQL należy używać sp_executesql z parametrami i QUOTENAME dla identyfikatorów.
+    W dynamicznym SQL należy używać `sp_executesql` z parametrami i QUOTENAME dla identyfikatorów.
     Dodatkowo stosuje się zasadę najmniejszych uprawnień dla konta aplikacji.
 
 - id: 23
   text: Jak działa obsługa błędów TRY...CATCH w T-SQL?
   answer: |
-    Kod umieszcza się w BEGIN TRY ... END TRY, a obsługę w BEGIN CATCH ... END CATCH.
-    W CATCH dostępne są funkcje ERROR_NUMBER, ERROR_MESSAGE, ERROR_LINE, ERROR_SEVERITY i ERROR_PROCEDURE.
-    Typowo w CATCH robi się IF @@TRANCOUNT > 0 ROLLBACK, a potem THROW, żeby przekazać błąd wyżej.
-    Warto ustawić SET XACT_ABORT ON, żeby błędy automatycznie wycofywały transakcję.
+    Kod umieszcza się w `BEGIN TRY ... END TRY`, a obsługę w `BEGIN CATCH ... END CATCH`.
+    W `CATCH` dostępne są funkcje `ERROR_NUMBER`, `ERROR_MESSAGE`, `ERROR_LINE`, `ERROR_SEVERITY` i `ERROR_PROCEDURE`.
+    Typowo w `CATCH` robi się IF `@@TRANCOUNT > 0 ROLLBACK`, a potem `THROW`, żeby przekazać błąd wyżej.
+    Warto ustawić `SET XACT_ABORT ON`, żeby błędy automatycznie wycofywały transakcję.
 
 - id: 24
-  text: Czym różni się THROW od RAISERROR?
+  text: Czym różni się `THROW` od `RAISERROR`?
   answer: |
-    THROW (od SQL Server 2012) jest prostszy, zawsze przerywa wykonanie i zachowuje oryginalny błąd, gdy użyty bez parametrów w CATCH.
-    RAISERROR jest starszy, pozwala ustawić severity i formatowanie komunikatu, ale nie zawsze przerywa batch.
-    THROW wymaga średnika przed sobą w poprzedniej instrukcji.
-    W nowym kodzie zaleca się THROW.
+    `THROW` (od SQL Server 2012) jest prostszy, zawsze przerywa wykonanie i zachowuje oryginalny błąd, gdy użyty bez parametrów w `CATCH`.
+    `RAISERROR` jest starszy, pozwala ustawić severity i formatowanie komunikatu, ale nie zawsze przerywa batch.
+    `THROW` wymaga średnika przed sobą w poprzedniej instrukcji.
+    W nowym kodzie zaleca się `THROW`.
 
 - id: 25
-  text: Czym jest SET XACT_ABORT ON?
+  text: Czym jest `SET XACT_ABORT ON`?
   answer: |
     Ustawienie powoduje, że przy błędzie w czasie wykonania cała transakcja jest automatycznie wycofywana.
     Bez niego niektóre błędy przerywają tylko instrukcję, a transakcja pozostaje otwarta.
@@ -200,10 +200,10 @@
 - id: 26
   text: Jakie są poziomy izolacji transakcji w SQL Server?
   answer: |
-    READ UNCOMMITTED - pozwala czytać niezatwierdzone dane (dirty reads); to samo daje NOLOCK.
-    READ COMMITTED - domyślny, czyta tylko zatwierdzone dane; READ COMMITTED SNAPSHOT (RCSI) robi to bez blokad dzięki wersjonowaniu.
-    REPEATABLE READ - zapewnia, że odczytane wiersze nie zmienią się do końca transakcji.
-    SERIALIZABLE - blokuje też zakresy, eliminując phantom reads; SNAPSHOT daje spójny obraz z początku transakcji.
+    `READ UNCOMMITTED` - pozwala czytać niezatwierdzone dane (dirty reads); to samo daje `NOLOCK`.
+    `READ COMMITTED` - domyślny, czyta tylko zatwierdzone dane; `READ COMMITTED SNAPSHOT` (RCSI) robi to bez blokad dzięki wersjonowaniu.
+    `REPEATABLE READ` - zapewnia, że odczytane wiersze nie zmienią się do końca transakcji.
+    `SERIALIZABLE` - blokuje też zakresy, eliminując phantom reads; `SNAPSHOT` daje spójny obraz z początku transakcji.
 
 - id: 27
   text: Czym są dirty read, non-repeatable read i phantom read?
@@ -214,18 +214,18 @@
     Kolejne poziomy izolacji eliminują te zjawiska kosztem współbieżności.
 
 - id: 28
-  text: Czym jest NOLOCK i dlaczego jest ryzykowny?
+  text: Czym jest `NOLOCK` i dlaczego jest ryzykowny?
   answer: |
-    WITH (NOLOCK) to podpowiedź równoważna READ UNCOMMITTED - zapytanie nie zakłada blokad współdzielonych.
+    `WITH (NOLOCK)` to podpowiedź równoważna `READ UNCOMMITTED` - zapytanie nie zakłada blokad współdzielonych.
     Może zwracać niezatwierdzone dane, pomijać wiersze lub odczytać je dwukrotnie przy podziałach stron.
     Bywa nadużywany jako "przyspieszacz", a prowadzi do błędnych wyników, np. w raportach finansowych.
-    Lepszym rozwiązaniem problemów z blokadami jest RCSI lub poziom SNAPSHOT.
+    Lepszym rozwiązaniem problemów z blokadami jest RCSI lub poziom `SNAPSHOT`.
 
 - id: 29
   text: Czym są blokady (locks) w SQL Server?
   answer: |
     Blokady chronią spójność danych przy równoległym dostępie.
-    Główne tryby to Shared (S) przy odczycie, Exclusive (X) przy zapisie, Update (U) i blokady intencji (IS, IX).
+    Główne tryby to Shared (S) przy odczycie, Exclusive (X) przy zapisie, Update (U) i blokady intencji (`IS`, IX).
     Blokady mogą dotyczyć wiersza, strony, partycji lub całej tabeli; przy dużej liczbie następuje eskalacja do tabeli.
     Długie transakcje trzymające blokady powodują blocking innych sesji.
 
@@ -235,14 +235,14 @@
     Deadlock to sytuacja, gdy dwie transakcje czekają na zasoby zablokowane nawzajem.
     SQL Server wykrywa go i wybiera ofiarę, której transakcja jest wycofywana z błędem 1205.
     Zapobiega się mu przez dostęp do tabel w tej samej kolejności, krótkie transakcje, odpowiednie indeksy i RCSI.
-    Aplikacja powinna umieć ponowić transakcję po błędzie 1205; graf deadlocka znajdziesz w sesji system_health.
+    Aplikacja powinna umieć ponowić transakcję po błędzie 1205; graf deadlocka znajdziesz w sesji `system_health`.
 
 - id: 31
   text: Czym różni się blocking od deadlocka?
   answer: |
     Blocking to zwykłe czekanie jednej sesji na zwolnienie blokady przez inną - kończy się, gdy blokująca transakcja się zakończy.
     Deadlock to cykl wzajemnego czekania, który nie rozwiąże się sam i wymaga interwencji silnika.
-    Blocking diagnozuje się przez sys.dm_exec_requests (kolumna blocking_session_id) lub sp_WhoIsActive.
+    Blocking diagnozuje się przez `sys.dm_exec_requests` (kolumna `blocking_session_id`) lub `sp_WhoIsActive`.
 
 - id: 32
   text: Czym jest plan wykonania (execution plan)?
@@ -266,14 +266,14 @@
     Key lookup występuje, gdy indeks nieklastrowany znajduje wiersze, ale brakuje w nim kolumn potrzebnych zapytaniu.
     SQL Server musi wtedy dla każdego wiersza sięgnąć do indeksu klastrowanego.
     Przy wielu wierszach to bardzo kosztowne.
-    Eliminuje się go przez dodanie brakujących kolumn do INCLUDE, tworząc indeks pokrywający.
+    Eliminuje się go przez dodanie brakujących kolumn do `INCLUDE`, tworząc indeks pokrywający.
 
 - id: 35
   text: Co oznacza, że warunek jest SARGable?
   answer: |
     SARGable (Search ARGument able) oznacza, że warunek pozwala użyć seeka na indeksie.
-    Funkcje na kolumnie łamią SARGowalność, np. WHERE YEAR(OrderDate) = 2026 - lepiej OrderDate >= '2026-01-01' AND OrderDate < '2027-01-01'.
-    Niejawne konwersje typów i LIKE '%tekst' również uniemożliwiają seek.
+    Funkcje na kolumnie łamią SARGowalność, np. `WHERE YEAR(OrderDate) = 2026` - lepiej `OrderDate >= '2026-01-01' AND OrderDate < '2027-01-01'`.
+    Niejawne konwersje typów i `LIKE` '%tekst' również uniemożliwiają seek.
     Kolumna powinna stać "goła" po jednej stronie operatora.
 
 - id: 36
@@ -282,14 +282,14 @@
     Statystyki opisują rozkład wartości w kolumnach (histogram, gęstość) i pozwalają optymalizatorowi szacować liczbę wierszy.
     Są tworzone automatycznie dla indeksów i kolumn używanych w warunkach.
     Nieaktualne statystyki prowadzą do złych planów.
-    Aktualizuje się je automatycznie (AUTO_UPDATE_STATISTICS) lub ręcznie przez UPDATE STATISTICS i zadania utrzymaniowe.
+    Aktualizuje się je automatycznie (`AUTO_UPDATE_STATISTICS`) lub ręcznie przez `UPDATE STATISTICS` i zadania utrzymaniowe.
 
 - id: 37
   text: Czym jest parameter sniffing?
   answer: |
     Przy pierwszym wykonaniu procedury SQL Server tworzy plan na podstawie przekazanych wartości parametrów i cache'uje go.
     Jeśli dane są nierównomiernie rozłożone, plan dobry dla jednej wartości może być fatalny dla innej.
-    Rozwiązania: OPTION (RECOMPILE), OPTIMIZE FOR, OPTIMIZE FOR UNKNOWN, lub podział na osobne procedury.
+    Rozwiązania: `OPTION` (`RECOMPILE`), OPTIMIZE `FOR`, OPTIMIZE `FOR` UNKNOWN, lub podział na osobne procedury.
     SQL Server 2022 wprowadził Parameter Sensitive Plan optimization, utrzymującą kilka planów.
 
 - id: 38
@@ -303,8 +303,8 @@
 - id: 39
   text: Czym jest indeks filtrowany?
   answer: |
-    To indeks nieklastrowany z klauzulą WHERE, obejmujący tylko część wierszy.
-    Przykład: CREATE INDEX IX_Orders_Open ON Orders(CreatedAt) WHERE Status = 'Open';
+    To indeks nieklastrowany z klauzulą `WHERE`, obejmujący tylko część wierszy.
+    Przykład: `CREATE INDEX IX_Orders_Open ON Orders(CreatedAt) WHERE Status = 'Open';`
     Jest mniejszy, tańszy w utrzymaniu i ma dokładniejsze statystyki.
     Dobrze sprawdza się dla rzadkich wartości i kolumn z wieloma NULL; parametryzowane zapytania nie zawsze go wykorzystują.
 
@@ -320,8 +320,8 @@
   text: Czym jest fragmentacja indeksu i jak ją naprawić?
   answer: |
     Fragmentacja oznacza, że logiczna kolejność stron indeksu nie odpowiada fizycznej lub strony są słabo wypełnione.
-    Wynika z podziałów stron przy INSERT i UPDATE, zwłaszcza przy losowych kluczach jak GUID.
-    Naprawia się ją przez ALTER INDEX REORGANIZE (lekkie, online) lub REBUILD (pełna przebudowa).
+    Wynika z podziałów stron przy `INSERT` i `UPDATE`, zwłaszcza przy losowych kluczach jak GUID.
+    Naprawia się ją przez `ALTER INDEX REORGANIZE` (lekkie, online) lub `REBUILD` (pełna przebudowa).
     Na nowoczesnych dyskach SSD fragmentacja ma mniejsze znaczenie niż aktualne statystyki.
 
 - id: 42
@@ -329,79 +329,79 @@
   answer: |
     Losowe GUID-y (NEWID) wstawiają wiersze w przypadkowe miejsca indeksu, powodując podziały stron i fragmentację.
     Zajmują 16 bajtów, a klucz klastrowany jest kopiowany do każdego indeksu nieklastrowanego.
-    Rozwiązania: NEWSEQUENTIALID, GUID-y sekwencyjne generowane w aplikacji (np. UUIDv7) lub INT/BIGINT IDENTITY jako klucz klastrowany.
+    Rozwiązania: NEWSEQUENTIALID, GUID-y sekwencyjne generowane w aplikacji (np. UUIDv7) lub `INT/BIGINT IDENTITY` jako klucz klastrowany.
     GUID może pozostać kluczem biznesowym z osobnym indeksem.
 
 - id: 43
   text: Czym jest FILLFACTOR?
   answer: |
     FILLFACTOR określa, w jakim procencie strony liści indeksu są wypełniane przy tworzeniu lub przebudowie.
-    Pozostawione wolne miejsce zmniejsza podziały stron przy późniejszych INSERT i UPDATE.
+    Pozostawione wolne miejsce zmniejsza podziały stron przy późniejszych `INSERT` i `UPDATE`.
     Domyślnie jest 100 (lub 0), czyli pełne strony.
     Niższa wartość (np. 90) pomaga przy losowych wstawieniach, ale zwiększa rozmiar indeksu i liczbę odczytów.
 
 - id: 44
   text: Czym są kolumny wyliczane (computed columns)?
   answer: |
-    To kolumny, których wartość wynika z wyrażenia na innych kolumnach, np. Total AS Quantity * Price.
+    To kolumny, których wartość wynika z wyrażenia na innych kolumnach, np. Total `AS` Quantity `*` Price.
     Domyślnie są wirtualne i liczone przy odczycie.
     Z opcją PERSISTED są fizycznie zapisywane i można je indeksować.
     Indeksowana kolumna wyliczana pozwala przyspieszyć zapytania filtrujące po wyrażeniu.
 
 - id: 45
-  text: Czym jest SEQUENCE i czym różni się od IDENTITY?
+  text: Czym jest `SEQUENCE` i czym różni się od `IDENTITY`?
   answer: |
-    SEQUENCE to niezależny obiekt bazy generujący kolejne liczby, pobierane przez NEXT VALUE FOR.
-    IDENTITY jest związane z jedną kolumną jednej tabeli.
-    SEQUENCE może być współdzielona przez wiele tabel, a wartość można pobrać przed INSERT.
-    Obie mogą mieć luki; SEQUENCE oferuje też cache i cykliczność.
+    `SEQUENCE` to niezależny obiekt bazy generujący kolejne liczby, pobierane przez `NEXT VALUE FOR`.
+    `IDENTITY` jest związane z jedną kolumną jednej tabeli.
+    `SEQUENCE` może być współdzielona przez wiele tabel, a wartość można pobrać przed `INSERT`.
+    Obie mogą mieć luki; `SEQUENCE` oferuje też cache i cykliczność.
 
 - id: 46
   text: Czym są tabele temporalne (system-versioned)?
   answer: |
     Tabele temporalne automatycznie przechowują pełną historię zmian wierszy w tabeli historii.
-    Każdy wiersz ma kolumny okresu ValidFrom i ValidTo zarządzane przez SQL Server.
-    Zapytania FOR SYSTEM_TIME AS OF '2026-01-01' zwracają stan danych z danej chwili.
+    Każdy wiersz ma kolumny okresu `ValidFrom` i `ValidTo` zarządzane przez SQL Server.
+    Zapytania `FOR SYSTEM_TIME AS OF` '2026-01-01' zwracają stan danych z danej chwili.
     Przydają się do audytu, odtwarzania danych i analizy zmian w czasie.
 
 - id: 47
   text: Jak pracować z JSON w SQL Server?
   answer: |
-    JSON przechowuje się w NVARCHAR (od SQL Server 2025 i w Azure SQL jest natywny typ json).
-    OPENJSON zamienia JSON na wiersze, JSON_VALUE wyciąga wartość skalarną, a JSON_QUERY obiekt lub tablicę.
-    FOR JSON PATH zamienia wynik zapytania na JSON.
-    ISJSON waliduje dane, a indeksować można kolumny wyliczane z JSON_VALUE.
+    JSON przechowuje się w `NVARCHAR` (od SQL Server 2025 i w Azure SQL jest natywny typ json).
+    OPENJSON zamienia JSON na wiersze, `JSON_VALUE` wyciąga wartość skalarną, a `JSON_QUERY` obiekt lub tablicę.
+    `FOR` JSON PATH zamienia wynik zapytania na JSON.
+    ISJSON waliduje dane, a indeksować można kolumny wyliczane z `JSON_VALUE`.
 
 - id: 48
-  text: Czym jest STRING_AGG i STRING_SPLIT?
+  text: Czym jest `STRING_AGG` i `STRING_SPLIT`?
   answer: |
-    STRING_AGG (od 2017) łączy wartości z wielu wierszy w jeden string z separatorem, np. STRING_AGG(Name, ', ').
-    Kolejność określa się przez WITHIN GROUP (ORDER BY ...).
-    STRING_SPLIT dzieli string na wiersze według separatora; od 2022 parametr enable_ordinal zwraca pozycję.
-    Zastąpiły dawne obejścia przez FOR XML PATH.
+    `STRING_AGG` (od 2017) łączy wartości z wielu wierszy w jeden string z separatorem, np. `STRING_AGG(Name, ', ')`.
+    Kolejność określa się przez `WITHIN GROUP (ORDER BY ...)`.
+    `STRING_SPLIT` dzieli string na wiersze według separatora; od 2022 parametr `enable_ordinal` zwraca pozycję.
+    Zastąpiły dawne obejścia przez `FOR XML PATH`.
 
 - id: 49
   text: Jak zaimplementować stronicowanie w SQL Server?
   answer: |
-    Standardowo przez ORDER BY ... OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY.
+    Standardowo przez `ORDER BY` ... `OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY`.
     Przy dużych offsetach jest wolne, bo serwer musi przejść przez wszystkie pomijane wiersze.
-    Wydajniejsze jest stronicowanie keyset (seek): WHERE Id > @lastId ORDER BY Id, korzystające z indeksu.
-    ORDER BY musi być deterministyczny, inaczej strony mogą się powtarzać.
+    Wydajniejsze jest stronicowanie keyset (seek): `WHERE Id > @lastId ORDER BY Id`, korzystające z indeksu.
+    `ORDER BY` musi być deterministyczny, inaczej strony mogą się powtarzać.
 
 - id: 50
   text: Jak usunąć duplikaty z tabeli?
   answer: |
-    Najczęściej przez CTE z ROW_NUMBER:
-    WITH d AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY Email ORDER BY Id) AS rn FROM Users) DELETE FROM d WHERE rn > 1;
-    PARTITION BY określa, co uznajemy za duplikat, a ORDER BY - który wiersz zostaje.
-    Potem warto dodać UNIQUE constraint, żeby duplikaty nie wróciły.
+    Najczęściej przez CTE z `ROW_NUMBER`:
+    `WITH d AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY Email ORDER BY Id) AS` rn `FROM Users) DELETE FROM d WHERE rn > 1;`
+    `PARTITION BY` określa, co uznajemy za duplikat, a `ORDER BY` - który wiersz zostaje.
+    Potem warto dodać `UNIQUE` constraint, żeby duplikaty nie wróciły.
 
 - id: 51
   text: Jak znaleźć brakujące wartości w sekwencji (gaps)?
   answer: |
-    Przez LEAD: SELECT Id + 1 AS GapStart, NextId - 1 AS GapEnd FROM (SELECT Id, LEAD(Id) OVER (ORDER BY Id) AS NextId FROM T) x WHERE NextId - Id > 1;
-    Alternatywnie przez porównanie z tabelą liczb lub GENERATE_SERIES (SQL Server 2022).
-    Odwrotny problem - grupowanie ciągłych zakresów (islands) - rozwiązuje się różnicą Id - ROW_NUMBER().
+    Przez `LEAD`: `SELECT Id + 1 AS GapStart, NextId - 1 AS GapEnd FROM (SELECT Id, LEAD(Id) OVER (ORDER BY Id) AS NextId FROM T) x WHERE NextId - Id > 1;`
+    Alternatywnie przez porównanie z tabelą liczb lub `GENERATE_SERIES` (SQL Server 2022).
+    Odwrotny problem - grupowanie ciągłych zakresów (islands) - rozwiązuje się różnicą Id - `ROW_NUMBER()`.
 
 - id: 52
   text: Czym jest normalizacja i po co się ją stosuje?
@@ -412,10 +412,10 @@
     W systemach analitycznych świadomie się ją łamie (denormalizacja) dla wydajności odczytu.
 
 - id: 53
-  text: Czym jest klucz obcy i co oznaczają opcje ON DELETE/ON UPDATE?
+  text: Czym jest klucz obcy i co oznaczają opcje `ON DELETE/ON UPDATE`?
   answer: |
     Klucz obcy wymusza, by wartość w kolumnie istniała w kluczu głównym lub unikalnym innej tabeli.
-    ON DELETE CASCADE usuwa powiązane wiersze, SET NULL i SET DEFAULT ustawiają wartość, NO ACTION (domyślne) blokuje operację.
+    `ON DELETE CASCADE` usuwa powiązane wiersze, `SET NULL` i `SET DEFAULT` ustawiają wartość, `NO ACTION` (domyślne) blokuje operację.
     Klucze obce warto indeksować, bo SQL Server nie robi tego automatycznie, a są używane w JOIN-ach i przy usuwaniu.
     Kaskady trzeba stosować ostrożnie, żeby przypadkiem nie usunąć dużej ilości danych.
 
@@ -423,22 +423,22 @@
   text: Czym są klucze naturalne i zastępcze (surrogate)?
   answer: |
     Klucz naturalny pochodzi z danych biznesowych, np. NIP, PESEL, numer faktury.
-    Klucz zastępczy to sztuczny identyfikator bez znaczenia biznesowego, np. INT IDENTITY lub GUID.
+    Klucz zastępczy to sztuczny identyfikator bez znaczenia biznesowego, np. `INT IDENTITY` lub GUID.
     Klucze zastępcze są stabilne, krótkie i nie zmieniają się razem z regułami biznesowymi.
-    Typowo stosuje się klucz zastępczy jako PK i UNIQUE constraint na kluczu naturalnym.
+    Typowo stosuje się klucz zastępczy jako PK i `UNIQUE` constraint na kluczu naturalnym.
 
 - id: 55
   text: Czym jest widok indeksowany?
   answer: |
     To widok z unikalnym indeksem klastrowanym, którego wynik jest fizycznie przechowywany i aktualizowany przy zmianach danych.
-    Musi być utworzony z WITH SCHEMABINDING i spełniać szereg ograniczeń (np. brak OUTER JOIN, COUNT_BIG przy GROUP BY).
+    Musi być utworzony z `WITH SCHEMABINDING` i spełniać szereg ograniczeń (np. brak `OUTER JOIN`, `COUNT_BIG` przy `GROUP BY`).
     Przyspiesza kosztowne agregacje i złączenia.
     Spowalnia zapisy do tabel bazowych, bo widok musi być na bieżąco utrzymywany.
 
 - id: 56
-  text: Czym jest SCHEMABINDING?
+  text: Czym jest `SCHEMABINDING`?
   answer: |
-    WITH SCHEMABINDING wiąże widok lub funkcję ze schematem używanych obiektów.
+    `WITH SCHEMABINDING` wiąże widok lub funkcję ze schematem używanych obiektów.
     Nie można wtedy zmienić ani usunąć tabel i kolumn, od których obiekt zależy, bez wcześniejszej zmiany obiektu.
     Jest wymagany dla widoków indeksowanych.
     Dla funkcji skalarnych może poprawić wydajność, bo optymalizator wie, że funkcja nie odczytuje danych.
@@ -449,12 +449,12 @@
     Klasyczne skalarne UDF są wykonywane wiersz po wierszu i blokują równoległość zapytania.
     Optymalizator nie widział ich kosztu, przez co plany były złe.
     SQL Server 2019 wprowadził scalar UDF inlining, który w wielu przypadkach wkleja funkcję do zapytania.
-    Alternatywą jest inline table-valued function z CROSS APPLY.
+    Alternatywą jest inline table-valued function z `CROSS APPLY`.
 
 - id: 58
   text: Czym jest tempdb i dlaczego jest ważna?
   answer: |
-    tempdb to systemowa baza na obiekty tymczasowe: tabele #temp, zmienne tabelaryczne, sortowania, hash joiny i wersje wierszy (RCSI, SNAPSHOT).
+    tempdb to systemowa baza na obiekty tymczasowe: tabele `#temp`, zmienne tabelaryczne, sortowania, hash joiny i wersje wierszy (RCSI, `SNAPSHOT`).
     Jest odtwarzana przy każdym restarcie serwera.
     Jest współdzielona przez wszystkie bazy, więc łatwo staje się wąskim gardłem.
     Dobre praktyki to kilka plików danych o równym rozmiarze i szybki dysk.
@@ -463,16 +463,16 @@
   text: Jakie są modele odzyskiwania (recovery models)?
   answer: |
     SIMPLE - log transakcji jest automatycznie czyszczony; można odtworzyć tylko do ostatniej kopii pełnej lub różnicowej.
-    FULL - wszystkie operacje są logowane; wymaga kopii logu i pozwala na odtworzenie do punktu w czasie.
-    BULK_LOGGED - jak FULL, ale operacje masowe są minimalnie logowane.
-    Produkcyjne bazy z danymi biznesowymi zwykle mają model FULL.
+    `FULL` - wszystkie operacje są logowane; wymaga kopii logu i pozwala na odtworzenie do punktu w czasie.
+    `BULK_LOGGED` - jak `FULL`, ale operacje masowe są minimalnie logowane.
+    Produkcyjne bazy z danymi biznesowymi zwykle mają model `FULL`.
 
 - id: 60
   text: Jakie są rodzaje kopii zapasowych w SQL Server?
   answer: |
     Pełna (full) - cała baza.
     Różnicowa (differential) - zmiany od ostatniej kopii pełnej.
-    Kopia logu transakcji (log) - umożliwia odtworzenie do punktu w czasie w modelu FULL.
+    Kopia logu transakcji (log) - umożliwia odtworzenie do punktu w czasie w modelu `FULL`.
     Do tego kopie plików i grup plików oraz copy-only, które nie zaburzają łańcucha kopii; backupy trzeba regularnie testować przez odtworzenie.
 
 - id: 61
@@ -480,7 +480,7 @@
   answer: |
     Log transakcji zapisuje wszystkie modyfikacje bazy przed ich zapisaniem do plików danych (write-ahead logging).
     Umożliwia wycofanie transakcji, odtworzenie po awarii i odtwarzanie do punktu w czasie.
-    W modelu FULL rośnie, dopóki nie zostanie wykonana kopia logu.
+    W modelu `FULL` rośnie, dopóki nie zostanie wykonana kopia logu.
     Rosnący bez końca log to typowy objaw braku kopii logu lub długo otwartej transakcji.
 
 - id: 62
@@ -503,22 +503,22 @@
   text: Czym są loginy, użytkownicy i role?
   answer: |
     Login to tożsamość na poziomie serwera (instancji), user to tożsamość w konkretnej bazie powiązana z loginem.
-    Role serwerowe (np. sysadmin) i bazodanowe (np. db_datareader, db_datawriter, db_owner) grupują uprawnienia.
-    Można tworzyć własne role i nadawać im uprawnienia GRANT/DENY.
+    Role serwerowe (np. sysadmin) i bazodanowe (np. `db_datareader`, `db_datawriter`, `db_owner`) grupują uprawnienia.
+    Można tworzyć własne role i nadawać im uprawnienia `GRANT/DENY`.
     W Azure SQL istnieją też użytkownicy contained, bez loginu na serwerze.
 
 - id: 65
   text: Czym jest Row-Level Security?
   answer: |
     RLS ogranicza, które wiersze widzi i modyfikuje użytkownik, na podstawie funkcji predykatu.
-    Definiuje się funkcję inline TVF i politykę bezpieczeństwa (CREATE SECURITY POLICY) z predykatami filtrującymi i blokującymi.
+    Definiuje się funkcję inline TVF i politykę bezpieczeństwa (`CREATE SECURITY POLICY`) z predykatami filtrującymi i blokującymi.
     Przydaje się w systemach multi-tenant, gdzie każdy tenant widzi tylko swoje dane.
-    Kontekst użytkownika można przekazać przez SESSION_CONTEXT.
+    Kontekst użytkownika można przekazać przez `SESSION_CONTEXT`.
 
 - id: 66
   text: Czym są Dynamic Data Masking i Always Encrypted?
   answer: |
-    Dynamic Data Masking maskuje wartości w wynikach zapytań dla nieuprzywilejowanych użytkowników, np. xxxx@domena.pl; dane w bazie nie są szyfrowane.
+    Dynamic Data Masking maskuje wartości w wynikach zapytań dla nieuprzywilejowanych użytkowników, np. `xxxx@domena.pl;` dane w bazie nie są szyfrowane.
     Always Encrypted szyfruje kolumny po stronie klienta - serwer i DBA nigdy nie widzą jawnych danych.
     Transparent Data Encryption (TDE) szyfruje pliki bazy i backupy na dysku.
     Te mechanizmy chronią przed różnymi zagrożeniami i często się je łączy.
@@ -527,24 +527,24 @@
   text: Czym są Dynamic Management Views (DMV)?
   answer: |
     DMV to systemowe widoki i funkcje udostępniające stan serwera i wydajność.
-    Przykłady: sys.dm_exec_requests (bieżące zapytania), sys.dm_exec_query_stats (statystyki zapytań), sys.dm_os_wait_stats (oczekiwania).
-    sys.dm_db_index_usage_stats i sys.dm_db_missing_index_details pomagają ocenić indeksy.
+    Przykłady: `sys.dm_exec_requests` (bieżące zapytania), `sys.dm_exec_query_stats` (statystyki zapytań), `sys.dm_os_wait_stats` (oczekiwania).
+    `sys.dm_db_index_usage_stats` i `sys.dm_db_missing_index_details` pomagają ocenić indeksy.
     Są podstawowym narzędziem diagnostyki wydajności.
 
 - id: 68
   text: Czym są wait stats i dlaczego są ważne?
   answer: |
     Wait stats pokazują, na co SQL Server czeka podczas wykonywania zapytań.
-    Typowe oczekiwania: PAGEIOLATCH (odczyt z dysku), LCK_M (blokady), CXPACKET/CXCONSUMER (równoległość), WRITELOG (zapis logu).
+    Typowe oczekiwania: PAGEIOLATCH (odczyt z dysku), `LCK_M` (blokady), CXPACKET/CXCONSUMER (równoległość), WRITELOG (zapis logu).
     Analiza dominujących oczekiwań wskazuje wąskie gardło: dysk, blokady, CPU czy pamięć.
-    Odczytuje się je z sys.dm_os_wait_stats, a dla zapytań z Query Store.
+    Odczytuje się je z `sys.dm_os_wait_stats`, a dla zapytań z Query Store.
 
 - id: 69
   text: Jak znaleźć najbardziej kosztowne zapytania?
   answer: |
     Przez Query Store - raporty Top Resource Consuming Queries.
-    Przez sys.dm_exec_query_stats połączone z sys.dm_exec_sql_text i sys.dm_exec_query_plan, sortując po CPU lub odczytach.
-    Narzędzia społeczności jak sp_BlitzCache i sp_WhoIsActive znacznie ułatwiają analizę.
+    Przez `sys.dm_exec_query_stats` połączone z `sys.dm_exec_sql_text` i `sys.dm_exec_query_plan`, sortując po CPU lub odczytach.
+    Narzędzia społeczności jak `sp_BlitzCache` i `sp_WhoIsActive` znacznie ułatwiają analizę.
     Extended Events pozwalają śledzić zapytania przekraczające zadany czas.
 
 - id: 70
@@ -553,7 +553,7 @@
     Extended Events to lekki mechanizm śledzenia zdarzeń w SQL Server, następca SQL Profilera.
     Pozwalają przechwytywać np. wolne zapytania, deadlocki, błędy czy rekompilacje.
     Sesje definiuje się w T-SQL lub SSMS, a dane zapisuje do pliku lub bufora pamięci.
-    Domyślna sesja system_health zbiera m.in. grafy deadlocków.
+    Domyślna sesja `system_health` zbiera `m.in`. grafy deadlocków.
 
 - id: 71
   text: Czym są funkcje deterministyczne i niedeterministyczne?
@@ -563,10 +563,10 @@
     Indeksować można tylko kolumny wyliczane i widoki oparte na funkcjach deterministycznych.
 
 - id: 72
-  text: Czym różni się DELETE z WHERE na dużej tabeli od usuwania w paczkach?
+  text: Czym różni się `DELETE` z `WHERE` na dużej tabeli od usuwania w paczkach?
   answer: |
-    Jeden wielki DELETE tworzy długą transakcję, rozdmuchuje log, trzyma blokady i może eskalować je do całej tabeli.
-    Usuwanie w paczkach (np. DELETE TOP (5000) ... w pętli) skraca transakcje i ogranicza blokady.
+    Jeden wielki `DELETE` tworzy długą transakcję, rozdmuchuje log, trzyma blokady i może eskalować je do całej tabeli.
+    Usuwanie w paczkach (np. `DELETE TOP (5000) ...` w pętli) skraca transakcje i ogranicza blokady.
     Pomiędzy paczkami log może być czyszczony lub kopiowany.
     Przy usuwaniu całych zakresów danych najszybsze jest przełączanie lub obcinanie partycji.
 
@@ -575,24 +575,24 @@
   answer: |
     Partycjonowanie dzieli dużą tabelę na części według wartości kolumny, np. daty, przy zachowaniu jednej logicznej tabeli.
     Definiuje się je funkcją partycjonującą i schematem partycjonowania.
-    Ułatwia zarządzanie danymi - archiwizację przez SWITCH i TRUNCATE ... WITH (PARTITIONS).
+    Ułatwia zarządzanie danymi - archiwizację przez SWITCH i `TRUNCATE ... WITH (PARTITIONS)`.
     Nie jest automatycznym przyspieszaczem zapytań - pomaga tylko, gdy zapytania filtrują po kluczu partycjonowania.
 
 - id: 74
-  text: Czym jest BULK INSERT i bcp?
+  text: Czym jest BULK `INSERT` i bcp?
   answer: |
-    BULK INSERT to polecenie T-SQL do szybkiego ładowania danych z pliku (np. CSV) do tabeli.
+    BULK `INSERT` to polecenie T-SQL do szybkiego ładowania danych z pliku (np. CSV) do tabeli.
     bcp to narzędzie wiersza poleceń do importu i eksportu danych masowych.
-    W .NET odpowiednikiem jest SqlBulkCopy.
+    W .NET odpowiednikiem jest `SqlBulkCopy`.
     Przy odpowiednich warunkach operacje są minimalnie logowane, co znacznie przyspiesza ładowanie.
 
 - id: 75
   text: Czym jest table-valued parameter (TVP)?
   answer: |
     TVP pozwala przekazać do procedury całą tabelę jako parametr.
-    Najpierw definiuje się typ: CREATE TYPE dbo.IdList AS TABLE (Id INT PRIMARY KEY);
-    Parametr musi być READONLY.
-    Z .NET przekazuje się go jako DataTable lub IEnumerable<SqlDataRecord> - to wydajna alternatywa dla wielu pojedynczych wywołań.
+    Najpierw definiuje się typ: `CREATE TYPE dbo.IdList AS TABLE (Id INT PRIMARY KEY);`
+    Parametr musi być `READONLY`.
+    Z .NET przekazuje się go jako `DataTable` lub `IEnumerable<SqlDataRecord>` - to wydajna alternatywa dla wielu pojedynczych wywołań.
 
 - id: 76
   text: Jaka jest różnica między Azure SQL Database, Managed Instance a SQL Server na VM?
@@ -606,6 +606,6 @@
   text: Jak wersjonować schemat bazy danych w CI/CD?
   answer: |
     Migracje skryptowe - EF Core Migrations, DbUp, Flyway lub Liquibase - kolejno numerowane skrypty wykonywane w pipeline.
-    Podejście stanowe - projekt SSDT (.sqlproj) i DACPAC, gdzie narzędzie generuje różnicę między stanem docelowym a bazą.
+    Podejście stanowe - projekt SSDT (`.sqlproj`) i DACPAC, gdzie narzędzie generuje różnicę między stanem docelowym a bazą.
     Skrypty powinny być idempotentne i przechowywane w repozytorium razem z kodem.
     Zmiany łamiące kompatybilność wdraża się etapami (expand/contract), żeby stara i nowa wersja aplikacji działały równocześnie.

@@ -1,0 +1,1188 @@
+- id: 1
+  question: Który komponent SQL Server odpowiada za uruchamianie zadań harmonogramowanych, np. kopii zapasowych?
+  answers:
+    - text: SQL Server Reporting Services
+      correct: false
+    - text: Database Engine Tuning Advisor
+      correct: false
+    - text: SQL Server Integration Services
+      correct: false
+    - text: SQL Server Agent
+      correct: true
+  explanation: |
+    SQL Server Agent uruchamia joby według harmonogramu: kopie zapasowe, utrzymanie indeksów, skrypty.
+    SSIS służy do procesów ETL, SSRS do raportów, a Tuning Advisor podpowiada indeksy - żaden z nich nie jest harmonogramem zadań.
+    Uwaga: Azure SQL Database nie ma SQL Server Agent (ma go Managed Instance).
+
+- id: 2
+  question: Do której kategorii poleceń SQL należy `GRANT`?
+  answers:
+    - text: DDL (Data Definition Language)
+      correct: false
+    - text: DML (Data Manipulation Language)
+      correct: false
+    - text: TCL (Transaction Control Language)
+      correct: false
+    - text: DCL (Data Control Language)
+      correct: true
+  explanation: |
+    `GRANT`, `REVOKE` i `DENY` zarządzają uprawnieniami, więc należą do DCL.
+    DDL obejmuje `CREATE`, `ALTER` i `DROP`, DML - `SELECT`, `INSERT`, `UPDATE` i `DELETE`, a TCL - `BEGIN TRANSACTION, COMMIT` i `ROLLBACK`.
+
+- id: 3
+  question: Dlaczego aliasu kolumny zdefiniowanego w `SELECT` nie można użyć w klauzuli `WHERE`?
+  answers:
+    - text: Bo SQL Server usuwa aliasy przed wykonaniem zapytania w celu optymalizacji
+      correct: false
+    - text: Bo `WHERE` jest przetwarzane przed `SELECT`, więc alias jeszcze nie istnieje
+      correct: true
+    - text: Bo aliasy działają wyłącznie w podzapytaniach i CTE, a nie w głównym zapytaniu
+      correct: false
+    - text: Bo `WHERE` obsługuje tylko kolumny z indeksem, a alias nie jest indeksowany
+      correct: false
+  explanation: |
+    Logiczna kolejność to `FROM`, `WHERE`, `GROUP BY`, `HAVING`, `SELECT`, `ORDER BY` - alias powstaje w `SELECT`, więc można go użyć dopiero w `ORDER BY`.
+    Aliasy działają w głównym zapytaniu, `WHERE` nie wymaga indeksów, a usuwanie aliasów przez optymalizator to fikcja.
+
+- id: 4
+  question: Który typ najlepiej przechowa tekst z polskimi znakami niezależnie od collation bazy?
+  answers:
+    - text: TEXT, czyli przestarzały typ dla długich tekstów
+      correct: false
+    - text: CHAR o stałej długości z dopełnieniem spacjami
+      correct: false
+    - text: "`VARCHAR` z domyślnym collation `Latin1_General`"
+      correct: false
+    - text: "`NVARCHAR`"
+      correct: true
+  explanation: |
+    `NVARCHAR` przechowuje Unicode (UTF-16), więc obsłuży każdy znak niezależnie od strony kodowej.
+    `VARCHAR` z Latin1 nie ma ą, ę, ś itd. (chyba że collation UTF-8 z SQL Server 2019+), CHAR to też jednobajtowy typ, a TEXT jest przestarzały i również nie jest Unicode.
+
+- id: 5
+  question: Który typ daty i czasu jest zalecany dla nowych tabel zamiast `DATETIME`?
+  answers:
+    - text: TIMESTAMP, czyli wersja wiersza w SQL Server
+      correct: false
+    - text: "`DATETIME2`"
+      correct: true
+    - text: DATE, który przechowuje także godzinę
+      correct: false
+    - text: SMALLDATETIME z dokładnością do minuty
+      correct: false
+  explanation: |
+    `DATETIME2` ma dokładność do 100 ns, większy zakres i zajmuje tyle samo lub mniej miejsca niż `DATETIME`.
+    SMALLDATETIME jest mniej dokładny, TIMESTAMP w SQL Server to synonim ROWVERSION (a nie data), a DATE przechowuje wyłącznie datę bez godziny.
+
+- id: 6
+  question: Jaki będzie wynik warunku `WHERE Kolumna = NULL`?
+  answers:
+    - text: Zwróci wiersze, w których kolumna ma wartość `NULL`
+      correct: false
+    - text: Zwróci wszystkie wiersze, bo `NULL` jest traktowany jak prawda
+      correct: false
+    - text: Nie zwróci żadnych wierszy, bo porównanie z `NULL` daje UNKNOWN
+      correct: true
+    - text: Spowoduje błąd składni, którego nie da się skompilować
+      correct: false
+  explanation: |
+    Przy domyślnym `ANSI_NULLS ON` porównanie przez `= z NULL` nigdy nie jest prawdą, dlatego używa się `IS NULL`.
+    Zapytanie się kompiluje i nie zwraca wszystkich wierszy - po prostu nie zwraca żadnego.
+
+- id: 7
+  question: Czym różni się `COUNT(*)` od `COUNT(Kolumna)`?
+  answers:
+    - text: "`COUNT(*)` pomija wiersze z `NULL`, a `COUNT(Kolumna)` liczy wszystkie wiersze"
+      correct: false
+    - text: "`COUNT(Kolumna)` liczy unikalne wartości, a `COUNT(*)` wszystkie"
+      correct: false
+    - text: "`COUNT(*)` liczy wszystkie wiersze, a `COUNT(Kolumna)` pomija wartości `NULL`"
+      correct: true
+    - text: Nie ma różnicy - optymalizator zawsze zamienia jedno na drugie
+      correct: false
+  explanation: |
+    Funkcje agregujące poza `COUNT(*)` ignorują `NULL`, więc `COUNT(Kolumna)` liczy tylko niepuste wartości.
+    Unikalne wartości liczy `COUNT(DISTINCT Kolumna)`, a wyniki obu wariantów mogą się różnić.
+
+- id: 8
+  question: Kiedy należy użyć `UNION ALL` zamiast `UNION`?
+  answers:
+    - text: Gdy wynik ma być posortowany, bo tylko `UNION ALL` wspiera klauzulę `ORDER BY`
+      correct: false
+    - text: Gdy zapytania mają różną liczbę kolumn, bo `UNION` wymaga tej samej
+      correct: false
+    - text: Gdy duplikaty są dopuszczalne lub ich nie ma, bo `UNION ALL` ich nie usuwa
+      correct: true
+    - text: Gdy chcemy usunąć duplikaty z wyniku, bo `UNION` ich nie usuwa
+      correct: false
+  explanation: |
+    `UNION` musi wykryć duplikaty (sortowanie lub hashowanie), co kosztuje, a `UNION ALL` po prostu skleja wyniki.
+    To `UNION` usuwa duplikaty, oba wymagają tej samej liczby kolumn, a `ORDER BY` działa z obydwoma.
+
+- id: 9
+  question: Jaka pułapka wiąże się z `NOT IN` z podzapytaniem?
+  answers:
+    - text: "`NOT IN` nie działa z podzapytaniami, tylko z listą stałych wartości"
+      correct: false
+    - text: Jeśli podzapytanie zwróci choć jeden `NULL`, `NOT IN` nie zwróci żadnych wierszy
+      correct: true
+    - text: "`NOT IN` zawsze ignoruje wartości `NULL`, więc wynik jest identyczny jak przy `NOT EXISTS`"
+      correct: false
+    - text: "`NOT IN` zwraca duplikaty, których nie da się usunąć przez `DISTINCT`"
+      correct: false
+  explanation: |
+    `x NOT IN (1, NULL)` oznacza `x <> 1 AND x <> NULL`, a drugi warunek jest `UNKNOWN`, więc żaden wiersz nie przechodzi.
+    `NOT EXISTS` nie ma tego problemu, dlatego jest bezpieczniejszy; `NOT IN` działa z podzapytaniami i nie ma problemu z duplikatami.
+
+- id: 10
+  question: Czym funkcja okna różni się od agregacji z `GROUP BY`?
+  answers:
+    - text: Funkcja okna zawsze zwraca jeden wiersz na całą tabelę
+      correct: false
+    - text: Funkcja okna działa tylko na kolumnach liczbowych z indeksem klastrowanym
+      correct: false
+    - text: Funkcja okna liczy wartość dla każdego wiersza, nie redukując ich liczby
+      correct: true
+    - text: Funkcja okna wymaga `GROUP BY`, a agregacja go nie wymaga
+      correct: false
+  explanation: |
+    `SUM() OVER` (`PARTITION BY` ...) dodaje wartość do każdego wiersza, zachowując szczegóły, a `GROUP BY` zwija grupy do jednego wiersza.
+    Funkcje okna nie wymagają `GROUP BY` i nie są ograniczone do kolumn liczbowych ani indeksów.
+
+- id: 11
+  question: Jaki wynik da `DENSE_RANK` dla pensji 100, 90, 90, 80 posortowanych malejąco?
+  answers:
+    - text: 1, 2, 3, 4
+      correct: false
+    - text: 1, 2, 2, 4
+      correct: false
+    - text: 1, 2, 2, 3
+      correct: true
+    - text: 1, 1, 2, 3
+      correct: false
+  explanation: |
+    `DENSE_RANK` nadaje remisom ten sam numer i nie zostawia luk.
+    1, 2, 3, 4 dałby `ROW_NUMBER`, a 1, 2, 2, 4 - `RANK`, który zostawia lukę po remisie.
+    Wariant 1, 1, 2, 3 jest błędny, bo 100 i 90 nie są sobie równe.
+
+- id: 12
+  question: Do czego służy funkcja `LAG`?
+  answers:
+    - text: Do pomiaru opóźnienia replikacji między serwerami
+      correct: false
+    - text: Do opóźnienia wykonania zapytania o zadany czas
+      correct: false
+    - text: Do odczytu wartości z poprzedniego wiersza w ramach okna
+      correct: true
+    - text: Do pobrania ostatnio wstawionego wiersza tabeli według klucza głównego
+      correct: false
+  explanation: |
+    `LAG(Amount) OVER` (`ORDER BY OrderDate`) zwraca wartość z poprzedniego wiersza, np. do porównań miesiąc do miesiąca.
+    Opóźnienie wykonania to WAITFOR DELAY, lag replikacji monitoruje się innymi narzędziami, a ostatni wiersz pobiera się przez `TOP` i `ORDER BY`.
+
+- id: 13
+  question: Dlaczego przy sumie narastającej warto jawnie podać `ROWS BETWEEN` UNBOUNDED PRECEDING `AND` CURRENT ROW?
+  answers:
+    - text: Bo `ROWS` wymusza równoległe wykonanie zapytania na wszystkich dostępnych rdzeniach
+      correct: false
+    - text: Bo bez tej klauzuli SQL Server zgłasza błąd składni dla `SUM() OVER`
+      correct: false
+    - text: Bo domyślna ramka RANGE jest wolniejsza i inaczej traktuje remisy w sortowaniu
+      correct: true
+    - text: Bo RANGE nie obsługuje kolumn typu `DATETIME2` w klauzuli `ORDER BY`
+      correct: false
+  explanation: |
+    Przy `ORDER BY` w `OVER` domyślna ramka to RANGE, która sumuje wszystkie remisy naraz i działa przez wolniejszy spool na dysku.
+    Brak klauzuli nie jest błędem, `ROWS` nie wymusza równoległości, a RANGE obsługuje daty.
+
+- id: 14
+  question: Która cecha odróżnia tabelę tymczasową `#temp` od zmiennej tabelarycznej `@table`?
+  answers:
+    - text: Zmienna `@table` jest przechowywana wyłącznie w pamięci RAM, a tabela `#temp` wyłącznie na dysku
+      correct: false
+    - text: Zmiany w `#temp` nie są wycofywane przez `ROLLBACK`, a w `@table` są
+      correct: false
+    - text: Tabela `#temp` ma pełne statystyki i może mieć indeksy, co pomaga przy dużych zbiorach
+      correct: true
+    - text: Tabela `#temp` jest widoczna dla wszystkich sesji, a `@table` tylko dla bieżącej
+      correct: false
+  explanation: |
+    Brak pełnych statystyk zmiennej tabelarycznej prowadzi do złych szacunków dla dużych danych.
+    Obie żyją w `tempdb`, ale zmiany w `@table` nie są wycofywane przez `ROLLBACK`, a widoczna dla wszystkich sesji jest dopiero tabela `##globalna`.
+
+- id: 15
+  question: Co się stanie, gdy w zapytaniu odwołasz się do tego samego CTE trzy razy?
+  answers:
+    - text: Zapytanie CTE może wykonać się trzy razy, bo CTE nie jest materializowane
+      correct: true
+    - text: Wynik CTE zostanie zapamiętany w cache planów do końca sesji
+      correct: false
+    - text: SQL Server zgłosi błąd, bo do CTE można odwołać się tylko raz
+      correct: false
+    - text: CTE zostanie automatycznie zapisane w tempdb przy pierwszym użyciu i odczytane trzy razy
+      correct: false
+  explanation: |
+    CTE to nazwane podzapytanie wklejane do planu - każde odwołanie może oznaczać osobne wykonanie.
+    SQL Server nie materializuje CTE automatycznie, nie zabrania wielu odwołań i nie cache'uje jego wyników - przy kosztownym wyniku lepsza jest tabela `#temp`.
+
+- id: 16
+  question: Jaki jest domyślny limit rekurencji w rekurencyjnym CTE?
+  answers:
+    - text: 1000 poziomów, bez możliwości zmiany limitu
+      correct: false
+    - text: 100 poziomów, z możliwością zmiany
+      correct: true
+    - text: Brak limitu - rekurencja trwa, dopóki są wyniki
+      correct: false
+    - text: 32 poziomy, tak jak zagnieżdżenie procedur
+      correct: false
+  explanation: |
+    Po przekroczeniu 100 poziomów zapytanie kończy się błędem, chyba że ustawi się MAXRECURSION (0 oznacza brak limitu).
+    32 to limit zagnieżdżenia procedur i triggerów, a twierdzenia o 1000 lub braku limitu są błędne.
+
+- id: 17
+  question: Dlaczego wielu ekspertów zaleca ostrożność przy instrukcji `MERGE`?
+  answers:
+    - text: Bo `MERGE` jest dostępny wyłącznie w Azure SQL Database
+      correct: false
+    - text: Bo `MERGE` nie obsługuje klauzuli `WHEN NOT` MATCHED `BY` SOURCE
+      correct: false
+    - text: Bo `MERGE` działa tylko na tabelach bez kluczy obcych i indeksów nieklastrowanych
+      correct: false
+    - text: Bo ma znane błędy i problemy ze współbieżnością pod obciążeniem
+      correct: true
+  explanation: |
+    Pod obciążeniem `MERGE` bez odpowiednich blokad może prowadzić do naruszeń klucza i deadlocków, a historycznie miał wiele zgłoszonych błędów.
+    Działa z kluczami i indeksami, wspiera `WHEN NOT` MATCHED `BY` SOURCE i jest dostępny w SQL Server od wersji 2008.
+
+- id: 18
+  question: Co zwróci `INSERT INTO Orders (...) OUTPUT inserted.Id VALUES (...)`?
+  answers:
+    - text: Liczbę wierszy w tabeli Orders po wstawieniu
+      correct: false
+    - text: Wygenerowany identyfikator nowo wstawionego wiersza
+      correct: true
+    - text: Identyfikator ostatniego wiersza wstawionego przez dowolną sesję
+      correct: false
+    - text: Kopię wiersza zapisaną w tabeli historii zmian
+      correct: false
+  explanation: |
+    `OUTPUT` odczytuje wirtualną tabelę inserted, więc zwraca dane faktycznie wstawionych wierszy, także wiele naraz.
+    Liczbę wierszy podaje `@@ROWCOUNT`, wartości z innych sesji nie są widoczne, a tabele historii to mechanizm tabel temporalnych.
+
+- id: 19
+  question: Czym różni się `CROSS APPLY` od `OUTER APPLY`?
+  answers:
+    - text: Nie ma różnic - to aliasy tego samego operatora
+      correct: false
+    - text: "`CROSS APPLY` tworzy iloczyn kartezjański, a `OUTER APPLY` łączy po kluczu obcym"
+      correct: false
+    - text: "`OUTER APPLY` działa tylko z funkcjami skalarnymi, a `CROSS APPLY` wyłącznie z funkcjami tabelarycznymi"
+      correct: false
+    - text: "`CROSS APPLY` pomija wiersze bez wyniku (jak `INNER JOIN`), `OUTER APPLY` je zachowuje (jak `LEFT JOIN`)"
+      correct: true
+  explanation: |
+    `APPLY` wywołuje wyrażenie tabelaryczne dla każdego wiersza z lewej strony; różnica dotyczy wierszy, dla których wyrażenie nic nie zwraca.
+    `APPLY` nie jest iloczynem kartezjańskim (to `CROSS JOIN`), oba działają z wyrażeniami tabelarycznymi i nie są aliasami.
+
+- id: 20
+  question: Jaka jest często czytelniejsza alternatywa dla operatora `PIVOT`?
+  answers:
+    - text: Zapisanie danych do pliku Excel i przestawienie ich tam
+      correct: false
+    - text: Agregacja warunkowa, np. `SUM(CASE WHEN Month = 1 THEN Amount END)`
+      correct: true
+    - text: Wielokrotny self-join tabeli dla każdej kolumny wynikowej
+      correct: false
+    - text: Kursor iterujący po miesiącach i zapisujący wyniki do zmiennych
+      correct: false
+  explanation: |
+    Agregacja warunkowa pozwala łatwo kontrolować kolumny i łączyć wiele agregatów w jednym zapytaniu.
+    Kursor i wielokrotne self-joiny są wolne i nieczytelne, a eksport do Excela nie jest rozwiązaniem w bazie.
+
+- id: 21
+  question: Jak bezpiecznie wykonać dynamiczny SQL z wartością od użytkownika?
+  answers:
+    - text: Przez `EXEC` z wartością zamienioną na wielkie litery funkcją UPPER
+      correct: false
+    - text: Przez `sp_executesql` z parametrami i QUOTENAME dla nazw obiektów
+      correct: true
+    - text: Przez zapisanie zapytania w widoku i wywołanie go przez `EXEC`
+      correct: false
+    - text: Przez `EXEC` z wartością doklejoną do stringa po ręcznym usunięciu apostrofów
+      correct: false
+  explanation: |
+    Parametry `sp_executesql` nigdy nie są interpretowane jako kod SQL, a QUOTENAME bezpiecznie otacza identyfikatory nawiasami.
+    Ręczne usuwanie apostrofów da się obejść, UPPER nic nie zabezpiecza, a widok nie rozwiązuje problemu wstrzykiwania.
+
+- id: 22
+  question: Co jest podstawową ochroną przed SQL Injection w aplikacji .NET?
+  answers:
+    - text: Przechowywanie connection stringa w zmiennej środowiskowej
+      correct: false
+    - text: Zapytania parametryzowane
+      correct: true
+    - text: Szyfrowanie połączenia z bazą danych przez TLS
+      correct: false
+    - text: Walidacja danych wyłącznie po stronie przeglądarki
+      correct: false
+  explanation: |
+    Parametry są przekazywane do serwera osobno od tekstu zapytania, więc nie mogą zmienić jego struktury.
+    TLS chroni przed podsłuchem, ukrycie connection stringa - przed jego wyciekiem, a walidację kliencką łatwo obejść.
+
+- id: 23
+  question: Co typowo robi się w bloku `CATCH` w T-SQL przy otwartej transakcji?
+  answers:
+    - text: Nic - SQL Server zawsze automatycznie wycofuje transakcję przy błędzie
+      correct: false
+    - text: "`COMMIT`, aby zapisać przynajmniej część zmian sprzed błędu"
+      correct: false
+    - text: IF `@@TRANCOUNT > 0 ROLLBACK`, a potem `THROW`, aby przekazać błąd wyżej
+      correct: true
+    - text: "`RETURN` 0, aby aplikacja uznała operację za udaną"
+      correct: false
+  explanation: |
+    Wycofanie transakcji i ponowne rzucenie błędu zachowuje spójność danych i informuje wywołującego.
+    `COMMIT` po błędzie zapisuje niespójne dane, automatyczne wycofanie zależy od rodzaju błędu i `XACT_ABORT`, a `RETURN` 0 ukrywa błąd.
+
+- id: 24
+  question: Czym różni się `THROW` od `RAISERROR`?
+  answers:
+    - text: "`THROW` zawsze przerywa wykonanie i bez parametrów rzuca ponownie oryginalny błąd"
+      correct: true
+    - text: "`THROW` nie pozwala przekazać własnego numeru ani komunikatu błędu, w przeciwieństwie do `RAISERROR`"
+      correct: false
+    - text: "`RAISERROR` zawsze kończy całą sesję użytkownika"
+      correct: false
+    - text: "`RAISERROR` jest nowszy i zastąpił `THROW` w SQL Server 2016"
+      correct: false
+  explanation: |
+    `THROW` (od 2012) jest prostszy i zalecany w nowym kodzie - pamiętaj o średniku przed nim.
+    `RAISERROR` jest starszy, `THROW` przyjmuje własny numer, komunikat i stan, a `RAISERROR` nie kończy sesji (poza błędami o wysokim severity).
+
+- id: 25
+  question: Co powoduje `SET XACT_ABORT ON`?
+  answers:
+    - text: Przy błędzie wykonania cała transakcja jest wycofywana
+      correct: true
+    - text: Wyłącza wszystkie transakcje w bieżącej sesji
+      correct: false
+    - text: Ignoruje błędy wykonania i kontynuuje wykonywanie kolejnych instrukcji batcha
+      correct: false
+    - text: Przyspiesza zapisy, pomijając log transakcji
+      correct: false
+  explanation: |
+    Bez `XACT_ABORT` niektóre błędy przerywają tylko instrukcję i zostawiają otwartą transakcję, np. po timeoucie klienta.
+    Nie wyłącza transakcji, nie pomija logu (log jest zawsze używany) i robi coś odwrotnego niż ignorowanie błędów.
+
+- id: 26
+  question: Jaki jest domyślny poziom izolacji transakcji w SQL Server?
+  answers:
+    - text: "`SERIALIZABLE`"
+      correct: false
+    - text: "`REPEATABLE READ`"
+      correct: false
+    - text: "`READ UNCOMMITTED`"
+      correct: false
+    - text: "`READ COMMITTED`"
+      correct: true
+  explanation: |
+    `READ COMMITTED` czyta tylko zatwierdzone dane - w wersji z blokadami lub, przy włączonym RCSI, z wersjonowaniem wierszy.
+    `READ UNCOMMITTED` pozwala na dirty reads, a `REPEATABLE READ` i `SERIALIZABLE` to wyższe, bardziej restrykcyjne poziomy.
+
+- id: 27
+  question: Czym jest phantom read?
+  answers:
+    - text: Odczytem wiersza, który został usunięty z indeksu, ale nie z tabeli
+      correct: false
+    - text: Sytuacją, gdy ten sam wiersz zwraca inne wartości przy ponownym odczycie w transakcji
+      correct: false
+    - text: Odczytem danych zmienionych przez inną, niezatwierdzoną transakcję
+      correct: false
+    - text: Sytuacją, gdy ponowne zapytanie zwraca nowe wiersze dodane przez inną transakcję
+      correct: true
+  explanation: |
+    Phantom read dotyczy nowych wierszy pasujących do warunku - eliminuje go poziom `SERIALIZABLE` lub `SNAPSHOT`.
+    Odczyt niezatwierdzonych danych to dirty read, a zmieniona wartość tego samego wiersza to non-repeatable read; "usunięty z indeksu, ale nie z tabeli" to nie jest standardowe zjawisko.
+
+- id: 28
+  question: Dlaczego `WITH (NOLOCK)` jest ryzykowny?
+  answers:
+    - text: Wyłącza wykorzystanie indeksów, przez co zapytanie zawsze skanuje całą tabelę
+      correct: false
+    - text: Działa tylko na tabelach tymczasowych, a na zwykłych zgłasza błąd
+      correct: false
+    - text: Może zwracać niezatwierdzone dane albo pomijać i dublować wiersze
+      correct: true
+    - text: Blokuje całą tabelę na wyłączność do końca zapytania
+      correct: false
+  explanation: |
+    `NOLOCK` to `READ UNCOMMITTED` - przy równoległych zmianach i podziałach stron wynik może być po prostu błędny.
+    Nie zakłada blokad wyłącznych, działa na zwykłych tabelach i nie wyłącza indeksów.
+    Problemy z blokadami lepiej rozwiązuje RCSI lub `SNAPSHOT`.
+
+- id: 29
+  question: Co dzieje się przy eskalacji blokad?
+  answers:
+    - text: Blokady są przenoszone z pamięci RAM do tempdb
+      correct: false
+    - text: Blokada wiersza jest przenoszona na inną sesję, która ma wyższy priorytet deadlocka
+      correct: false
+    - text: Wiele blokad na wierszach lub stronach zamienia się na blokadę całej tabeli
+      correct: true
+    - text: Transakcja z blokadą otrzymuje wyższy poziom izolacji
+      correct: false
+  explanation: |
+    Gdy liczba blokad jest bardzo duża (rzędu kilku tysięcy), SQL Server zamienia je na blokadę tabeli, by oszczędzić pamięć, co zwiększa blocking.
+    Blokady nie są przekazywane innym sesjom, nie zmieniają poziomu izolacji i nie trafiają do tempdb.
+
+- id: 30
+  question: Co robi SQL Server po wykryciu deadlocka?
+  answers:
+    - text: Czeka, aż jedna z transakcji zostanie ręcznie zakończona przez administratora
+      correct: false
+    - text: Wybiera ofiarę i wycofuje jej transakcję z błędem 1205
+      correct: true
+    - text: Restartuje usługę SQL Server, aby zwolnić wszystkie blokady
+      correct: false
+    - text: Zatwierdza obie transakcje w kolejności ich rozpoczęcia
+      correct: false
+  explanation: |
+    Monitor deadlocków wykrywa cykl i kończy jedną transakcję, a aplikacja powinna ją ponowić.
+    Nie czeka na administratora, nie restartuje usługi i nie zatwierdza obu transakcji - to by złamało spójność.
+
+- id: 31
+  question: Który sposób zmniejsza ryzyko deadlocków?
+  answers:
+    - text: Dostęp do tabel zawsze w tej samej kolejności i krótkie transakcje
+      correct: true
+    - text: Wydłużenie transakcji, aby objęła wszystkie operacje użytkownika
+      correct: false
+    - text: Uruchamianie wszystkich zapytań na poziomie `SERIALIZABLE`
+      correct: false
+    - text: Usunięcie indeksów, aby SQL Server blokował całe tabele
+      correct: false
+  explanation: |
+    Wspólna kolejność dostępu eliminuje cykle oczekiwania, a krótkie transakcje skracają czas trzymania blokad.
+    Dłuższe transakcje i `SERIALIZABLE` zwiększają liczbę i czas blokad, a brak indeksów powoduje skanowania i większe blokady.
+
+- id: 32
+  question: Jak sprawdzić, która sesja blokuje inne?
+  answers:
+    - text: Przez polecenie DBCC CHECKDB
+      correct: false
+    - text: Przez widok `INFORMATION_SCHEMA.TABLES` z kolumną `TABLE_LOCKS`
+      correct: false
+    - text: Przez `sys.dm_exec_requests` lub `sp_WhoIsActive`
+      correct: true
+    - text: Przez widok `sys.databases` i jego kolumnę `is_blocked`
+      correct: false
+  explanation: |
+    DMV `sys.dm_exec_requests` pokazuje dla każdego żądania, na kogo czeka, a `sp_WhoIsActive` prezentuje to wygodnie.
+    `sys.databases` nie ma takiej kolumny, DBCC CHECKDB sprawdza spójność bazy, a `INFORMATION_SCHEMA.TABLES` zawiera listę tabel.
+
+- id: 33
+  question: Co wskazuje duża różnica między szacowaną a rzeczywistą liczbą wierszy w planie wykonania?
+  answers:
+    - text: Problem ze statystykami lub parameter sniffing, przez które plan jest zły
+      correct: true
+    - text: Uszkodzenie danych w tabeli, które trzeba naprawić przez DBCC CHECKDB
+      correct: false
+    - text: Brak miejsca na dysku w tempdb
+      correct: false
+    - text: Normalną sytuację, która nie ma żadnego wpływu na wydajność zapytania
+      correct: false
+  explanation: |
+    Optymalizator dobiera operatory i pamięć na podstawie szacunków - przy złych szacunkach wybiera np. zły typ złączenia.
+    Nie wskazuje to na uszkodzenie danych ani brak miejsca, a wpływ na wydajność bywa ogromny.
+
+- id: 34
+  question: Kiedy Index Scan może być lepszy od Index Seek?
+  answers:
+    - text: Gdy zapytanie i tak pobiera dużą część tabeli
+      correct: true
+    - text: Gdy tabela ma indeks klastrowany na kolumnie GUID
+      correct: false
+    - text: Nigdy - Index Scan jest zawsze gorszy od Index Seek
+      correct: false
+    - text: Gdy zapytanie zawiera klauzulę `ORDER BY`
+      correct: false
+  explanation: |
+    Przy pobieraniu większości wierszy jeden sekwencyjny odczyt bywa tańszy niż tysiące pojedynczych wyszukiwań.
+    Scan nie jest z definicji zły, typ klucza nie decyduje o wyborze, a `ORDER BY` sam w sobie nie wymusza scanu.
+
+- id: 35
+  question: Jak wyeliminować key lookup w planie wykonania?
+  answers:
+    - text: Dodać podpowiedź `WITH (NOLOCK)` do zapytania, aby pominąć indeks klastrowany
+      correct: false
+    - text: Zamienić zapytanie na kursor
+      correct: false
+    - text: Dodać brakujące kolumny do `INCLUDE` indeksu nieklastrowanego
+      correct: true
+    - text: Usunąć indeks klastrowany, aby wszystkie odczyty szły przez indeks nieklastrowany
+      correct: false
+  explanation: |
+    Indeks pokrywający zawiera wszystkie kolumny potrzebne zapytaniu, więc nie trzeba sięgać do indeksu klastrowanego.
+    Usunięcie indeksu klastrowanego zamieni lookup na RID lookup, `NOLOCK` nie zmienia planu, a kursor tylko pogorszy wydajność.
+
+- id: 36
+  question: Który warunek jest SARGable?
+  answers:
+    - text: "`WHERE YEAR(CreatedAt) = 2026 AND MONTH(CreatedAt) = 1 AND DAY(CreatedAt) >= 1`"
+      correct: false
+    - text: "`WHERE DATEADD(day, 1, CreatedAt) > '2026-01-01'`"
+      correct: false
+    - text: "`WHERE CONVERT(varchar(7), CreatedAt, 120) = '2026-01'`"
+      correct: false
+    - text: "`WHERE CreatedAt >= '2026-01-01' AND CreatedAt < '2026-02-01'`"
+      correct: true
+  explanation: |
+    Kolumna stoi "goła" po jednej stronie operatora, więc SQL Server może użyć seeka na indeksie.
+    Funkcje YEAR, MONTH, `CONVERT` i DATEADD nałożone na kolumnę wymagają obliczenia wyrażenia dla każdego wiersza.
+
+- id: 37
+  question: Co może spowodować niejawna konwersja typów w warunku `WHERE`?
+  answers:
+    - text: Uniemożliwić seek na indeksie, np. przy porównaniu `VARCHAR` z `NVARCHAR`
+      correct: true
+    - text: Trwałą zmianę typu kolumny w definicji tabeli na typ parametru
+      correct: false
+    - text: Automatyczne utworzenie nowego indeksu na kolumnie po zmianie typu danych
+      correct: false
+    - text: Błąd kompilacji zapytania
+      correct: false
+  explanation: |
+    SQL Server konwertuje typ o niższym priorytecie (`VARCHAR`) do wyższego (`NVARCHAR`), więc musi przeliczyć kolumnę dla każdego wiersza - to częsty problem przy parametrach z .NET.
+    Konwersja nie tworzy indeksów, nie zmienia definicji tabeli i zwykle nie powoduje błędu.
+
+- id: 38
+  question: Do czego służą statystyki w SQL Server?
+  answers:
+    - text: Do przechowywania historii wykonanych zapytań
+      correct: false
+    - text: Do szacowania liczby wierszy przez optymalizator przy wyborze planu
+      correct: true
+    - text: Do limitowania liczby zapytań na sekundę
+      correct: false
+    - text: Do raportowania liczby użytkowników zalogowanych do bazy w danym okresie
+      correct: false
+  explanation: |
+    Histogram i gęstość pozwalają wybrać właściwe operatory i kolejność złączeń.
+    Liczba sesji, historia zapytań (Query Store) i limity zapytań to zupełnie inne mechanizmy.
+
+- id: 39
+  question: Na czym polega parameter sniffing?
+  answers:
+    - text: Parametry procedury są automatycznie konwertowane na typ `NVARCHAR`
+      correct: false
+    - text: Optymalizator ignoruje wartości parametrów i zawsze buduje plan na podstawie średnich statystyk
+      correct: false
+    - text: SQL Server zapisuje wartości parametrów w logu błędów, co jest ryzykiem bezpieczeństwa
+      correct: false
+    - text: Plan skompilowany dla pierwszych wartości parametrów jest używany ponownie, nawet gdy jest zły dla innych
+      correct: true
+  explanation: |
+    Przy nierównomiernym rozkładzie danych plan dobry dla rzadkiej wartości może być fatalny dla częstej i odwrotnie.
+    Nie dotyczy logowania, konwersji typów ani ignorowania parametrów - choć OPTIMIZE `FOR` UNKNOWN celowo używa średnich.
+
+- id: 40
+  question: Które rozwiązanie pomaga przy parameter sniffing?
+  answers:
+    - text: "`OPTION` (`RECOMPILE`) dla zapytania"
+      correct: true
+    - text: Usunięcie wszystkich statystyk z tabeli
+      correct: false
+    - text: Dodanie `WITH (NOLOCK)` do wszystkich tabel
+      correct: false
+    - text: Zmiana poziomu izolacji procedury na `READ UNCOMMITTED`
+      correct: false
+  explanation: |
+    `RECOMPILE` generuje plan dla bieżących wartości przy każdym wykonaniu, kosztem kompilacji (podobnie pomaga OPTIMIZE `FOR`).
+    `NOLOCK` i poziom izolacji nie wpływają na wybór planu, a usunięcie statystyk pogorszy szacunki.
+
+- id: 41
+  question: Do czego służy Query Store?
+  answers:
+    - text: Do zapisywania historii zapytań i planów oraz wymuszania dobrego planu
+      correct: true
+    - text: Do automatycznego przechowywania często wykonywanych zapytań SQL jako procedur składowanych
+      correct: false
+    - text: Do cache'owania wyników zapytań między sesjami
+      correct: false
+    - text: Do kolejkowania zapytań, gdy serwer jest przeciążony
+      correct: false
+  explanation: |
+    Query Store pozwala znaleźć regresję po zmianie planu i wymusić poprzedni plan, a od SQL Server 2022 jest domyślnie włączony dla nowych baz.
+    Nie tworzy procedur, nie cache'uje wyników i nie kolejkuje zapytań.
+
+- id: 42
+  question: Kiedy indeks filtrowany jest dobrym wyborem?
+  answers:
+    - text: Gdy zapytania często dotyczą małego podzbioru wierszy tabeli
+      correct: true
+    - text: Gdy zapytania zawsze pobierają wszystkie wiersze tabeli bez warunku `WHERE`
+      correct: false
+    - text: Gdy kolumna ma wyłącznie unikalne wartości
+      correct: false
+    - text: Gdy tabela jest stertą bez indeksu klastrowanego
+      correct: false
+  explanation: |
+    Indeks z klauzulą `WHERE` jest mały, tani w utrzymaniu i ma dokładniejsze statystyki dla tego podzbioru.
+    Przy pobieraniu wszystkich wierszy indeks filtrowany nie pomoże, unikalność nie jest przesłanką, a sterta nie ma tu znaczenia.
+
+- id: 43
+  question: Do jakich zapytań najlepiej nadaje się indeks columnstore?
+  answers:
+    - text: Do wyszukiwania pojedynczego wiersza po kluczu głównym
+      correct: false
+    - text: Do wyszukiwania pełnotekstowego w kolumnach `NVARCHAR(MAX)`
+      correct: false
+    - text: Do częstych aktualizacji pojedynczych wierszy w transakcyjnym systemie OLTP
+      correct: false
+    - text: Do analiz skanujących miliony wierszy i agregujących kilka kolumn
+      correct: true
+  explanation: |
+    Columnstore przechowuje dane kolumnami z mocną kompresją i przetwarza je w trybie batch.
+    Pojedyncze wyszukiwania i częste aktualizacje lepiej obsługuje B-drzewo, a do pełnotekstowego wyszukiwania służy Full-Text Search.
+
+- id: 44
+  question: Czym różni się `ALTER INDEX REORGANIZE` od `REBUILD`?
+  answers:
+    - text: "`REBUILD` to lekka defragmentacja online, a `REORGANIZE` tworzy indeks od nowa offline"
+      correct: false
+    - text: "`REORGANIZE` to lekka defragmentacja, a `REBUILD` tworzy indeks od nowa"
+      correct: true
+    - text: Oba działają identycznie, różnią się tylko nazwą
+      correct: false
+    - text: "`REORGANIZE` usuwa indeks, a `REBUILD` go przywraca z kopii zapasowej"
+      correct: false
+  explanation: |
+    `REORGANIZE` zawsze działa online i można je przerwać, a `REBUILD` jest pełną przebudową (online tylko w niektórych edycjach) i aktualizuje statystyki z pełnym skanem.
+    Role nie są odwrócone, żadne z nich nie usuwa indeksu i nie korzysta z kopii zapasowych.
+
+- id: 45
+  question: Dlaczego losowy GUID (NEWID) jako klucz klastrowany bywa problematyczny?
+  answers:
+    - text: Bo SQL Server nie potrafi utworzyć indeksu klastrowanego na kolumnie `UNIQUEIDENTIFIER`
+      correct: false
+    - text: Bo NEWID zwraca tę samą wartość w obrębie transakcji
+      correct: false
+    - text: Bo wiersze trafiają w losowe miejsca indeksu, powodując podziały stron
+      correct: true
+    - text: Bo GUID nie może być kluczem głównym tabeli
+      correct: false
+  explanation: |
+    Losowe wartości wymuszają wstawianie w środek B-drzewa, a 16-bajtowy klucz jest dodatkowo kopiowany do każdego indeksu nieklastrowanego.
+    GUID może być kluczem i może być indeksowany, a NEWID zwraca nową wartość przy każdym wywołaniu.
+    Alternatywy to NEWSEQUENTIALID, UUIDv7 lub `BIGINT IDENTITY`.
+
+- id: 46
+  question: Co określa FILLFACTOR indeksu?
+  answers:
+    - text: Procent pamięci RAM przeznaczony na cache indeksu
+      correct: false
+    - text: Liczbę równoległych wątków używanych przy budowie i przebudowie indeksu
+      correct: false
+    - text: Procent wypełnienia stron indeksu przy jego budowie
+      correct: true
+    - text: Maksymalną liczbę wierszy w tabeli
+      correct: false
+  explanation: |
+    Pozostawione wolne miejsce zmniejsza podziały stron przy późniejszych wstawieniach, kosztem większego rozmiaru indeksu.
+    Liczby wierszy, pamięci i równoległości dotyczą inne ustawienia (np. `MAXDOP`).
+
+- id: 47
+  question: Co oznacza opcja PERSISTED przy kolumnie wyliczanej?
+  answers:
+    - text: Kolumna nie może być usunięta z tabeli
+      correct: false
+    - text: Wartość jest fizycznie zapisywana i aktualizowana przy zmianach danych
+      correct: true
+    - text: Wartość jest liczona przy każdym odczycie i nigdy nie jest zapisywana na dysku
+      correct: false
+    - text: Kolumna jest zapisywana w osobnej tabeli historii
+      correct: false
+  explanation: |
+    Kolumna PERSISTED zajmuje miejsce, ale nie wymaga liczenia przy odczycie (indeks można założyć też na niezapisywanej kolumnie deterministycznej).
+    PERSISTED nie blokuje usuwania kolumny, a liczenie przy każdym odczycie to zachowanie domyślne bez PERSISTED.
+
+- id: 48
+  question: Która cecha odróżnia `SEQUENCE` od `IDENTITY`?
+  answers:
+    - text: "`SEQUENCE` gwarantuje brak luk w numeracji, a `IDENTITY` nie"
+      correct: false
+    - text: "`SEQUENCE` to niezależny obiekt, który może być współdzielony przez wiele tabel"
+      correct: true
+    - text: "`SEQUENCE` działa tylko w Azure SQL Database"
+      correct: false
+    - text: "`IDENTITY` może być współdzielona przez wiele tabel, a `SEQUENCE` działa tylko w jednej"
+      correct: false
+  explanation: |
+    `NEXT VALUE FOR` pobiera kolejną liczbę z sekwencji w dowolnym miejscu kodu.
+    Obie mogą mieć luki (rollbacki, cache), `IDENTITY` jest związana z jedną kolumną, a `SEQUENCE` jest dostępna od SQL Server 2012.
+
+- id: 49
+  question: Jak odczytać stan danych z tabeli temporalnej na określoną chwilę?
+  answers:
+    - text: "`FROM Tabela_History WHERE Deleted = 1`"
+      correct: false
+    - text: "`FROM Tabela WITH (HISTORY = '2026-01-01')`"
+      correct: false
+    - text: RESTORE `TABLE` Tabela TO '2026-01-01'
+      correct: false
+    - text: "`FROM Tabela FOR SYSTEM_TIME AS OF '2026-01-01'`"
+      correct: true
+  explanation: |
+    Klauzula `FOR SYSTEM_TIME AS OF` łączy bieżącą tabelę i tabelę historii, zwracając wiersze ważne w danej chwili.
+    Podpowiedź `HISTORY`, kolumna Deleted i RESTORE `TABLE` nie istnieją w tej postaci.
+
+- id: 50
+  question: Która funkcja zamienia dokument JSON na zestaw wierszy w SQL Server?
+  answers:
+    - text: ISJSON
+      correct: false
+    - text: OPENJSON
+      correct: true
+    - text: "`JSON_VALUE`"
+      correct: false
+    - text: "`FOR` JSON PATH"
+      correct: false
+  explanation: |
+    OPENJSON parsuje JSON i zwraca go jako tabelę, np. z klauzulą `WITH` definiującą kolumny.
+    `JSON_VALUE` wyciąga pojedynczą wartość skalarną, `FOR` JSON PATH zamienia wynik zapytania na JSON, a ISJSON sprawdza poprawność.
+
+- id: 51
+  question: Jak połączyć wartości z wielu wierszy w jeden string w SQL Server 2017+?
+  answers:
+    - text: "`STRING_SPLIT(Name, ', ')`"
+      correct: false
+    - text: "`CONCAT_WS(', ', Name)` z `GROUP BY` Name"
+      correct: false
+    - text: "`REPLICATE(Name, COUNT(*))`"
+      correct: false
+    - text: "`STRING_AGG(Name, ', ')`"
+      correct: true
+  explanation: |
+    `STRING_AGG` agreguje wartości z separatorem i opcjonalną kolejnością, zastępując obejście przez `FOR XML PATH`.
+    `STRING_SPLIT` robi odwrotnie, `CONCAT_WS` łączy wartości z jednego wiersza, a REPLICATE powtarza string.
+
+- id: 52
+  question: Dlaczego stronicowanie przez `OFFSET` jest wolne dla dużych numerów stron?
+  answers:
+    - text: Bo serwer musi przejść przez wszystkie pomijane wiersze
+      correct: true
+    - text: Bo `OFFSET` wyłącza użycie indeksów w zapytaniu
+      correct: false
+    - text: Bo `OFFSET` wymaga utworzenia tabeli tymczasowej z całym wynikiem zapytania
+      correct: false
+    - text: Bo `OFFSET` nie działa z klauzulą `ORDER BY`
+      correct: false
+  explanation: |
+    `OFFSET` 100000 `ROWS` oznacza odczytanie i odrzucenie 100 000 wierszy - stronicowanie keyset (`WHERE Id > @lastId`) korzysta z seeka.
+    `OFFSET` może używać indeksów, nie wymaga tabeli tymczasowej i wręcz wymaga `ORDER BY`.
+
+- id: 53
+  question: Jak najczęściej usuwa się duplikaty z tabeli w SQL Server?
+  answers:
+    - text: Przez CTE z `ROW_NUMBER()` i `DELETE` wierszy z numerem większym niż 1
+      correct: true
+    - text: Przez `TRUNCATE TABLE` z opcją `DISTINCT`
+      correct: false
+    - text: Przez `SELECT DISTINCT` bezpośrednio w instrukcji `DELETE`
+      correct: false
+    - text: Przez dodanie `UNIQUE` constraint z opcją `WITH CHECK`, które usunie istniejące duplikaty
+      correct: false
+  explanation: |
+    `PARTITION BY` określa, co jest duplikatem, a `ORDER BY` - który wiersz zostaje.
+    `DELETE` z `DISTINCT` i `TRUNCATE` z `DISTINCT` nie istnieją, a `UNIQUE` constraint nie da się utworzyć, dopóki duplikaty są w tabeli.
+
+- id: 54
+  question: Jaką technikę stosuje się do grupowania ciągłych zakresów wartości (gaps and islands)?
+  answers:
+    - text: Różnicę wartości i `ROW_NUMBER()`, stałą w obrębie jednej "wyspy"
+      correct: true
+    - text: Sortowanie tabeli i odczyt przez kursor `FAST_FORWARD` bez funkcji okna
+      correct: false
+    - text: Indeks pełnotekstowy na kolumnie z wartościami
+      correct: false
+    - text: Funkcję `NEWID()` do losowego grupowania wierszy
+      correct: false
+  explanation: |
+    Dla ciągłej sekwencji Id - `ROW_NUMBER()` jest stałe, więc grupuje się po tej różnicy.
+    Kursor działa, ale jest wolny, a indeks pełnotekstowy i NEWID nie mają tu zastosowania.
+
+- id: 55
+  question: Co gwarantuje druga postać normalna (2NF)?
+  answers:
+    - text: Istnienie indeksu klastrowanego na każdej tabeli
+      correct: false
+    - text: Spełnienie 1NF i pełną zależność atrybutów niekluczowych od całego klucza
+      correct: true
+    - text: Wartości atomowe w każdej kolumnie i brak powtarzających się grup kolumn
+      correct: false
+    - text: Brak zależności przechodnich między atrybutami niekluczowymi
+      correct: false
+  explanation: |
+    2NF ma znaczenie przy kluczach złożonych - atrybut nie może zależeć tylko od części klucza.
+    Brak zależności przechodnich to 3NF, atomowość to 1NF, a indeksy nie są tematem normalizacji.
+
+- id: 56
+  question: Co oznacza `ON DELETE CASCADE` na kluczu obcym?
+  answers:
+    - text: Usunięcie wiersza nadrzędnego jest zablokowane, dopóki istnieją wiersze podrzędne
+      correct: false
+    - text: Klucz obcy w wierszach podrzędnych jest ustawiany na `NULL`
+      correct: false
+    - text: Usunięte wiersze trafiają do tabeli archiwum
+      correct: false
+    - text: Usunięcie wiersza nadrzędnego automatycznie usuwa powiązane wiersze podrzędne
+      correct: true
+  explanation: |
+    `CASCADE` propaguje usunięcie, więc trzeba go używać ostrożnie.
+    Blokowanie to domyślne `NO ACTION`, ustawienie `NULL` to `SET NULL`, a archiwizacji klucze obce nie robią.
+
+- id: 57
+  question: Czy SQL Server automatycznie tworzy indeks na kolumnie klucza obcego?
+  answers:
+    - text: Nie - warto go dodać ręcznie, bo przyspiesza złączenia i usuwanie
+      correct: true
+    - text: Tak, zawsze tworzy indeks klastrowany na kluczu obcym
+      correct: false
+    - text: Tak, zawsze tworzy indeks nieklastrowany przy definiowaniu `FOREIGN KEY`
+      correct: false
+    - text: Nie, bo indeksowanie kluczy obcych jest zabronione
+      correct: false
+  explanation: |
+    SQL Server tworzy indeksy dla `PRIMARY KEY` i `UNIQUE`, ale nie dla `FOREIGN KEY`.
+    Brak indeksu na kluczu obcym powoduje skanowanie tabeli podrzędnej przy usuwaniu wiersza nadrzędnego.
+
+- id: 58
+  question: Jaka jest typowa zaleta klucza zastępczego (surrogate) nad naturalnym?
+  answers:
+    - text: Eliminuje potrzebę stosowania `UNIQUE` constraint na danych biznesowych
+      correct: false
+    - text: Jest stabilny i krótki, nie zmienia się razem z regułami biznesowymi
+      correct: true
+    - text: Jest automatycznie szyfrowany przez SQL Server
+      correct: false
+    - text: Zawsze ma znaczenie biznesowe zrozumiałe dla użytkownika
+      correct: false
+  explanation: |
+    Sztuczny `INT` lub `BIGINT` nie zmieni się, gdy np. zmienią się zasady numeracji dokumentów.
+    Klucz zastępczy z definicji nie ma znaczenia biznesowego, unikalność klucza naturalnego nadal warto wymusić constraintem, a szyfrowanie nie ma związku.
+
+- id: 59
+  question: Czego wymaga widok indeksowany?
+  answers:
+    - text: Użycia co najmniej jednego `OUTER JOIN`
+      correct: false
+    - text: Klauzuli `ORDER BY` w definicji widoku
+      correct: false
+    - text: "`SCHEMABINDING` i unikalnego indeksu klastrowanego"
+      correct: true
+    - text: Okresowego odświeżania przez zadanie SQL Server Agent
+      correct: false
+  explanation: |
+    Widok indeksowany musi być powiązany ze schematem tabel, a jego wynik jest materializowany przez indeks klastrowany.
+    `ORDER BY` w widoku nie jest gwarantowany, `OUTER JOIN` jest wręcz niedozwolony, a SQL Server Agent nie ma tu roli.
+
+- id: 60
+  question: Co daje `WITH SCHEMABINDING` w definicji widoku lub funkcji?
+  answers:
+    - text: Szyfruje definicję widoku przed użytkownikami
+      correct: false
+    - text: Pozwala widokowi odwoływać się do tabel w innych bazach na tym samym serwerze
+      correct: false
+    - text: Automatycznie odświeża widok co określony czas
+      correct: false
+    - text: Blokuje zmiany i usuwanie obiektów, od których obiekt zależy
+      correct: true
+  explanation: |
+    Nie można zmienić kolumny ani usunąć tabeli używanej przez obiekt ze `SCHEMABINDING` - jest to wymagane dla widoków indeksowanych.
+    Szyfrowanie definicji to `WITH ENCRYPTION`, widoki nie odświeżają się okresowo, a `SCHEMABINDING` wręcz uniemożliwia odwołania między bazami.
+
+- id: 61
+  question: Dlaczego klasyczne skalarne UDF bywały wolne w SQL Server?
+  answers:
+    - text: Bo wykonywały się wiersz po wierszu i blokowały równoległość
+      correct: true
+    - text: Bo nie mogły przyjmować parametrów
+      correct: false
+    - text: Bo wymagały sprawdzenia uprawnień administratora przy każdym wywołaniu w zapytaniu
+      correct: false
+    - text: Bo zawsze zapisywały wynik do tempdb
+      correct: false
+  explanation: |
+    Optymalizator traktował je jak czarną skrzynkę - SQL Server 2019 wprowadził scalar UDF inlining, który w wielu przypadkach wkleja je do zapytania.
+    Nie wymagają uprawnień administratora, nie zapisują wyników do tempdb i jak najbardziej przyjmują parametry.
+
+- id: 62
+  question: Co przechowuje baza tempdb?
+  answers:
+    - text: Wspólny log transakcji wszystkich baz użytkownika na serwerze
+      correct: false
+    - text: Automatyczne kopie zapasowe wszystkich baz użytkownika na serwerze
+      correct: false
+    - text: Definicje loginów i uprawnień serwera
+      correct: false
+    - text: Tabele tymczasowe, dane sortowań i hash joinów oraz wersje wierszy
+      correct: true
+  explanation: |
+    tempdb jest współdzielona przez wszystkie bazy i odtwarzana przy restarcie, dlatego łatwo staje się wąskim gardłem.
+    Kopie zapasowe to pliki `.bak`, każda baza ma własny log, a loginy przechowuje baza master.
+
+- id: 63
+  question: Który model odzyskiwania pozwala odtworzyć bazę do punktu w czasie?
+  answers:
+    - text: "`FULL` z kopiami logu"
+      correct: true
+    - text: "`BULK_LOGGED` bez kopii logu"
+      correct: false
+    - text: SIMPLE z kopiami różnicowymi
+      correct: false
+    - text: SIMPLE z codzienną kopią pełną bazy
+      correct: false
+  explanation: |
+    Tylko łańcuch kopii logu w modelu `FULL` pozwala odtworzyć bazę do dowolnej chwili (`BULK_LOGGED` - z ograniczeniami).
+    W SIMPLE log jest automatycznie czyszczony, więc odtwarza się tylko do kopii pełnej lub różnicowej.
+
+- id: 64
+  question: Co zawiera kopia różnicowa (differential)?
+  answers:
+    - text: Zmiany od ostatniej kopii różnicowej
+      correct: false
+    - text: Wyłącznie strukturę bazy bez danych
+      correct: false
+    - text: Zmiany od ostatniej kopii logu transakcji
+      correct: false
+    - text: Zmiany od ostatniej kopii pełnej
+      correct: true
+  explanation: |
+    Kopia różnicowa rośnie do czasu kolejnej kopii pełnej, więc przy odtwarzaniu potrzebna jest ostatnia pełna i ostatnia różnicowa.
+    Zmiany od kopii logu zawiera kolejna kopia logu, a sama struktura bez danych to skrypt schematu.
+
+- id: 65
+  question: Jaki jest typowy powód ciągle rosnącego logu transakcji w modelu `FULL`?
+  answers:
+    - text: Włączony Query Store
+      correct: false
+    - text: Zbyt częste wykonywanie kopii pełnych
+      correct: false
+    - text: Brak kopii logu lub długo otwarta transakcja
+      correct: true
+    - text: Zbyt wiele indeksów nieklastrowanych na dużych tabelach
+      correct: false
+  explanation: |
+    W modelu `FULL` log jest czyszczony dopiero po kopii logu, a otwarta transakcja blokuje obcinanie (`log_reuse_wait_desc` pokaże przyczynę).
+    Kopie pełne nie czyszczą logu, Query Store przechowuje dane w bazie, a indeksy nie powodują ciągłego wzrostu logu.
+
+- id: 66
+  question: Który mechanizm zapewnia automatyczny failover i repliki do odczytu na poziomie baz?
+  answers:
+    - text: Kopie zapasowe w Azure Blob Storage
+      correct: false
+    - text: Replikacja snapshot
+      correct: false
+    - text: Always On Availability Groups
+      correct: true
+    - text: Log shipping
+      correct: false
+  explanation: |
+    Availability Groups utrzymują synchroniczne lub asynchroniczne repliki z automatycznym przełączaniem i możliwością odczytu.
+    Log shipping wymaga ręcznego przełączenia, replikacja snapshot służy do dystrybucji danych, a kopie zapasowe to nie HA.
+
+- id: 67
+  question: Czym różni się login od użytkownika w SQL Server?
+  answers:
+    - text: Użytkownik ma zawsze więcej uprawnień niż login
+      correct: false
+    - text: Login działa na poziomie serwera, a użytkownik w konkretnej bazie
+      correct: true
+    - text: To synonimy używane zamiennie w dokumentacji
+      correct: false
+    - text: Login dotyczy aplikacji, a użytkownik konkretnej osoby fizycznej
+      correct: false
+  explanation: |
+    Login pozwala połączyć się z instancją, a użytkownik bazy otrzymuje uprawnienia do obiektów w niej.
+    Podział na aplikację i osobę jest fikcyjny, a uprawnienia zależą od ról, nie od tego, czy to login, czy użytkownik.
+
+- id: 68
+  question: Do czego służy Row-Level Security?
+  answers:
+    - text: Do kompresji rzadko używanych wierszy
+      correct: false
+    - text: Do szyfrowania wybranych wierszy kluczem przypisanym do użytkownika
+      correct: false
+    - text: Do blokowania wierszy przed jednoczesną modyfikacją
+      correct: false
+    - text: Do ograniczania wierszy widocznych dla użytkownika przez predykat
+      correct: true
+  explanation: |
+    RLS przydaje się np. w systemach multi-tenant - każdy tenant widzi tylko swoje dane, a kontekst przekazuje się przez `SESSION_CONTEXT`.
+    Szyfrowanie to Always Encrypted, blokowanie przed modyfikacją to locki, a kompresja to osobna funkcja.
+
+- id: 69
+  question: Czym Always Encrypted różni się od Dynamic Data Masking?
+  answers:
+    - text: Always Encrypted szyfruje dane po stronie klienta, a Data Masking tylko maskuje wyniki
+      correct: true
+    - text: Oba mechanizmy szyfrują backupy kluczem serwera
+      correct: false
+    - text: Data Masking szyfruje dane na dysku, a Always Encrypted tylko je maskuje
+      correct: false
+    - text: Always Encrypted działa tylko na kolumnach liczbowych
+      correct: false
+  explanation: |
+    Klucze Always Encrypted ma tylko aplikacja kliencka, więc nawet DBA nie odczyta danych; maskowanie nie chroni przed użytkownikiem z uprawnieniem UNMASK ani przed odczytem pliku.
+    Szyfrowanie plików i backupów zapewnia TDE, a Always Encrypted działa także dla tekstów.
+
+- id: 70
+  question: Która DMV pokazuje, na co SQL Server najczęściej czeka?
+  answers:
+    - text: "`sys.dm_exec_sessions`"
+      correct: false
+    - text: "`sys.dm_os_wait_stats`"
+      correct: true
+    - text: "`sys.dm_db_index_usage_stats`"
+      correct: false
+    - text: "`sys.dm_db_missing_index_details`"
+      correct: false
+  explanation: |
+    Wait stats pokazują wąskie gardło: PAGEIOLATCH (dysk), `LCK_M` (blokady), WRITELOG (zapis logu) itd.
+    `sys.dm_exec_sessions` zawiera sesje, a dwie pozostałe DMV dotyczą użycia indeksów i podpowiedzi brakujących indeksów.
+
+- id: 71
+  question: Co sugeruje dominujący typ oczekiwania `PAGEIOLATCH_SH`?
+  answers:
+    - text: Wąskie gardło w odczycie stron z dysku
+      correct: true
+    - text: Problem z blokadami między transakcjami
+      correct: false
+    - text: Przeciążenie sieci między serwerem a aplikacją kliencką
+      correct: false
+    - text: Wolny zapis logu transakcji
+      correct: false
+  explanation: |
+    PAGEIOLATCH oznacza czekanie na wczytanie strony do bufora - przyczyną bywa wolny dysk, za mało RAM lub brak indeksów powodujący duże skanowania.
+    Blokady to `LCK_M_*`, zapis logu - WRITELOG, a powolny klient - `ASYNC_NETWORK_IO`.
+
+- id: 72
+  question: Czym są Extended Events?
+  answers:
+    - text: Triggerami wykonywanymi na poziomie serwera
+      correct: false
+    - text: Zadaniami SQL Server Agent uruchamianymi automatycznie po zdarzeniu w bazie
+      correct: false
+    - text: Lekkim mechanizmem śledzenia zdarzeń, następcą SQL Profilera
+      correct: true
+    - text: Rozszerzeniami języka T-SQL o nowe funkcje
+      correct: false
+  explanation: |
+    Sesje Extended Events przechwytują np. wolne zapytania czy deadlocki, a sesja `system_health` działa domyślnie.
+    Nie rozszerzają składni T-SQL, nie są triggerami ani zadaniami Agenta.
+
+- id: 73
+  question: Która funkcja jest niedeterministyczna?
+  answers:
+    - text: "`UPPER()`"
+      correct: false
+    - text: "`DATEADD()`"
+      correct: false
+    - text: "`ABS()`"
+      correct: false
+    - text: "`GETDATE()`"
+      correct: true
+  explanation: |
+    GETDATE zwraca inną wartość przy każdym wywołaniu, więc nie można jej użyć w indeksowanej kolumnie wyliczanej.
+    ABS, DATEADD i UPPER dla tych samych argumentów zawsze zwracają ten sam wynik.
+
+- id: 74
+  question: Dlaczego duże operacje `DELETE` warto wykonywać w paczkach?
+  answers:
+    - text: Bo usuwanie w paczkach automatycznie odbudowuje indeksy
+      correct: false
+    - text: Bo `DELETE` bez paczek nie jest logowany, więc nie da się go wycofać w razie błędu
+      correct: false
+    - text: Bo krótsze transakcje ograniczają rozrost logu i czas trzymania blokad
+      correct: true
+    - text: Bo jeden `DELETE` może usunąć maksymalnie 5000 wierszy
+      correct: false
+  explanation: |
+    Pętla z `DELETE TOP (5000)` pozwala innym sesjom pracować między paczkami i ogranicza wzrost logu.
+    Nie ma limitu 5000 wierszy, paczki nie przebudowują indeksów, a `DELETE` jest zawsze w pełni logowany.
+
+- id: 75
+  question: Czy partycjonowanie tabeli automatycznie przyspiesza wszystkie zapytania?
+  answers:
+    - text: Nie, bo partycjonowanie spowalnia wszystkie zapytania `SELECT`
+      correct: false
+    - text: Tak - partycjonowanie zastępuje potrzebę indeksów
+      correct: false
+    - text: Tak - każde zapytanie wykonuje się równolegle na wszystkich partycjach
+      correct: false
+    - text: Nie - pomaga głównie w zarządzaniu danymi i zapytaniach po kluczu partycji
+      correct: true
+  explanation: |
+    Główne korzyści to szybkie przełączanie i obcinanie partycji (SWITCH, `TRUNCATE ... WITH (PARTITIONS)`) oraz eliminacja partycji w zapytaniach.
+    Partycjonowanie nie wymusza równoległości, nie zastępuje indeksów i nie spowalnia z zasady wszystkich zapytań.
+
+- id: 76
+  question: Który odpowiednik BULK `INSERT` jest dostępny w .NET do szybkiego ładowania danych?
+  answers:
+    - text: "`SqlDataAdapter.Fill`"
+      correct: false
+    - text: "`SqlBulkCopy`"
+      correct: true
+    - text: "`SqlCommand.ExecuteNonQuery` w pętli"
+      correct: false
+    - text: "`DbContext.SaveChanges` dla każdego wiersza"
+      correct: false
+  explanation: |
+    `SqlBulkCopy` przesyła dane strumieniowo protokołem bulk load, co jest wielokrotnie szybsze niż pojedyncze INSERT-y.
+    Fill służy do odczytu, a pętle z `ExecuteNonQuery` i `SaveChanges` dla każdego wiersza to najwolniejsze możliwe podejście.
+
+- id: 77
+  question: Jaki warunek musi spełniać table-valued parameter w procedurze?
+  answers:
+    - text: Musi być oznaczony jako `READONLY`
+      correct: true
+    - text: Musi być ostatnim parametrem procedury
+      correct: false
+    - text: Musi mieć dokładnie jedną kolumnę typu `INT`
+      correct: false
+    - text: Musi być typu `NVARCHAR(MAX)` z danymi w JSON
+      correct: false
+  explanation: |
+    TVP przekazuje tabelę zdefiniowaną przez `CREATE TYPE ... AS TABLE` i nie może być modyfikowany wewnątrz procedury.
+    Może mieć dowolne kolumny, nie jest JSON-em i nie musi być ostatnim parametrem.
+
+- id: 78
+  question: Która usługa Azure jest niemal w pełni zgodna z SQL Server, z SQL Agent i zapytaniami między bazami?
+  answers:
+    - text: Azure SQL Managed Instance
+      correct: true
+    - text: Azure Cosmos DB for NoSQL
+      correct: false
+    - text: Azure SQL Database (pojedyncza baza)
+      correct: false
+    - text: Azure Table Storage
+      correct: false
+  explanation: |
+    Managed Instance to zarządzana instancja SQL Server, ułatwiająca migrację istniejących systemów.
+    Azure SQL Database nie ma SQL Agent ani zapytań między bazami w tej samej postaci, a Cosmos DB i Table Storage to bazy NoSQL.
+
+- id: 79
+  question: Na czym polega wzorzec expand/contract przy zmianach schematu bazy?
+  answers:
+    - text: Każda zmiana schematu wymaga utworzenia nowej bazy danych
+      correct: false
+    - text: Najpierw kompatybilnie rozszerza się schemat, a starą strukturę usuwa dopiero w kolejnym wydaniu
+      correct: true
+    - text: Najpierw usuwa się starą kolumnę, a potem dodaje nową w tym samym wdrożeniu aplikacji
+      correct: false
+    - text: Schemat zmienia się tylko w trakcie okna serwisowego z wyłączoną aplikacją
+      correct: false
+  explanation: |
+    Dzięki temu stara i nowa wersja aplikacji mogą działać równocześnie podczas rolling deploymentu, bez przestojów.
+    Usunięcie kolumny przed wdrożeniem nowego kodu psuje starą wersję, a okna serwisowe i nowe bazy to podejście z przestojem lub przerostem formy.

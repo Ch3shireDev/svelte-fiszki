@@ -1,0 +1,1079 @@
+- id: 1
+  question: Co zwraca `typeof null` w JavaScript?
+  answers:
+    - text: "\"object\""
+      correct: true
+    - text: "\"undefined\""
+      correct: false
+    - text: "\"number\""
+      correct: false
+    - text: "\"null\""
+      correct: false
+  explanation: |
+    To historyczny błąd języka, którego nie poprawiono ze względu na kompatybilność wsteczną.
+    `null` jest prymitywem, ale `typeof` zwraca "object" - do sprawdzenia `null` używa się `x === null`.
+
+- id: 2
+  question: Który z poniższych typów NIE jest prymitywem w JavaScript?
+  answers:
+    - text: "`undefined`"
+      correct: false
+    - text: "`bigint`"
+      correct: false
+    - text: "`Array`"
+      correct: true
+    - text: "`symbol`"
+      correct: false
+  explanation: |
+    Tablice są obiektami (`typeof []` zwraca `"object"`).
+    `symbol`, `bigint` i `undefined` należą do siedmiu typów prymitywnych, obok `string`, `number`, `boolean` i `null`.
+
+- id: 3
+  question: Czym różni się zasięg `var` od `let`?
+  answers:
+    - text: "`var` ma zasięg globalny zawsze, niezależnie od miejsca deklaracji w kodzie"
+      correct: false
+    - text: Oba mają zasięg blokowy, ale `var` można zadeklarować ponownie w tym samym bloku
+      correct: false
+    - text: "`let` ma zasięg funkcyjny, a `var` - blokowy"
+      correct: false
+    - text: "`var` ma zasięg funkcyjny, a `let` - blokowy"
+      correct: true
+  explanation: |
+    Zmienna `var` zadeklarowana w bloku if jest widoczna w całej funkcji, a `let` tylko w tym bloku.
+    Odwrócenie zasięgów jest błędne, `var` nie ma zasięgu blokowego, a globalny jest tylko wtedy, gdy zadeklarowano go poza funkcją.
+
+- id: 4
+  question: Czy można zmodyfikować obiekt zadeklarowany przez `const`?
+  answers:
+    - text: Tak, ale tylko jeśli obiekt został wcześniej zamrożony przez `Object.freeze`
+      correct: false
+    - text: Nie - próba zmiany właściwości zawsze rzuca `TypeError`, także poza strict mode
+      correct: false
+    - text: Tak - `const` blokuje ponowne przypisanie zmiennej, a nie mutację obiektu
+      correct: true
+    - text: Nie - `const` sprawia, że obiekt i wszystkie jego właściwości są niemutowalne
+      correct: false
+  explanation: |
+    `const user = {}`; `user.name = 'Jan'` działa, ale `user = {}` rzuci błąd.
+    Głęboką niemutowalność daje dopiero `Object.freeze` (płytko) - a zamrożonego obiektu właśnie nie da się zmienić.
+
+- id: 5
+  question: Co się stanie przy odwołaniu do zmiennej `let` przed jej deklaracją?
+  answers:
+    - text: Kod się wykona, ale zmienna zostanie automatycznie przeniesiona do zasięgu globalnego
+      correct: false
+    - text: Zostanie rzucony `ReferenceError` (temporal dead zone)
+      correct: true
+    - text: Zmienna będzie miała wartość `undefined`, tak jak w przypadku `var`
+      correct: false
+    - text: Zmienna będzie miała wartość `null` do czasu przypisania
+      correct: false
+  explanation: |
+    `let` i `const` są hoistowane, ale do linii deklaracji znajdują się w temporal dead zone.
+    `undefined` przed deklaracją to zachowanie `var`, a `let` nie trafia automatycznie do zasięgu globalnego.
+
+- id: 6
+  question: Która deklaracja jest hoistowana w całości, tak że można jej użyć przed definicją?
+  answers:
+    - text: "`class` Foo `{}`"
+      correct: false
+    - text: "`let foo = function` () `{}`"
+      correct: false
+    - text: "`const foo = () => {}`"
+      correct: false
+    - text: "`function foo() {}`"
+      correct: true
+  explanation: |
+    Deklaracje funkcji są hoistowane razem z ciałem.
+    Wyrażenia funkcyjne przypisane do `const` lub `let` oraz klasy są w temporal dead zone do momentu deklaracji.
+
+- id: 7
+  question: Jaki jest wynik `"5" == 5` oraz `"5" === 5`?
+  answers:
+    - text: "`true` i `false`"
+      correct: true
+    - text: "`true` i `true`"
+      correct: false
+    - text: "`false` i `true`"
+      correct: false
+    - text: "`false` i `false`"
+      correct: false
+  explanation: |
+    `==` wykonuje niejawną konwersję typów, więc porównuje 5 z 5, a `===` porównuje także typy, więc `string` i `number` nie są równe.
+    Dlatego zaleca się zawsze używać `===`.
+
+- id: 8
+  question: Która wartość jest truthy?
+  answers:
+    - text: "0"
+      correct: false
+    - text: "\"\""
+      correct: false
+    - text: "`NaN`"
+      correct: false
+    - text: "\"0\""
+      correct: true
+  explanation: |
+    Niepusty `string` jest zawsze truthy, nawet jeśli zawiera "0" lub "false".
+    0, pusty `string` i `NaN` należą do wartości falsy, obok `false`, -0, 0n, `null` i `undefined`.
+
+- id: 9
+  question: Jaki jest wynik 0 ?? 10 oraz `0 || 10`?
+  answers:
+    - text: 10 i 10
+      correct: false
+    - text: 0 i 0
+      correct: false
+    - text: 0 i 10
+      correct: true
+    - text: 10 i 0
+      correct: false
+  explanation: |
+    ?? zastępuje tylko `null` i `undefined`, więc 0 zostaje, a `||` zastępuje każdą wartość falsy, więc zwraca 10.
+    Dlatego ?? lepiej nadaje się do wartości domyślnych, gdy 0 lub pusty `string` są poprawnymi danymi.
+
+- id: 10
+  question: Co zwróci user?.address?.city, gdy user jest `undefined`?
+  answers:
+    - text: "`null`"
+      correct: false
+    - text: Rzuci `TypeError`
+      correct: false
+    - text: "`undefined`"
+      correct: true
+    - text: Pusty `string`
+      correct: false
+  explanation: |
+    Optional chaining przerywa wyrażenie przy `null` lub `undefined` i zwraca `undefined`.
+    Bez ?. odwołanie do właściwości `undefined` rzuciłoby `TypeError`, a `null` czy pusty `string` nie są zwracane.
+
+- id: 11
+  question: Czym jest domknięcie (closure)?
+  answers:
+    - text: Funkcją, która pamięta zmienne z zasięgu, w którym została utworzona
+      correct: true
+    - text: Mechanizmem blokującym dostęp do zmiennych globalnych z wnętrza funkcji
+      correct: false
+    - text: Funkcją, która zamyka połączenia sieciowe po zakończeniu działania
+      correct: false
+    - text: Blokiem kodu wykonywanym natychmiast po zdefiniowaniu, bez nazwy
+      correct: false
+  explanation: |
+    Funkcja zwrócona z `counter()` nadal ma dostęp do zmiennej c z zasięgu counter, mimo że ta funkcja się zakończyła.
+    Zamykanie połączeń to nie closure, funkcja wywoływana natychmiast to IIFE, a closure nie blokuje dostępu do zmiennych globalnych.
+
+- id: 12
+  question: Jaki zasięg ma JavaScript?
+  answers:
+    - text: Zależny od trybu - leksykalny w strict mode, dynamiczny poza nim
+      correct: false
+    - text: Leksykalny - o dostępie do zmiennych decyduje miejsce zapisu kodu
+      correct: true
+    - text: Dynamiczny - o dostępie decyduje miejsce wywołania funkcji
+      correct: false
+    - text: Wyłącznie globalny - wszystkie zmienne są widoczne wszędzie
+      correct: false
+  explanation: |
+    Funkcja widzi zmienne z zasięgów, w których została zdefiniowana, niezależnie od tego, skąd jest wywoływana.
+    Dynamiczny zasięg nie występuje w JS (choć `this` zależy od wywołania), a strict mode nie zmienia modelu zasięgu.
+
+- id: 13
+  question: Od czego zależy wartość `this` w zwykłej funkcji?
+  answers:
+    - text: Od nazwy pliku, w którym funkcja się znajduje
+      correct: false
+    - text: Od miejsca, w którym funkcja została zdefiniowana w kodzie
+      correct: false
+    - text: Zawsze wskazuje na obiekt window w przeglądarce
+      correct: false
+    - text: Od sposobu wywołania funkcji
+      correct: true
+  explanation: |
+    `obj.method()` ustawia `this` na obj, `new` - na nowy obiekt, a call, apply i bind - jawnie.
+    Leksykalne `this` mają tylko funkcje strzałkowe, nazwa pliku nie ma znaczenia, a w strict mode zwykłe wywołanie daje `undefined`.
+
+- id: 14
+  question: Czym bind różni się od call?
+  answers:
+    - text: bind przyjmuje argumenty jako tablicę, a call jako listę
+      correct: false
+    - text: call zwraca nową funkcję z przypisanym `this`, a bind od razu wywołuje funkcję
+      correct: false
+    - text: bind działa tylko z funkcjami strzałkowymi, a call ze zwykłymi
+      correct: false
+    - text: bind zwraca nową funkcję z przypisanym `this`, a call od razu wywołuje funkcję
+      correct: true
+  explanation: |
+    bind przydaje się przy przekazywaniu metody jako callbacku, np. `button.addEventListener('click', this.save.bind(this))`.
+    Argumenty jako tablicę przyjmuje apply, a bind nie zmieni `this` funkcji strzałkowej.
+
+- id: 15
+  question: Czego nie mają funkcje strzałkowe?
+  answers:
+    - text: Dostępu do zmiennych z otaczającego zasięgu
+      correct: false
+    - text: Możliwości zwracania wartości przez `return`
+      correct: false
+    - text: Możliwości przyjmowania parametrów domyślnych i rest
+      correct: false
+    - text: Własnego `this` i możliwości wywołania przez `new`
+      correct: true
+  explanation: |
+    Funkcje strzałkowe dziedziczą `this` leksykalnie i nie mogą być konstruktorami.
+    Mogą zwracać wartości, mają dostęp do zasięgu (domknięcia) i obsługują parametry domyślne.
+
+- id: 16
+  question: Gdzie JavaScript szuka właściwości, której nie ma w samym obiekcie?
+  answers:
+    - text: W zasięgu globalnym window
+      correct: false
+    - text: Nigdzie - od razu zwraca `undefined`
+      correct: false
+    - text: W łańcuchu prototypów, aż do `null`
+      correct: true
+    - text: W obiekcie `this` funkcji wywołującej
+      correct: false
+  explanation: |
+    Każdy obiekt ma powiązanie `[[Prototype]]`, więc np. metody tablicy pochodzą z `Array.prototype`.
+    Zasięg globalny dotyczy zmiennych, a nie właściwości obiektów, a `undefined` jest zwracane dopiero po przejściu całego łańcucha.
+
+- id: 17
+  question: Czym są klasy w JavaScript?
+  answers:
+    - text: Składnią nad dziedziczeniem prototypowym
+      correct: true
+    - text: Typami dostępnymi tylko w TypeScript, nie w czystym JavaScript
+      correct: false
+    - text: Strukturami kompilowanymi do kodu natywnego przez silnik V8
+      correct: false
+    - text: Nowym modelem obiektowym, który zastąpił prototypy
+      correct: false
+  explanation: |
+    `class` i `extends` nadal korzystają z prototypów pod spodem.
+    Nie zastąpiły prototypów, nie są kompilowane do kodu natywnego w szczególny sposób i są częścią standardu od ES2015.
+
+- id: 18
+  question: Jak oznacza się prywatne pole klasy w nowoczesnym JavaScript?
+  answers:
+    - text: "`#nazwa`"
+      correct: true
+    - text: "`@nazwa`"
+      correct: false
+    - text: "`private` nazwa"
+      correct: false
+    - text: "`_nazwa`"
+      correct: false
+  explanation: |
+    Pola z `#` są naprawdę prywatne - niedostępne spoza klasy.
+    `_nazwa` to tylko konwencja bez ochrony, `private` to słowo kluczowe TypeScriptu (znika po kompilacji), a `@` oznacza dekoratory.
+
+- id: 19
+  question: "W jakiej kolejności wypisze się: `console.log(1)`; `setTimeout(() => console.log(2))`; `Promise.resolve().then(() => console.log(3))`; `console.log(4)`;?"
+  answers:
+    - text: 1, 4, 2, 3
+      correct: false
+    - text: 1, 3, 4, 2
+      correct: false
+    - text: 1, 4, 3, 2
+      correct: true
+    - text: 1, 2, 3, 4
+      correct: false
+  explanation: |
+    Najpierw wykonuje się kod synchroniczny (1, 4), potem mikrozadania (3), a dopiero potem makrozadania jak `setTimeout` (2).
+    Kolejność 1, 4, 2, 3 ignoruje priorytet mikrozadań, a 3 nie może wypisać się przed synchronicznym 4.
+
+- id: 20
+  question: Który mechanizm trafia do kolejki mikrozadań?
+  answers:
+    - text: Callback z `then()` na `Promise`
+      correct: true
+    - text: Callback z `setInterval`
+      correct: false
+    - text: Obsługa zdarzenia click
+      correct: false
+    - text: Callback z `setTimeout(fn, 0)` z zerowym opóźnieniem
+      correct: false
+  explanation: |
+    Mikrozadania (`Promise`, `queueMicrotask`, `MutationObserver`) są wykonywane zaraz po bieżącym kodzie, przed kolejnym makrozadaniem.
+    `setTimeout`, `setInterval` i zdarzenia DOM to makrozadania.
+
+- id: 21
+  question: Jakie stany może mieć `Promise`?
+  answers:
+    - text: "`new`, active, closed"
+      correct: false
+    - text: pending, fulfilled, rejected
+      correct: true
+    - text: waiting, running, done
+      correct: false
+    - text: open, resolved, failed, cancelled
+      correct: false
+  explanation: |
+    Po rozstrzygnięciu (fulfilled lub rejected) stan `Promise` już się nie zmienia.
+    Pozostałe zestawy stanów nie istnieją w specyfikacji, a `Promise` nie ma wbudowanego stanu cancelled.
+
+- id: 22
+  question: Który kombinator `Promise` nigdy nie odrzuca i zwraca status każdej obietnicy?
+  answers:
+    - text: "`Promise.all`"
+      correct: false
+    - text: "`Promise.allSettled`"
+      correct: true
+    - text: "`Promise.any`"
+      correct: false
+    - text: "`Promise.race`"
+      correct: false
+  explanation: |
+    `allSettled` czeka na wszystkie i zwraca obiekty `{ status, value | reason }`.
+    all odrzuca przy pierwszym błędzie, race rozstrzyga się wynikiem pierwszej zakończonej, a `any` odrzuca `AggregateError`, gdy wszystkie zawiodą.
+
+- id: 23
+  question: Co zawsze zwraca funkcja oznaczona jako `async`?
+  answers:
+    - text: "`Promise`"
+      correct: true
+    - text: Observable
+      correct: false
+    - text: Wartość z instrukcji `return` bez opakowania
+      correct: false
+    - text: Generator
+      correct: false
+  explanation: |
+    Nawet `return` 5 w funkcji `async` zwraca `Promise` rozstrzygniętą wartością 5.
+    `Observable` pochodzi z RxJS, a generatory tworzy `function*`.
+
+- id: 24
+  question: Jak uruchomić równolegle dwie niezależne operacje asynchroniczne?
+  answers:
+    - text: "`const a = getA()`; `await` a; `const b = getB()`; `await` b;"
+      correct: false
+    - text: "`const a = await getA(); const b = await getB();`"
+      correct: false
+    - text: "`const [a, b] = await Promise.all([getA(), getB()])`"
+      correct: true
+    - text: "`await getA() && await getB()`"
+      correct: false
+  explanation: |
+    `Promise.all` uruchamia obie operacje od razu i czeka na obie naraz.
+    Kolejne `await` (w tym w wyrażeniu `&& i` w wariancie z osobnymi zmiennymi) wykonują operacje sekwencyjnie, sumując czas.
+
+- id: 25
+  question: Co dzieje się w Node.js 15+ przy nieobsłużonym odrzuceniu `Promise`?
+  answers:
+    - text: "`Promise` jest automatycznie ponawiana"
+      correct: false
+    - text: Błąd trafia do kolejki i jest obsługiwany przy następnym żądaniu
+      correct: false
+    - text: Proces domyślnie się kończy
+      correct: true
+    - text: Błąd jest ignorowany bez żadnego komunikatu
+      correct: false
+  explanation: |
+    Od Node.js 15 domyślny tryb unhandled rejections to `throw`, który kończy proces.
+    W przeglądarce pojawia się ostrzeżenie i zdarzenie unhandledrejection, ale `Promise` nie jest ponawiana ani kolejkowana.
+
+- id: 26
+  question: Czym różni się debounce od throttle?
+  answers:
+    - text: Debounce czeka na ciszę po zdarzeniach, throttle ogranicza wywołania do jednego na okres
+      correct: true
+    - text: Oba usuwają zdarzenia z kolejki pętli zdarzeń przeglądarki
+      correct: false
+    - text: Debounce działa tylko z zdarzeniami klawiatury, a throttle z myszą
+      correct: false
+    - text: Throttle czeka na ciszę po zdarzeniach, debounce ogranicza wywołania do jednego na okres
+      correct: false
+  explanation: |
+    Debounce pasuje do wyszukiwania po skończeniu pisania, a throttle - do obsługi scrolla czy resize.
+    Role nie są odwrócone, oba działają z dowolnymi zdarzeniami i nie modyfikują kolejki pętli zdarzeń.
+
+- id: 27
+  question: Co zwraca `forEach`?
+  answers:
+    - text: "`undefined`"
+      correct: true
+    - text: Liczbę przetworzonych elementów
+      correct: false
+    - text: Tablicę wejściową po modyfikacji
+      correct: false
+    - text: Nową tablicę z wynikami callbacka
+      correct: false
+  explanation: |
+    `forEach` służy tylko do iteracji z efektami ubocznymi i nie da się go łączyć w łańcuch.
+    Nową tablicę zwraca map, a liczbę elementów podaje length.
+
+- id: 28
+  question: Która metoda tablicy modyfikuje oryginalną tablicę?
+  answers:
+    - text: filter
+      correct: false
+    - text: slice
+      correct: false
+    - text: sort
+      correct: true
+    - text: map
+      correct: false
+  explanation: |
+    sort sortuje w miejscu i zwraca tę samą tablicę - niemutujący odpowiednik to `toSorted` (ES2023).
+    map, slice i filter zwracają nowe tablice.
+
+- id: 29
+  question: Czym różni się slice od splice?
+  answers:
+    - text: slice działa tylko na stringach, a splice tylko na tablicach
+      correct: false
+    - text: slice zwraca kopię fragmentu, a splice modyfikuje tablicę
+      correct: true
+    - text: splice zwraca kopię fragmentu, a slice modyfikuje tablicę
+      correct: false
+    - text: Oba modyfikują tablicę, ale slice usuwa elementy od końca
+      correct: false
+  explanation: |
+    `splice(start, deleteCount, ...items)` usuwa i wstawia elementy w oryginale, zwracając usunięte.
+    slice działa zarówno na stringach, jak i tablicach, a odwrócenie ról jest błędne.
+
+- id: 30
+  question: "Jaki będzie wynik: `const { a = 1, b = 2 } = { a: undefined, b: null };`?"
+  answers:
+    - text: "`a = 1`, `b = 2`"
+      correct: false
+    - text: "`a = undefined`, `b = null`"
+      correct: false
+    - text: "`a = undefined`, `b = 2`"
+      correct: false
+    - text: "`a = 1`, `b = null`"
+      correct: true
+  explanation: |
+    Wartość domyślna w destrukturyzacji jest używana tylko dla `undefined`, a nie dla `null`.
+    Dlatego a dostaje 1, a b zostaje `null`.
+
+- id: 31
+  question: "Co zawiera `rest` w `const { id, ...rest } = { id: 1, name: 'A', age: 3 }`?"
+  answers:
+    - text: "`{ name: 'A', age: 3 }`"
+      correct: true
+    - text: "`['A', 3]`"
+      correct: false
+    - text: "`{ id: 1, name: 'A', age: 3 }`"
+      correct: false
+    - text: "'A'"
+      correct: false
+  explanation: |
+    Rest w destrukturyzacji obiektu zbiera pozostałe właściwości w nowy obiekt.
+    Tablicę zwraca rest w destrukturyzacji tablicy, a id nie trafia do rest, bo zostało wyciągnięte osobno.
+
+- id: 32
+  question: Która metoda tworzy głęboką kopię obiektu z obsługą Date, `Map` i `Set`?
+  answers:
+    - text: "`{ ...obj }`"
+      correct: false
+    - text: "`JSON.parse(JSON.stringify(obj))`"
+      correct: false
+    - text: "`Object.assign({}, obj)`"
+      correct: false
+    - text: "`structuredClone(obj)`"
+      correct: true
+  explanation: |
+    `structuredClone` kopiuje całą strukturę i obsługuje wiele typów wbudowanych.
+    Spread i `Object.assign` tworzą płytkie kopie, a JSON gubi daty (stają się stringami), `Map`, `Set`, `undefined` i funkcje.
+
+- id: 33
+  question: Czym `Map` różni się od zwykłego obiektu?
+  answers:
+    - text: Kluczem w `Map` może być dowolna wartość
+      correct: true
+    - text: "`Map` nie ma żadnej metody ani właściwości do sprawdzenia liczby elementów"
+      correct: false
+    - text: "`Map` pozwala tylko na klucze typu `string`"
+      correct: false
+    - text: "`Map` nie zachowuje kolejności wstawiania kluczy"
+      correct: false
+  explanation: |
+    `Map` przyjmuje dowolne klucze, zachowuje kolejność i ma właściwość size.
+    To zwykły obiekt ogranicza klucze do stringów i symboli, a `Map` zachowuje kolejność wstawiania.
+
+- id: 34
+  question: Jak najprościej usunąć duplikaty z tablicy prymitywów?
+  answers:
+    - text: "`arr.unique()`"
+      correct: false
+    - text: "`[...new Set(arr)]`"
+      correct: true
+    - text: "`Object.keys(arr)`"
+      correct: false
+    - text: "`arr.filter(x => x).sort()`"
+      correct: false
+  explanation: |
+    `Set` przechowuje tylko unikalne wartości, a spread zamienia go z powrotem na tablicę.
+    Metoda unique nie istnieje, filter z `x => x` usuwa wartości falsy, a nie duplikaty, a `Object.keys` zwraca indeksy.
+
+- id: 35
+  question: Dlaczego `WeakMap` nie powoduje wycieków pamięci?
+  answers:
+    - text: Bo ma ograniczoną pojemność i usuwa najstarsze wpisy
+      correct: false
+    - text: Bo automatycznie usuwa każdy wpis po 60 sekundach od jego dodania
+      correct: false
+    - text: Bo przechowuje dane w `localStorage` zamiast w pamięci
+      correct: false
+    - text: Bo trzyma słabe referencje do obiektów-kluczy
+      correct: true
+  explanation: |
+    Gdy nie ma innych referencji do obiektu-klucza, wpis może zostać usunięty przez garbage collector.
+    `WeakMap` nie ma TTL, nie używa `localStorage` i nie ma limitu pojemności - za to nie da się po niej iterować.
+
+- id: 36
+  question: Do czego służy `Symbol`?
+  answers:
+    - text: Do przechowywania liczb o dowolnej precyzji
+      correct: false
+    - text: Do tworzenia unikalnych kluczy właściwości obiektów
+      correct: true
+    - text: Do oznaczania zmiennych jako stałych, niemożliwych do zmiany na poziomie modułu
+      correct: false
+    - text: Do szyfrowania wartości przechowywanych w obiekcie
+      correct: false
+  explanation: |
+    Każdy `Symbol('opis')` jest unikalny, a wbudowane symbole, jak `Symbol.iterator`, pozwalają dostosować zachowanie obiektów.
+    Duże liczby to `BigInt`, szyfrowanie to Web Crypto, a stałe to `const`.
+
+- id: 37
+  question: Co robi `yield` w funkcji generatora?
+  answers:
+    - text: Czeka na rozstrzygnięcie `Promise` jak `await`
+      correct: false
+    - text: Kończy działanie generatora i zwraca ostatnią wartość do pętli for...of
+      correct: false
+    - text: Przekazuje wykonanie do innego wątku
+      correct: false
+    - text: Zwraca wartość i wstrzymuje funkcję do kolejnego `next()`
+      correct: true
+  explanation: |
+    Generator zachowuje stan między wywołaniami `next()`, produkując wartości leniwie.
+    Zakończenie to `return`, JS nie ma wątków w tym sensie, a `await` działa w funkcjach `async` (w generatorach `async` można użyć obu).
+
+- id: 38
+  question: Co umożliwia statyczny charakter modułów ES?
+  answers:
+    - text: Używanie `require()` wewnątrz modułów ES bez żadnych ograniczeń i konfiguracji
+      correct: false
+    - text: Modyfikowanie eksportów innych modułów po imporcie
+      correct: false
+    - text: Tree-shaking, czyli usuwanie nieużywanego kodu
+      correct: true
+    - text: Ładowanie modułów synchronicznie w czasie wykonania
+      correct: false
+  explanation: |
+    Importy i eksporty są znane przed wykonaniem, więc bundler wie, czego nie używasz.
+    Synchroniczne ładowanie w czasie wykonania to cecha CommonJS, importy są tylko do odczytu, a `require` nie jest natywnie dostępny w ESM.
+
+- id: 39
+  question: Jak w Node.js włączyć moduły ES dla plików `.js`?
+  answers:
+    - text: "`\"esm\": true` w `tsconfig.json`"
+      correct: false
+    - text: Flaga --modules przy uruchomieniu node
+      correct: false
+    - text: Komentarz // `@esm` na początku pliku
+      correct: false
+    - text: "\"type\": \"module\" w `package.json`"
+      correct: true
+  explanation: |
+    Pole `type` w `package.json` decyduje, jak traktować pliki `.js` - alternatywnie można użyć rozszerzenia `.mjs`.
+    Pozostałe opcje nie istnieją w Node.js.
+
+- id: 40
+  question: Co zmienia "use strict" w zwykłym wywołaniu funkcji?
+  answers:
+    - text: "`this` ma wartość `undefined` zamiast window"
+      correct: true
+    - text: Wszystkie zmienne `var` stają się automatycznie stałymi `const`
+      correct: false
+    - text: Funkcja wykonuje się w osobnym wątku
+      correct: false
+    - text: Wszystkie błędy są ignorowane
+      correct: false
+  explanation: |
+    Strict mode zamienia ciche błędy w wyjątki, np. przypisanie do niezadeklarowanej zmiennej.
+    Nie tworzy wątków, nie zmienia `var` w `const` i działa odwrotnie niż ignorowanie błędów.
+
+- id: 41
+  question: Do czego dziś najczęściej używa się IIFE?
+  answers:
+    - text: Do importowania modułów ES w przeglądarce
+      correct: false
+    - text: Do tworzenia zmiennych globalnych dostępnych w całej aplikacji
+      correct: false
+    - text: Do `async` IIFE, np. `(async () => { await init(); })()`
+      correct: true
+    - text: Do definiowania klas zamiast słowa `class`
+      correct: false
+  explanation: |
+    Przed modułami ES IIFE izolowało zmienne, dziś przydaje się głównie do uruchomienia kodu `async` tam, gdzie nie ma top-level `await`.
+    IIFE nie zastępuje klas, nie importuje modułów i działa odwrotnie niż tworzenie zmiennych globalnych.
+
+- id: 42
+  question: Co to jest funkcja wyższego rzędu?
+  answers:
+    - text: Funkcja zdefiniowana na najwyższym poziomie modułu
+      correct: false
+    - text: Funkcja o priorytecie wyższym w pętli zdarzeń
+      correct: false
+    - text: Funkcja wywoływana przez inne funkcje częściej niż raz w jednym cyklu
+      correct: false
+    - text: Funkcja przyjmująca lub zwracająca inną funkcję
+      correct: true
+  explanation: |
+    map, filter, reduce i `setTimeout` to przykłady funkcji wyższego rzędu.
+    Miejsce definicji, priorytet czy liczba wywołań nie definiują tego pojęcia.
+
+- id: 43
+  question: Co to jest currying?
+  answers:
+    - text: Zamiana funkcji wieloargumentowej w łańcuch jednoargumentowych
+      correct: true
+    - text: Cache'owanie wyników funkcji dla tych samych argumentów
+      correct: false
+    - text: Wywoływanie funkcji asynchronicznie z opóźnieniem
+      correct: false
+    - text: Przypisanie funkcji do zmiennej w celu jej ponownego użycia w innych modułach
+      correct: false
+  explanation: |
+    `add(a, b)` staje się `add(a)(b)`, co pozwala tworzyć wyspecjalizowane funkcje, np. `add10 = add(10)`.
+    Cache'owanie wyników to memoizacja, a przypisanie do zmiennej i opóźnione wywołanie to inne pojęcia.
+
+- id: 44
+  question: Dla jakich funkcji memoizacja działa poprawnie?
+  answers:
+    - text: Dla czystych funkcji bez efektów ubocznych
+      correct: true
+    - text: Dla funkcji wykonujących zapytania HTTP z aktualnymi danymi
+      correct: false
+    - text: Dla funkcji, które modyfikują zmienne globalne
+      correct: false
+    - text: Dla funkcji zwracających losowe wartości
+      correct: false
+  explanation: |
+    Memoizacja zakłada, że te same argumenty zawsze dają ten sam wynik.
+    Funkcje z efektami ubocznymi, losowe lub pobierające zmienne dane dałyby po zapamiętaniu nieaktualne lub błędne wyniki.
+
+- id: 45
+  question: Która funkcja jest czysta?
+  answers:
+    - text: "`(x) => { console.log(x); return x; }`"
+      correct: false
+    - text: (a, b) `=> a + b`
+      correct: true
+    - text: "`(arr) => { arr.push(1); return arr; }`"
+      correct: false
+    - text: "`() => Math.random()`"
+      correct: false
+  explanation: |
+    Czysta funkcja zależy tylko od argumentów i nie ma efektów ubocznych.
+    `Math.random` daje różne wyniki, `console.log` to efekt uboczny, a push mutuje przekazaną tablicę.
+
+- id: 46
+  question: W jakiej fazie domyślnie działa listener dodany przez `addEventListener`?
+  answers:
+    - text: W fazie bubbling
+      correct: true
+    - text: W obu fazach jednocześnie
+      correct: false
+    - text: Tylko na elemencie docelowym, bez propagacji
+      correct: false
+    - text: W fazie capturing
+      correct: false
+  explanation: |
+    Domyślnie zdarzenie wywołuje listener w drodze od celu w górę drzewa DOM, a `capture: true` przełącza na fazę capturing.
+    Listener nie działa w obu fazach naraz i zdarzenia standardowo propagują się przez przodków.
+
+- id: 47
+  question: Na czym polega delegacja zdarzeń?
+  answers:
+    - text: Na kopiowaniu listenera do każdego nowego elementu
+      correct: false
+    - text: Na opóźnieniu obsługi zdarzenia do następnej klatki animacji przez `requestAnimationFrame`
+      correct: false
+    - text: Na jednym listenerze na rodzicu obsługującym zdarzenia z dzieci
+      correct: true
+    - text: Na przekazaniu obsługi zdarzenia do Web Workera
+      correct: false
+  explanation: |
+    Dzięki bubblingowi zdarzenia z elementów potomnych trafiają do rodzica, co oszczędza pamięć i obsługuje elementy dodane później.
+    Web Workery nie mają dostępu do DOM, a kopiowanie listenerów i opóźnianie do klatki to inne techniki.
+
+- id: 48
+  question: Co robi `event.preventDefault()`?
+  answers:
+    - text: Usuwa wszystkie listenery z elementu
+      correct: false
+    - text: Zatrzymuje propagację zdarzenia do elementów nadrzędnych w drzewie DOM
+      correct: false
+    - text: Anuluje wszystkie żądania fetch na stronie
+      correct: false
+    - text: Blokuje domyślne zachowanie przeglądarki
+      correct: true
+  explanation: |
+    `preventDefault` blokuje akcję przeglądarki, ale zdarzenie nadal propaguje się dalej.
+    Zatrzymanie propagacji to `stopPropagation`, a usuwanie listenerów i anulowanie fetch to osobne mechanizmy.
+
+- id: 49
+  question: Który magazyn w przeglądarce traci dane po zamknięciu karty?
+  answers:
+    - text: Cache API
+      correct: false
+    - text: "`localStorage`"
+      correct: false
+    - text: IndexedDB
+      correct: false
+    - text: "`sessionStorage`"
+      correct: true
+  explanation: |
+    `sessionStorage` jest powiązany z kartą przeglądarki.
+    `localStorage`, IndexedDB i Cache API przechowują dane trwale, dopóki nie zostaną usunięte.
+
+- id: 50
+  question: Dlaczego tokenów uwierzytelniających nie powinno się trzymać w `localStorage`?
+  answers:
+    - text: Bo dane w `localStorage` są usuwane po każdym odświeżeniu strony
+      correct: false
+    - text: Bo każdy skrypt na stronie, także wstrzyknięty przez XSS, może je odczytać
+      correct: true
+    - text: Bo `localStorage` ma limit 100 bajtów na wartość
+      correct: false
+    - text: Bo `localStorage` jest automatycznie wysyłany do serwera z każdym żądaniem
+      correct: false
+  explanation: |
+    `localStorage` jest w pełni dostępny dla JavaScriptu, więc atak XSS pozwala ukraść token - bezpieczniejsze jest ciasteczko `HttpOnly`.
+    `localStorage` nie jest wysyłany do serwera (to robią ciasteczka), ma limit rzędu 5 MB i przetrwa odświeżenie.
+
+- id: 51
+  question: Kiedy przeglądarka wysyła żądanie preflight OPTIONS?
+  answers:
+    - text: Przy każdym żądaniu GET do tej samej domeny
+      correct: false
+    - text: Przy "nieprostych" żądaniach do innej domeny, np. z JSON
+      correct: true
+    - text: Przy każdym żądaniu wysłanym przez niezabezpieczony protokół HTTP zamiast HTTPS
+      correct: false
+    - text: Tylko przy ładowaniu obrazów z innej domeny
+      correct: false
+  explanation: |
+    Preflight sprawdza, czy serwer zezwala na daną metodę i nagłówki z innej domeny.
+    Żądania do tej samej domeny i obrazy nie wymagają preflightu, a protokół HTTP lub HTTPS nie decyduje o nim.
+
+- id: 52
+  question: Kiedy `Promise` zwrócona przez fetch zostaje odrzucona?
+  answers:
+    - text: Tylko przy odpowiedzi z kodem 500
+      correct: false
+    - text: Nigdy - fetch zawsze rozstrzyga się pomyślnie
+      correct: false
+    - text: Przy każdej odpowiedzi serwera z kodem statusu 400 lub wyższym
+      correct: false
+    - text: Tylko przy błędzie sieci lub anulowaniu żądania
+      correct: true
+  explanation: |
+    Odpowiedź 404 czy 500 to poprawna odpowiedź HTTP, więc `Promise` jest spełniona, a `response.ok` ma wartość `false`.
+    Odrzucenie następuje przy braku połączenia, błędzie CORS czy przerwaniu przez `AbortController`.
+
+- id: 53
+  question: Do czego służy `AbortController`?
+  answers:
+    - text: Do zatrzymywania Web Workerów z zewnątrz
+      correct: false
+    - text: Do anulowania operacji takich jak fetch
+      correct: true
+    - text: Do przerywania pętli `for`, które działają zbyt długo w wątku UI
+      correct: false
+    - text: Do blokowania przekierowań w przeglądarce
+      correct: false
+  explanation: |
+    Przekazuje się `{ signal: ctrl.signal }` do fetch i wywołuje `ctrl.abort()`, a fetch odrzuca `Promise` z `AbortError`.
+    Pętli nie przerywa, Worker zatrzymuje się przez `terminate()`, a przekierowania kontroluje opcja redirect w fetch.
+
+- id: 54
+  question: Jaki algorytm garbage collection stosują silniki JavaScript?
+  answers:
+    - text: Usuwanie obiektów po ustalonym czasie życia
+      correct: false
+    - text: Zliczanie referencji bez wykrywania cykli
+      correct: false
+    - text: Mark-and-sweep, z podziałem na generacje w V8
+      correct: true
+    - text: Ręczne zwalnianie pamięci przez programistę metodą `free()`
+      correct: false
+  explanation: |
+    GC oznacza obiekty osiągalne od korzeni i usuwa resztę, więc cykle nie są problemem.
+    JavaScript nie ma ręcznego `free()`, a obiekty nie wygasają po czasie.
+
+- id: 55
+  question: Co robi `Object.freeze`?
+  answers:
+    - text: Zapisuje obiekt na stałe w `localStorage`
+      correct: false
+    - text: Blokuje wszelkie zmiany właściwości obiektu, ale tylko płytko
+      correct: true
+    - text: Blokuje wszystkie zmiany obiektu i jego zagnieżdżonych obiektów
+      correct: false
+    - text: Blokuje tylko dodawanie nowych właściwości
+      correct: false
+  explanation: |
+    Zagnieżdżone obiekty zamrożonego obiektu nadal można modyfikować.
+    Samo blokowanie dodawania to `Object.preventExtensions`, a freeze nie ma związku z `localStorage`.
+
+- id: 56
+  question: Do czego służy `Proxy`?
+  answers:
+    - text: Do szyfrowania właściwości obiektu
+      correct: false
+    - text: Do tworzenia kopii obiektu w innym wątku
+      correct: false
+    - text: Do przechwytywania operacji na obiekcie, np. odczytu i zapisu
+      correct: true
+    - text: Do przekierowania żądań HTTP przez serwer pośredniczący w sieci firmowej
+      correct: false
+  explanation: |
+    Pułapki `get`, `set` czy has pozwalają walidować, logować i obserwować zmiany - korzysta z tego reaktywność Vue 3.
+    `Proxy` w JS nie ma związku z serwerami pośredniczącymi HTTP, wątkami ani szyfrowaniem.
+
+- id: 57
+  question: Jaka jest największa liczba całkowita bezpiecznie reprezentowana przez typ Number?
+  answers:
+    - text: 2^31 - 1
+      correct: false
+    - text: 2^53 - 1
+      correct: true
+    - text: 2^64 - 1
+      correct: false
+    - text: 2^32
+      correct: false
+  explanation: |
+    Number to 64-bitowa liczba zmiennoprzecinkowa, więc powyżej 2^53 traci precyzję dla liczb całkowitych - wtedy używa się `BigInt`.
+    2^31 - 1 to limit operacji bitowych, a 2^64 - 1 nie jest dokładnie reprezentowalne w Number.
+
+- id: 58
+  question: Dlaczego `0.1 + 0.2 !== 0.3` w JavaScript?
+  answers:
+    - text: Bo silnik V8 ma błąd w implementacji dodawania
+      correct: false
+    - text: Bo 0.1 i 0.2 nie mają dokładnej reprezentacji binarnej w IEEE 754
+      correct: true
+    - text: Bo operator `+` łączy liczby jak stringi
+      correct: false
+    - text: Bo JavaScript zaokrągla wyniki dodawania do jednego miejsca po przecinku
+      correct: false
+  explanation: |
+    Wynik to 0.30000000000000004 - podobnie jest w innych językach z liczbami zmiennoprzecinkowymi.
+    JS nie zaokrągla wyników, `+` dla liczb dodaje, a to nie błąd V8, tylko natura formatu.
+
+- id: 59
+  question: Jak poprawnie sprawdzić, czy wartość to `NaN`?
+  answers:
+    - text: "`typeof x === 'NaN'`"
+      correct: false
+    - text: "`Number.isNaN(x)`"
+      correct: true
+    - text: "`x == NaN`"
+      correct: false
+    - text: "`x === NaN`"
+      correct: false
+  explanation: |
+    `NaN` nie jest równy niczemu, nawet sobie, więc porównania zawsze dają `false`.
+    `typeof NaN` zwraca "number", a globalne `isNaN` najpierw konwertuje argument, przez co `isNaN('abc')` daje `true`.
+
+- id: 60
+  question: Czym są tagged templates?
+  answers:
+    - text: Wywołaniem funkcji na szablonie, np. ``tag`tekst ${x}` ``
+      correct: true
+    - text: Szablonami HTML oznaczonymi atrybutem data-tag
+      correct: false
+    - text: Stringami, które przeglądarka automatycznie tłumaczy na język użytkownika
+      correct: false
+    - text: Komentarzami w kodzie oznaczonymi przez `@tag`
+      correct: false
+  explanation: |
+    Funkcja tagu może np. bezpiecznie escapować wartości w SQL czy budować style (styled-components), a `String.raw` to wbudowany tag.
+    Nie są to szablony HTML, automatyczne tłumaczenia ani komentarze.
+
+- id: 61
+  question: Czy typy TypeScriptu istnieją w czasie wykonania programu?
+  answers:
+    - text: "Tak, jeśli w tsconfig ustawiono `emitTypes: true`"
+      correct: false
+    - text: Nie - są usuwane przy kompilacji do JavaScriptu
+      correct: true
+    - text: Tak, ale tylko w trybie strict
+      correct: false
+    - text: Tak - silnik JavaScript sprawdza je przy każdym przypisaniu i wywołaniu funkcji
+      correct: false
+  explanation: |
+    TypeScript sprawdza typy tylko podczas kompilacji, a odpowiedź z API może mieć dowolny kształt - do walidacji służą np. Zod.
+    Silnik JS nie zna typów TS, a tryb strict i opcja `emitTypes` (która nie istnieje) tego nie zmieniają.
+
+- id: 62
+  question: Co potrafi `interface`, a czego nie potrafi `type` w TypeScript?
+  answers:
+    - text: Opisywanie unii typów, np. `'a' | 'b'`
+      correct: false
+    - text: Opisywanie typów warunkowych
+      correct: false
+    - text: Scalanie deklaracji o tej samej nazwie
+      correct: true
+    - text: Tworzenie aliasów dla typów prostych, np. `string`
+      correct: false
+  explanation: |
+    Dwie deklaracje `interface` o tej samej nazwie łączą się w jeden typ - przydaje się przy rozszerzaniu bibliotek.
+    Unie, typy warunkowe i aliasy typów prostych to właśnie możliwości `type`, których `interface` nie ma.
+
+- id: 63
+  question: Czym `unknown` różni się od `any`?
+  answers:
+    - text: "`any` wymaga zawężenia typu przed użyciem, `unknown` wyłącza sprawdzanie"
+      correct: false
+    - text: "`unknown` wymaga zawężenia typu przed użyciem, `any` wyłącza sprawdzanie"
+      correct: true
+    - text: Nie ma różnicy - `unknown` to alias `any`
+      correct: false
+    - text: "`unknown` może przechowywać tylko prymitywy, a `any` również obiekty"
+      correct: false
+  explanation: |
+    `unknown` jest bezpiecznym odpowiednikiem `any` - przed wywołaniem metody trzeba sprawdzić typ, np. przez `typeof`.
+    Role nie są odwrócone, `unknown` przyjmuje dowolne wartości i nie jest aliasem `any`.
+
+- id: 64
+  question: Jak w TypeScript utworzyć typ User bez pola password?
+  answers:
+    - text: "`Pick<User, 'password'>`"
+      correct: false
+    - text: "`Exclude<User, 'password'>`"
+      correct: false
+    - text: "`Omit<User, 'password'>`"
+      correct: true
+    - text: "`Partial<User>`"
+      correct: false
+  explanation: |
+    Omit usuwa wskazane klucze z typu obiektowego.
+    Pick zostawia tylko wskazane klucze, Partial czyni wszystkie opcjonalnymi, a Exclude działa na uniach typów, a nie na kluczach obiektu.
+
+- id: 65
+  question: Do czego służą Web Workers?
+  answers:
+    - text: Do bezpośredniej manipulacji DOM z innego wątku
+      correct: false
+    - text: Do uruchamiania kodu w osobnym wątku, bez blokowania wątku UI
+      correct: true
+    - text: Do przechwytywania żądań sieciowych i cache'owania odpowiedzi
+      correct: false
+    - text: Do synchronizacji danych między kartami przez ciasteczka
+      correct: false
+  explanation: |
+    Worker komunikuje się przez `postMessage` i nadaje się do ciężkich obliczeń.
+    Nie ma dostępu do DOM, przechwytywanie żądań to rola Service Workera, a ciasteczka nie są mechanizmem Workerów.
+
+- id: 66
+  question: Co umożliwia Service Worker?
+  answers:
+    - text: Renderowanie stron po stronie serwera
+      correct: false
+    - text: Wykonywanie zapytań SQL bezpośrednio na bazie serwera z poziomu przeglądarki
+      correct: false
+    - text: Przechwytywanie żądań i działanie aplikacji offline
+      correct: true
+    - text: Dostęp do systemu plików użytkownika bez zgody
+      correct: false
+  explanation: |
+    Service Worker działa w tle między aplikacją a siecią i jest podstawą PWA (wymaga HTTPS).
+    Nie wykonuje SQL, nie omija uprawnień przeglądarki i nie jest mechanizmem SSR.
+
+- id: 67
+  question: Co najskuteczniej chroni przed XSS przy wstawianiu tekstu od użytkownika do DOM?
+  answers:
+    - text: Używanie `textContent` zamiast `innerHTML`
+      correct: true
+    - text: Wysyłanie tekstu metodą POST zamiast GET
+      correct: false
+    - text: Szyfrowanie tekstu przed wysłaniem na serwer
+      correct: false
+    - text: Przechowywanie tekstu w `sessionStorage`
+      correct: false
+  explanation: |
+    `textContent` traktuje treść jako zwykły tekst, więc znaczniki i skrypty nie są interpretowane.
+    Szyfrowanie, miejsce przechowywania i metoda HTTP nie zmieniają tego, jak przeglądarka zinterpretuje wstawiony HTML.
+
+- id: 68
+  question: Czym różni się atrybut defer od `async` w tagu script?
+  answers:
+    - text: Oba blokują parsowanie HTML do czasu pobrania skryptu
+      correct: false
+    - text: "`async` wykonuje skrypty po parsowaniu w kolejności, defer - zaraz po pobraniu"
+      correct: false
+    - text: defer blokuje parsowanie HTML, a `async` nie
+      correct: false
+    - text: defer wykonuje skrypty po parsowaniu w kolejności, `async` - zaraz po pobraniu
+      correct: true
+  explanation: |
+    Oba pobierają skrypt równolegle z parsowaniem, ale defer gwarantuje kolejność i wykonanie po parsowaniu.
+    Skrypt bez atrybutów blokuje parsowanie, a `type="module"` domyślnie zachowuje się jak defer.
+
+- id: 69
+  question: Jaki będzie wynik `[10, 2, 1].sort()`?
+  answers:
+    - text: "`[1, 2, 10]`"
+      correct: false
+    - text: "`[10, 2, 1]`"
+      correct: false
+    - text: "`[1, 10, 2]`"
+      correct: true
+    - text: "`[2, 1, 10]`"
+      correct: false
+  explanation: |
+    Domyślnie sort konwertuje elementy na stringi i porównuje je leksykograficznie, a "10" jest przed "2".
+    Sortowanie liczbowe wymaga komparatora: `arr.sort((a, b) => a - b)`.
+
+- id: 70
+  question: Które API sformatuje kwotę jako walutę w polskim formacie?
+  answers:
+    - text: "`new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' })`"
+      correct: true
+    - text: "`Number.toCurrency('PLN')`"
+      correct: false
+    - text: "`String.format('{0:C}', kwota, { locale: 'pl-PL', currency: 'PLN' })`"
+      correct: false
+    - text: "`new Date().toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })`"
+      correct: false
+  explanation: |
+    `Intl.NumberFormat` obsługuje separatory, `symbol` waluty i liczbę miejsc po przecinku dla danej lokalizacji.
+    `toCurrency` i `String.format` nie istnieją w JS, a `toLocaleString` na Date formatuje daty.
+
+- id: 71
+  question: Która funkcja grupuje elementy tablicy po kluczu w ES2024?
+  answers:
+    - text: "`Map.from(items, x => x.category)`"
+      correct: false
+    - text: "`items.groupBy(x => x.category)`"
+      correct: false
+    - text: "`Array.prototype.group(x => x.category)`"
+      correct: false
+    - text: "`Object.groupBy(items, x => x.category)`"
+      correct: true
+  explanation: |
+    `Object.groupBy` zwraca obiekt, w którym każdy klucz ma tablicę elementów, a `Map.groupBy` - `Map`.
+    Metody group na tablicach ostatecznie nie weszły do standardu, a `Map.from` nie istnieje.
+
+- id: 72
+  question: Które metody zbiorów dodał ES2025?
+  answers:
+    - text: add, `delete`, has i clear
+      correct: false
+    - text: push, pop i shift na `Set`
+      correct: false
+    - text: merge, split, join i concat
+      correct: false
+    - text: union, intersection i difference
+      correct: true
+  explanation: |
+    Nowe metody pozwalają liczyć sumę, część wspólną i różnicę zbiorów bez ręcznych pętli.
+    add, `delete` i has istnieją od ES2015, a pozostałe metody nie istnieją na `Set`.

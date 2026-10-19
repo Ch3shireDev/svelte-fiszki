@@ -10,23 +10,23 @@
   text: Czym różni się typowanie dynamiczne od silnego w Pythonie?
   answer: |
     Typowanie dynamiczne oznacza, że typ jest przypisany do wartości, a nie zmiennej, i sprawdzany w czasie wykonania.
-    Typowanie silne oznacza brak niejawnych, ryzykownych konwersji - "5" + 1 rzuca TypeError.
+    Typowanie silne oznacza brak niejawnych, ryzykownych konwersji - `"5" + 1` rzuca `TypeError`.
     Zmienna może w trakcie działania wskazywać na wartości różnych typów.
     Type hints dodają opcjonalne statyczne sprawdzanie przez narzędzia jak mypy czy pyright.
 
 - id: 3
   text: Jakie są wbudowane typy danych w Pythonie?
   answer: |
-    Liczbowe: int (dowolnej precyzji), float, complex oraz bool.
-    Sekwencje: str, list, tuple, range, bytes, bytearray.
-    Mapowania i zbiory: dict, set, frozenset.
-    Do tego None (NoneType) jako reprezentacja braku wartości.
+    Liczbowe: `int` (dowolnej precyzji), `float`, `complex` oraz `bool`.
+    Sekwencje: `str`, `list`, `tuple`, `range`, `bytes`, `bytearray`.
+    Mapowania i zbiory: `dict`, `set`, `frozenset`.
+    Do tego `None` (`NoneType`) jako reprezentacja braku wartości.
 
 - id: 4
   text: Czym różnią się typy mutowalne od niemutowalnych?
   answer: |
-    Obiektów mutowalnych (list, dict, set, bytearray) można zmieniać po utworzeniu.
-    Niemutowalne (int, float, str, tuple, frozenset, bytes) nie mogą się zmienić - "zmiana" tworzy nowy obiekt.
+    Obiektów mutowalnych (`list`, `dict`, `set`, `bytearray`) można zmieniać po utworzeniu.
+    Niemutowalne (`int`, `float`, `str`, `tuple`, `frozenset`, `bytes`) nie mogą się zmienić - "zmiana" tworzy nowy obiekt.
     Tylko obiekty niemutowalne (hashowalne) mogą być kluczami słownika i elementami zbioru.
     Krotka zawierająca listę jest niemutowalna tylko płytko.
 
@@ -39,89 +39,89 @@
     Konwencja: lista dla jednorodnych kolekcji o zmiennym rozmiarze, krotka dla stałych rekordów, np. (x, y).
 
 - id: 6
-  text: Jak działa słownik (dict) w Pythonie?
+  text: Jak działa słownik (`dict`) w Pythonie?
   answer: |
-    Słownik to tablica haszująca przechowująca pary klucz-wartość ze średnim czasem dostępu O(1).
+    Słownik to tablica haszująca przechowująca pary klucz-wartość ze średnim czasem dostępu `O(1)`.
     Od Pythona 3.7 zachowuje kolejność wstawiania.
     Klucze muszą być hashowalne.
-    Przydatne metody to get, setdefault, items, update oraz operator scalania | (od 3.9); collections.defaultdict i Counter ułatwiają typowe przypadki.
+    Przydatne metody to get, setdefault, items, update oraz operator scalania `|` (od 3.9); `collections.defaultdict` i Counter ułatwiają typowe przypadki.
 
 - id: 7
-  text: Czym różnią się is od ==?
+  text: Czym różnią się `is` od `==`?
   answer: |
-    == porównuje wartości (wywołuje __eq__).
-    is porównuje tożsamość - czy obie zmienne wskazują ten sam obiekt w pamięci.
-    is używa się do porównań z singletonami: x is None, x is True.
-    Małe liczby i niektóre stringi są internowane, więc is może dawać mylące wyniki - nie używaj go do porównywania wartości.
+    `==` porównuje wartości (wywołuje `__eq__`).
+    `is` porównuje tożsamość - czy obie zmienne wskazują ten sam obiekt w pamięci.
+    `is` używa się do porównań z singletonami: x `is None`, x `is True`.
+    Małe liczby i niektóre stringi są internowane, więc `is` może dawać mylące wyniki - nie używaj go do porównywania wartości.
 
 - id: 8
-  text: Czym są list comprehensions?
+  text: Czym są `list` comprehensions?
   answer: |
-    To zwięzła składnia tworzenia list: [x * 2 for x in nums if x > 0].
-    Analogicznie istnieją dict comprehensions ({k: v for k, v in pairs}) i set comprehensions ({x for x in items}).
+    To zwięzła składnia tworzenia `list: [x * 2 for x in nums if x > 0]`.
+    Analogicznie istnieją `dict` comprehensions (`{k: v for k, v in pairs}`) i `set` comprehensions (`{x for x in items}`).
     Są czytelniejsze i zwykle szybsze niż pętla z append.
     Zbyt złożone wyrażenia lepiej rozpisać na zwykłą pętlę.
 
 - id: 9
-  text: Czym są generatory i yield?
+  text: Czym są generatory i `yield`?
   answer: |
-    Generator to funkcja z yield, która zwraca wartości leniwie, jedna po drugiej, zachowując stan między wywołaniami.
+    Generator to funkcja z `yield`, która zwraca wartości leniwie, jedna po drugiej, zachowując stan między wywołaniami.
     Nie trzyma całej sekwencji w pamięci, więc nadaje się do dużych plików i strumieni.
-    Wyrażenie generatora ma składnię nawiasów okrągłych: (x * 2 for x in nums).
-    yield from deleguje generowanie do innego iteratora.
+    Wyrażenie generatora ma składnię nawiasów okrągłych: (`x * 2 for` x `in` nums).
+    `yield from` deleguje generowanie do innego iteratora.
 
 - id: 10
   text: Czym różni się iterable od iteratora?
   answer: |
-    Iterable to obiekt, po którym można iterować - implementuje __iter__ zwracające iterator (np. lista, string).
-    Iterator implementuje __next__, zwracające kolejne elementy i rzucające StopIteration na końcu.
+    Iterable to obiekt, po którym można iterować - implementuje `__iter__` zwracające iterator (np. lista, string).
+    Iterator implementuje `__next__`, zwracające kolejne elementy i rzucające `StopIteration` na końcu.
     Iterator jest jednorazowy - po wyczerpaniu nie można go ponownie przejść.
-    Pętla for wywołuje iter() i next() pod spodem.
+    Pętla `for` wywołuje `iter()` i `next()` pod spodem.
 
 - id: 11
-  text: Czym są *args i **kwargs?
+  text: Czym są `*args` i `**kwargs`?
   answer: |
-    *args zbiera dodatkowe argumenty pozycyjne w krotkę.
-    **kwargs zbiera dodatkowe argumenty nazwane w słownik.
+    `*args` zbiera dodatkowe argumenty pozycyjne w krotkę.
+    `**kwargs` zbiera dodatkowe argumenty nazwane w słownik.
     Pozwalają pisać funkcje o zmiennej liczbie argumentów i przekazywać argumenty dalej, np. w dekoratorach.
-    Te same operatory * i ** rozpakowują sekwencje i słowniki przy wywołaniu: f(*lista, **slownik).
+    Te same operatory `*` i `**` rozpakowują sekwencje i słowniki przy wywołaniu: `f(*lista, **slownik)`.
 
 - id: 12
   text: Jaka jest pułapka mutowalnych argumentów domyślnych?
   answer: |
     Wartość domyślna jest obliczana raz, przy definicji funkcji, a nie przy każdym wywołaniu.
-    def add(item, items=[]) współdzieli tę samą listę między wywołaniami, więc elementy się kumulują.
-    Poprawnie: def add(item, items=None): items = [] if items is None else items.
-    Dotyczy to wszystkich mutowalnych wartości domyślnych: list, dict, set.
+    `def add(item, items=[])` współdzieli tę samą listę między wywołaniami, więc elementy się kumulują.
+    Poprawnie: `def add(item, items=None): items = [] if items is None else items`.
+    Dotyczy to wszystkich mutowalnych wartości domyślnych: `list`, `dict`, `set`.
 
 - id: 13
   text: Czym są argumenty tylko pozycyjne i tylko nazwane?
   answer: |
-    Parametry przed / są tylko pozycyjne: def f(a, b, /, c) - a i b nie mogą być przekazane po nazwie.
-    Parametry po * są tylko nazwane: def f(a, *, verbose=False) - verbose trzeba podać jako verbose=True.
+    Parametry przed `/` są tylko pozycyjne: `def f(a, b, /, c)` - a i b nie mogą być przekazane po nazwie.
+    Parametry po `*` są tylko nazwane: `def f(a, *, verbose=False)` - verbose trzeba podać jako `verbose=True`.
     Poprawia to czytelność wywołań i pozwala zmieniać nazwy parametrów bez łamania API.
 
 - id: 14
-  text: Czym są funkcje lambda?
+  text: Czym są funkcje `lambda`?
   answer: |
-    Lambda to anonimowa funkcja jednowyrażeniowa: lambda x: x * 2.
-    Stosuje się ją jako krótki argument funkcji, np. sorted(users, key=lambda u: u.age).
+    Lambda to anonimowa funkcja jednowyrażeniowa: `lambda` x: `x * 2`.
+    Stosuje się ją jako krótki argument funkcji, np. `sorted(users, key=lambda u: u.age)`.
     Nie może zawierać instrukcji ani wielu linii.
-    Przypisywanie lambdy do zmiennej jest odradzane przez PEP 8 - wtedy lepiej użyć def.
+    Przypisywanie lambdy do zmiennej jest odradzane przez PEP 8 - wtedy lepiej użyć `def`.
 
 - id: 15
   text: Czym są dekoratory?
   answer: |
     Dekorator to funkcja przyjmująca funkcję (lub klasę) i zwracająca jej zmodyfikowaną wersję.
-    Zapisuje się go przez @dekorator nad definicją, co jest skrótem f = dekorator(f).
+    Zapisuje się go przez `@dekorator` nad definicją, co jest skrótem `f = dekorator(f)`.
     Stosuje się je do logowania, cache'owania, pomiaru czasu, autoryzacji czy rejestracji tras (Flask, FastAPI).
-    functools.wraps zachowuje nazwę i docstring dekorowanej funkcji.
+    `functools.wraps` zachowuje nazwę i docstring dekorowanej funkcji.
 
 - id: 16
   text: Napisz prosty dekorator mierzący czas wykonania funkcji.
   answer: |
     Dekorator opakowuje funkcję, mierzy czas przed i po jej wywołaniu i zwraca oryginalny wynik.
-    functools.wraps zachowuje metadane oryginalnej funkcji.
+    `functools.wraps` zachowuje metadane oryginalnej funkcji.
     ```python
     import functools, time
 
@@ -140,7 +140,7 @@
   text: Czym są domknięcia (closures) w Pythonie?
   answer: |
     Domknięcie to funkcja wewnętrzna, która pamięta zmienne z zasięgu funkcji zewnętrznej po jej zakończeniu.
-    Do modyfikacji takiej zmiennej potrzebne jest słowo nonlocal.
+    Do modyfikacji takiej zmiennej potrzebne jest słowo `nonlocal`.
     Domknięcia są podstawą dekoratorów i fabryk funkcji.
     Pułapka: lambdy tworzone w pętli przechwytują zmienną, a nie jej wartość z danej iteracji.
 
@@ -149,110 +149,110 @@
   answer: |
     LEGB to kolejność wyszukiwania nazw: Local, Enclosing, Global, Built-in.
     Najpierw zasięg lokalny funkcji, potem funkcji otaczających, potem modułu, a na końcu wbudowane nazwy.
-    Słowo global pozwala przypisać do zmiennej modułu, a nonlocal do zmiennej funkcji otaczającej.
+    Słowo `global` pozwala przypisać do zmiennej modułu, a `nonlocal` do zmiennej funkcji otaczającej.
     Przypisanie w funkcji domyślnie tworzy zmienną lokalną.
 
 - id: 19
   text: Czym różnią się metody instancji, klasy i statyczne?
   answer: |
-    Metoda instancji przyjmuje self i operuje na obiekcie.
-    @classmethod przyjmuje cls i operuje na klasie - typowo jako alternatywny konstruktor, np. User.from_dict(d).
-    @staticmethod nie przyjmuje ani self, ani cls - to zwykła funkcja umieszczona w klasie dla porządku.
-    Metody klasy są dziedziczone i respektują podklasy przez cls.
+    Metoda instancji przyjmuje `self` i operuje na obiekcie.
+    `@classmethod` przyjmuje `cls` i operuje na klasie - typowo jako alternatywny konstruktor, np. `User.from_dict(d)`.
+    `@staticmethod` nie przyjmuje ani `self`, ani `cls` - to zwykła funkcja umieszczona w klasie dla porządku.
+    Metody klasy są dziedziczone i respektują podklasy przez `cls`.
 
 - id: 20
   text: Czym są metody magiczne (dunder methods)?
   answer: |
     To metody z podwójnymi podkreśleniami definiujące zachowanie obiektów w operacjach wbudowanych.
-    __init__ inicjalizuje obiekt, __repr__ i __str__ określają reprezentację tekstową, __eq__ i __hash__ - porównywanie i hashowanie.
-    __len__, __getitem__, __iter__ i __contains__ pozwalają obiektom działać jak kolekcje.
-    __enter__ i __exit__ obsługują context managery, a __add__ itd. - przeciążanie operatorów.
+    `__init__` inicjalizuje obiekt, `__repr__` i `__str__` określają reprezentację tekstową, `__eq__` i `__hash__` - porównywanie i hashowanie.
+    `__len__`, `__getitem__`, `__iter__` i `__contains__` pozwalają obiektom działać jak kolekcje.
+    `__enter__` i `__exit__` obsługują context managery, a `__add__` itd. - przeciążanie operatorów.
 
 - id: 21
-  text: Czym różnią się __str__ i __repr__?
+  text: Czym różnią się `__str__` i `__repr__`?
   answer: |
-    __repr__ zwraca jednoznaczną reprezentację dla programisty, najlepiej taką, z której da się odtworzyć obiekt.
-    __str__ zwraca czytelną reprezentację dla użytkownika - używają jej print i str().
-    Jeśli __str__ nie jest zdefiniowane, używane jest __repr__.
-    W f-stringach {obj!r} wymusza repr.
+    `__repr__` zwraca jednoznaczną reprezentację dla programisty, najlepiej taką, z której da się odtworzyć obiekt.
+    `__str__` zwraca czytelną reprezentację dla użytkownika - używają jej `print` i `str()`.
+    Jeśli `__str__` nie jest zdefiniowane, używane jest `__repr__`.
+    W f-stringach `{obj!r}` wymusza repr.
 
 - id: 22
-  text: Czym różni się __new__ od __init__?
+  text: Czym różni się `__new__` od `__init__`?
   answer: |
-    __new__ to metoda statyczna tworząca i zwracająca nową instancję - jest wywoływana pierwsza.
-    __init__ inicjalizuje już utworzony obiekt i nic nie zwraca.
-    __new__ nadpisuje się rzadko: przy dziedziczeniu po typach niemutowalnych (int, str, tuple), singletonach czy metaklasach.
+    `__new__` to metoda statyczna tworząca i zwracająca nową instancję - jest wywoływana pierwsza.
+    `__init__` inicjalizuje już utworzony obiekt i nic nie zwraca.
+    `__new__` nadpisuje się rzadko: przy dziedziczeniu po typach niemutowalnych (`int`, `str`, `tuple`), singletonach czy metaklasach.
 
 - id: 23
   text: Jak działa dziedziczenie i MRO w Pythonie?
   answer: |
-    Python wspiera dziedziczenie pojedyncze i wielokrotne: class C(A, B).
+    Python wspiera dziedziczenie pojedyncze i wielokrotne: `class C(A, B)`.
     MRO (Method Resolution Order) określa kolejność szukania metod, wyliczaną algorytmem C3 linearization.
-    Kolejność można sprawdzić przez C.__mro__ lub C.mro().
-    super() wywołuje następną klasę w MRO, co pozwala poprawnie obsłużyć dziedziczenie wielokrotne.
+    Kolejność można sprawdzić przez `C.__mro__` lub `C.mro()`.
+    `super()` wywołuje następną klasę w MRO, co pozwala poprawnie obsłużyć dziedziczenie wielokrotne.
 
 - id: 24
-  text: Czym są @property?
+  text: Czym są `@property`?
   answer: |
-    @property zamienia metodę w atrybut tylko do odczytu, wyliczany przy dostępie.
-    @nazwa.setter i @nazwa.deleter pozwalają dodać logikę zapisu i usuwania, np. walidację.
+    `@property` zamienia metodę w atrybut tylko do odczytu, wyliczany przy dostępie.
+    `@nazwa.setter` i `@nazwa.deleter` pozwalają dodać logikę zapisu i usuwania, np. walidację.
     Pozwala zacząć od zwykłego atrybutu i później dodać logikę bez zmiany API klasy.
-    functools.cached_property wylicza wartość raz i zapamiętuje ją.
+    `functools.cached_property` wylicza wartość raz i zapamiętuje ją.
 
 - id: 25
   text: Czym są dataclasses?
   answer: |
-    @dataclass automatycznie generuje __init__, __repr__ i __eq__ na podstawie adnotacji pól.
-    Opcja frozen=True tworzy obiekty niemutowalne i hashowalne, order=True dodaje porównania, slots=True oszczędza pamięć.
-    Wartości domyślne mutowalne ustawia się przez field(default_factory=list).
+    `@dataclass` automatycznie generuje `__init__`, `__repr__` i `__eq__` na podstawie adnotacji pól.
+    Opcja `frozen=True` tworzy obiekty niemutowalne i hashowalne, `order=True` dodaje porównania, `slots=True` oszczędza pamięć.
+    Wartości domyślne mutowalne ustawia się przez `field(default_factory=list)`.
     Do walidacji danych wejściowych często używa się zamiast nich Pydantic.
 
 - id: 26
-  text: Czym jest __slots__?
+  text: Czym jest `__slots__`?
   answer: |
-    __slots__ deklaruje stałą listę atrybutów instancji zamiast dynamicznego __dict__.
+    `__slots__` deklaruje stałą listę atrybutów instancji zamiast dynamicznego `__dict__`.
     Zmniejsza zużycie pamięci i nieco przyspiesza dostęp do atrybutów.
     Uniemożliwia dodawanie nowych atrybutów spoza listy.
-    Przydaje się przy milionach małych obiektów; dataclass(slots=True) generuje je automatycznie.
+    Przydaje się przy milionach małych obiektów; `dataclass(slots=True)` generuje je automatycznie.
 
 - id: 27
   text: Czym są abstrakcyjne klasy bazowe (ABC)?
   answer: |
-    Moduł abc pozwala definiować klasy abstrakcyjne przez dziedziczenie po ABC i dekorator @abstractmethod.
+    Moduł abc pozwala definiować klasy abstrakcyjne przez dziedziczenie po ABC i dekorator `@abstractmethod`.
     Nie można utworzyć instancji klasy z niezaimplementowanymi metodami abstrakcyjnymi.
     Definiują kontrakt, który muszą spełnić podklasy.
-    Alternatywą jest typing.Protocol, oparte na typowaniu strukturalnym (duck typing) bez dziedziczenia.
+    Alternatywą jest `typing.Protocol`, oparte na typowaniu strukturalnym (duck typing) bez dziedziczenia.
 
 - id: 28
   text: Czym jest duck typing?
   answer: |
     Duck typing oznacza, że liczy się zachowanie obiektu, a nie jego typ: "jeśli chodzi jak kaczka i kwacze jak kaczka...".
-    Funkcja przyjmie dowolny obiekt, który ma potrzebne metody, np. każdy obiekt z read() jako "plik".
+    Funkcja przyjmie dowolny obiekt, który ma potrzebne metody, np. każdy obiekt z `read()` jako "plik".
     Zgodnie z zasadą EAFP lepiej spróbować i obsłużyć wyjątek niż sprawdzać typ.
-    typing.Protocol pozwala opisać takie kontrakty dla statycznych narzędzi.
+    `typing.Protocol` pozwala opisać takie kontrakty dla statycznych narzędzi.
 
 - id: 29
-  text: Czym są context managery i instrukcja with?
+  text: Czym są context managery i instrukcja `with`?
   answer: |
     Context manager zarządza zasobem: przygotowuje go na wejściu i gwarantuje sprzątanie na wyjściu, nawet przy wyjątku.
-    Najczęstszy przykład: with open('plik.txt') as f: - plik zostanie zamknięty automatycznie.
-    Własny tworzy się przez klasę z __enter__ i __exit__ lub dekorator @contextlib.contextmanager z yield.
-    Wersja asynchroniczna to async with z __aenter__ i __aexit__.
+    Najczęstszy przykład: `with open('plik.txt') as` f: - plik zostanie zamknięty automatycznie.
+    Własny tworzy się przez klasę z `__enter__` i `__exit__` lub dekorator `@contextlib.contextmanager` z `yield`.
+    Wersja asynchroniczna to `async with` z `__aenter__` i `__aexit__`.
 
 - id: 30
   text: Jak działa obsługa wyjątków w Pythonie?
   answer: |
-    Używa się bloków try, except, else i finally.
-    else wykonuje się, gdy nie było wyjątku, a finally zawsze.
-    Łap konkretne wyjątki zamiast gołego except: i używaj raise ... from err, żeby zachować łańcuch przyczyn.
-    Własne wyjątki dziedziczy się po Exception; od 3.11 są ExceptionGroup i except* dla wielu błędów naraz.
+    Używa się bloków `try`, `except`, `else` i `finally`.
+    `else` wykonuje się, gdy nie było wyjątku, a `finally` zawsze.
+    Łap konkretne wyjątki zamiast gołego `except`: i używaj `raise` ... `from` err, żeby zachować łańcuch przyczyn.
+    Własne wyjątki dziedziczy się po `Exception`; od 3.11 są `ExceptionGroup` i `except*` dla wielu błędów naraz.
 
 - id: 31
   text: Czym jest EAFP i LBYL?
   answer: |
     EAFP (Easier to Ask Forgiveness than Permission) - próbuj wykonać operację i obsłuż wyjątek.
     LBYL (Look Before You Leap) - najpierw sprawdź warunki, potem działaj.
-    W Pythonie preferowany jest EAFP, np. try: value = d[key] except KeyError: ...
+    W Pythonie preferowany jest EAFP, np. `try`: `value = d[key] except KeyError`: ...
     EAFP unika wyścigów (race conditions) między sprawdzeniem a użyciem, np. przy plikach.
 
 - id: 32
@@ -269,45 +269,45 @@
     threading - wiele wątków w jednym procesie; dobre do I/O, ograniczone przez GIL przy obliczeniach.
     multiprocessing - osobne procesy z własną pamięcią i interpreterem; dobre do obliczeń CPU-bound, ale kosztowna komunikacja.
     asyncio - jeden wątek i pętla zdarzeń z korutynami; bardzo wydajne przy tysiącach równoczesnych operacji I/O.
-    concurrent.futures daje wspólny interfejs ThreadPoolExecutor i ProcessPoolExecutor.
+    `concurrent.futures` daje wspólny interfejs `ThreadPoolExecutor` i `ProcessPoolExecutor`.
 
 - id: 34
-  text: Jak działa asyncio i async/await?
+  text: Jak działa asyncio i `async/await`?
   answer: |
-    async def definiuje korutynę, a await wstrzymuje ją do zakończenia innej operacji asynchronicznej.
+    `async def` definiuje korutynę, a `await` wstrzymuje ją do zakończenia innej operacji asynchronicznej.
     Pętla zdarzeń przełącza się między korutynami, gdy któraś czeka na I/O.
-    asyncio.run() uruchamia pętlę, asyncio.gather lub TaskGroup (od 3.11) uruchamiają zadania równolegle.
-    Blokujące wywołanie (np. time.sleep lub synchroniczny driver bazy) w korutynie zatrzymuje całą pętlę.
+    `asyncio.run()` uruchamia pętlę, `asyncio.gather` lub `TaskGroup` (od 3.11) uruchamiają zadania równolegle.
+    Blokujące wywołanie (np. `time.sleep` lub synchroniczny driver bazy) w korutynie zatrzymuje całą pętlę.
 
 - id: 35
   text: Czym są type hints?
   answer: |
-    Type hints to adnotacje typów: def greet(name: str) -> str.
+    Type hints to adnotacje typów: `def greet(name: str)` `-> str`.
     Interpreter ich nie wymusza - służą do statycznej analizy (mypy, pyright), podpowiedzi w IDE i dokumentacji.
-    Nowsza składnia: list[int], dict[str, int], int | None (od 3.10), a typy generyczne def first[T](xs: list[T]) -> T (od 3.12).
+    Nowsza składnia: `list[int]`, `dict[str, int]`, `int | None` (od 3.10), a typy generyczne `def first[T](xs: list[T])` `-> T` (od 3.12).
     Biblioteki jak Pydantic i FastAPI wykorzystują je w czasie działania do walidacji.
 
 - id: 36
   text: Czym jest Pydantic?
   answer: |
     Pydantic to biblioteka walidacji i serializacji danych oparta na type hints.
-    Model definiuje się jako klasę dziedziczącą po BaseModel z adnotowanymi polami.
+    Model definiuje się jako klasę dziedziczącą po `BaseModel` z adnotowanymi polami.
     Przy tworzeniu obiektu dane są walidowane i konwertowane, a błędy zwracane w czytelnej formie.
     Jest podstawą FastAPI i popularny do konfiguracji (pydantic-settings); wersja 2 ma rdzeń w Rust.
 
 - id: 37
   text: Czym są moduły i pakiety?
   answer: |
-    Moduł to pojedynczy plik .py, a pakiet to katalog z modułami (zwykle z plikiem __init__.py).
-    Importuje się je przez import modul, from pakiet import nazwa lub importy względne (from . import x).
-    Python wyszukuje moduły według sys.path.
-    Moduł jest wykonywany tylko raz przy pierwszym imporcie i cache'owany w sys.modules.
+    Moduł to pojedynczy plik `.py`, a pakiet to katalog z modułami (zwykle z plikiem `__init__.py`).
+    Importuje się je przez `import` modul, `from` pakiet `import` nazwa lub importy względne (`from` . `import` x).
+    Python wyszukuje moduły według `sys.path`.
+    Moduł jest wykonywany tylko raz przy pierwszym imporcie i cache'owany w `sys.modules`.
 
 - id: 38
-  text: Do czego służy if __name__ == "__main__"?
+  text: Do czego służy `if __name__ == "__main__"`?
   answer: |
-    __name__ jest równe "__main__", gdy plik jest uruchamiany bezpośrednio, a nazwie modułu, gdy jest importowany.
-    Warunek pozwala uruchomić kod (np. main()) tylko przy bezpośrednim wywołaniu skryptu.
+    `__name__` jest równe `"__main__"`, gdy plik jest uruchamiany bezpośrednio, a nazwie modułu, gdy jest importowany.
+    Warunek pozwala uruchomić kod (np. `main()`) tylko przy bezpośrednim wywołaniu skryptu.
     Dzięki temu moduł można importować bez efektów ubocznych, np. w testach.
     Jest wymagany także przy multiprocessing na Windows.
 
@@ -315,15 +315,15 @@
   text: Czym są środowiska wirtualne?
   answer: |
     Środowisko wirtualne to izolowana instalacja Pythona z własnymi pakietami dla danego projektu.
-    Tworzy się je przez python -m venv .venv i aktywuje skryptem activate.
+    Tworzy się je przez python -m venv `.venv` i aktywuje skryptem activate.
     Zapobiega konfliktom wersji bibliotek między projektami.
     Nowoczesne narzędzia jak uv, Poetry czy PDM zarządzają środowiskiem i zależnościami automatycznie.
 
 - id: 40
   text: Jak zarządzać zależnościami w projekcie Pythona?
   answer: |
-    Klasycznie: pip i plik requirements.txt, najlepiej z przypiętymi wersjami.
-    Nowoczesny standard to pyproject.toml (PEP 621) z metadanymi i zależnościami projektu.
+    Klasycznie: pip i plik `requirements.txt`, najlepiej z przypiętymi wersjami.
+    Nowoczesny standard to `pyproject.toml` (PEP 621) z metadanymi i zależnościami projektu.
     Narzędzia jak uv, Poetry czy pip-tools generują pliki lock z dokładnymi wersjami.
     uv (napisany w Rust) jest obecnie najszybszym narzędziem do instalacji i zarządzania środowiskami.
 
@@ -333,47 +333,47 @@
     CPython używa zliczania referencji - obiekt jest zwalniany, gdy licznik spada do zera.
     Dodatkowy cykliczny garbage collector (moduł gc) wykrywa i usuwa cykle referencji.
     Małe obiekty są alokowane przez własny alokator pymalloc.
-    sys.getrefcount i tracemalloc pomagają analizować pamięć, a weakref pozwala trzymać referencje bez blokowania zwolnienia.
+    `sys.getrefcount` i tracemalloc pomagają analizować pamięć, a weakref pozwala trzymać referencje bez blokowania zwolnienia.
 
 - id: 42
   text: Czym różni się płytka kopia od głębokiej w Pythonie?
   answer: |
-    Przypisanie b = a nie kopiuje - obie zmienne wskazują ten sam obiekt.
-    copy.copy() (lub list.copy(), a[:]) tworzy płytką kopię - zagnieżdżone obiekty są współdzielone.
-    copy.deepcopy() rekurencyjnie kopiuje całą strukturę.
+    Przypisanie `b = a` nie kopiuje - obie zmienne wskazują ten sam obiekt.
+    `copy.copy()` (lub `list.copy()`, `a[:]`) tworzy płytką kopię - zagnieżdżone obiekty są współdzielone.
+    `copy.deepcopy()` rekurencyjnie kopiuje całą strukturę.
     Głęboka kopia jest wolniejsza i obsługuje cykle przez słownik memo.
 
 - id: 43
   text: Czym są f-stringi?
   answer: |
-    f-stringi to literały z prefiksem f, pozwalające wstawiać wyrażenia: f"Cześć {name}, masz {age} lat".
-    Wspierają formatowanie: f"{price:.2f}", f"{n:,}", f"{d:%Y-%m-%d}".
-    Składnia f"{x=}" wypisuje nazwę i wartość, co przydaje się do debugowania.
-    Są szybsze i czytelniejsze niż % i str.format.
+    f-stringi to literały z prefiksem f, pozwalające wstawiać wyrażenia: f"Cześć `{name}`, masz `{age}` lat".
+    Wspierają formatowanie: `f"{price:.2f}"`, `f"{n:,}"`, `f"{d:%Y-%m-%d}"`.
+    Składnia `f"{x=}"` wypisuje nazwę i wartość, co przydaje się do debugowania.
+    Są szybsze i czytelniejsze niż `%` i `str.format`.
 
 - id: 44
   text: Czym jest slicing?
   answer: |
-    Slicing wycina fragment sekwencji: seq[start:stop:step].
-    stop nie jest włączony, a indeksy ujemne liczą od końca, np. s[-3:] to trzy ostatnie elementy.
-    s[::-1] odwraca sekwencję, a lst[:] tworzy płytką kopię listy.
-    Wycinek listy można też przypisać: lst[1:3] = [10, 20].
+    Slicing wycina fragment sekwencji: `seq[start:stop:step]`.
+    stop nie jest włączony, a indeksy ujemne liczą od końca, np. `s[-3:]` to trzy ostatnie elementy.
+    `s[::-1]` odwraca sekwencję, a `lst[:]` tworzy płytką kopię listy.
+    Wycinek listy można też przypisać: `lst[1:3] = [10, 20]`.
 
 - id: 45
   text: Czym są funkcje map, filter, zip i enumerate?
   answer: |
-    map(f, iterable) stosuje funkcję do każdego elementu, filter(f, iterable) zostawia elementy spełniające warunek.
-    zip(a, b) łączy elementy kilku sekwencji w krotki; strict=True (od 3.10) wymaga równej długości.
-    enumerate(iterable, start=0) zwraca pary (indeks, element).
+    `map(f, iterable)` stosuje funkcję do każdego elementu, `filter(f, iterable)` zostawia elementy spełniające warunek.
+    `zip(a, b)` łączy elementy kilku sekwencji w krotki; `strict=True` (od 3.10) wymaga równej długości.
+    `enumerate(iterable, start=0)` zwraca pary (indeks, element).
     Wszystkie zwracają leniwe iteratory; map i filter często zastępuje się comprehensions.
 
 - id: 46
   text: Co zawiera moduł collections?
   answer: |
-    Counter - zliczanie elementów, np. Counter(words).most_common(3).
+    Counter - zliczanie elementów, np. `Counter(words).most_common(3)`.
     defaultdict - słownik z domyślną wartością dla brakujących kluczy.
-    deque - kolejka dwustronna z O(1) dodawaniem i usuwaniem z obu końców.
-    namedtuple - krotka z nazwanymi polami; OrderedDict i ChainMap do specyficznych zastosowań.
+    deque - kolejka dwustronna z `O(1)` dodawaniem i usuwaniem z obu końców.
+    namedtuple - krotka z nazwanymi polami; `OrderedDict` i `ChainMap` do specyficznych zastosowań.
 
 - id: 47
   text: Co oferuje moduł itertools?
@@ -386,25 +386,25 @@
 - id: 48
   text: Co oferuje moduł functools?
   answer: |
-    lru_cache i cache - memoizacja wyników funkcji.
+    `lru_cache` i cache - memoizacja wyników funkcji.
     partial - częściowe zastosowanie argumentów, tworzące nową funkcję.
     reduce - redukcja sekwencji do jednej wartości.
-    wraps dla dekoratorów, cached_property i singledispatch (przeciążanie po typie argumentu).
+    wraps dla dekoratorów, `cached_property` i singledispatch (przeciążanie po typie argumentu).
 
 - id: 49
-  text: Czym jest instrukcja match (pattern matching)?
+  text: Czym jest instrukcja `match` (pattern matching)?
   answer: |
-    match/case (od 3.10) to strukturalne dopasowanie wzorców, bardziej rozbudowane niż switch.
-    Dopasowuje literały, sekwencje, słowniki, klasy i pozwala wyciągać z nich wartości: case {"type": "user", "id": id}:
-    Wspiera warunki (case Point(x, y) if x > 0), alternatywy (case 1 | 2) i wzorzec domyślny case _.
+    `match/case` (od 3.10) to strukturalne dopasowanie wzorców, bardziej rozbudowane niż switch.
+    Dopasowuje literały, sekwencje, słowniki, klasy i pozwala wyciągać z nich wartości: `case {"type": "user", "id": id}`:
+    Wspiera warunki (`case Point(x, y)` `if x > 0`), alternatywy (`case 1 | 2`) i wzorzec domyślny `case _`.
     Przydaje się przy parsowaniu poleceń, komunikatów i drzew składniowych.
 
 - id: 50
-  text: Czym jest operator walrus (:=)?
+  text: Czym jest operator walrus (`:=`)?
   answer: |
-    := (od 3.8) przypisuje wartość w środku wyrażenia.
-    Przykład: if (n := len(items)) > 10: print(n).
-    Przydaje się w pętlach while (while (line := f.readline()):) i comprehensions, by nie liczyć czegoś dwa razy.
+    `:=` (od 3.8) przypisuje wartość w środku wyrażenia.
+    Przykład: `if` (`n := len(items)`) `>` 10: `print(n)`.
+    Przydaje się w pętlach `while` (`while` (`line := f.readline()`):) i comprehensions, by nie liczyć czegoś dwa razy.
     Nadużywany pogarsza czytelność.
 
 - id: 51
@@ -413,36 +413,36 @@
     Metaklasa to "klasa klasy" - kontroluje tworzenie klas tak, jak klasa kontroluje tworzenie instancji.
     Domyślną metaklasą jest type.
     Pozwalają modyfikować klasy przy definicji, np. rejestrować je czy wymuszać pola - korzysta z tego Django ORM.
-    W większości przypadków prostszym rozwiązaniem jest __init_subclass__ lub dekorator klasy.
+    W większości przypadków prostszym rozwiązaniem jest `__init_subclass__` lub dekorator klasy.
 
 - id: 52
   text: Czym są deskryptory?
   answer: |
-    Deskryptor to obiekt z metodami __get__, __set__ lub __delete__, kontrolujący dostęp do atrybutu klasy.
+    Deskryptor to obiekt z metodami `__get__`, `__set__` lub `__delete__`, kontrolujący dostęp do atrybutu klasy.
     Na deskryptorach zbudowane są property, classmethod, staticmethod i metody.
     Pozwalają wielokrotnie używać logiki atrybutów, np. walidacji typów pól.
-    __set_name__ pozwala deskryptorowi poznać nazwę atrybutu, do którego jest przypisany.
+    `__set_name__` pozwala deskryptorowi poznać nazwę atrybutu, do którego jest przypisany.
 
 - id: 53
   text: Jak testować kod w Pythonie?
   answer: |
-    Najpopularniejszy framework to pytest - proste funkcje test_*, asercje assert, fixtures i parametryzacja.
-    Wbudowany unittest oferuje styl xUnit z klasami TestCase.
-    unittest.mock (Mock, patch) pozwala zastępować zależności.
+    Najpopularniejszy framework to pytest - proste funkcje `test_*`, asercje `assert`, fixtures i parametryzacja.
+    Wbudowany unittest oferuje styl xUnit z klasami `TestCase`.
+    `unittest.mock` (Mock, patch) pozwala zastępować zależności.
     Do tego pytest-cov do pokrycia, hypothesis do testów opartych na właściwościach i tox/nox do testów w wielu środowiskach.
 
 - id: 54
   text: Czym są fixtures w pytest?
   answer: |
-    Fixture to funkcja oznaczona @pytest.fixture, przygotowująca dane lub zasoby dla testów.
+    Fixture to funkcja oznaczona `@pytest.fixture`, przygotowująca dane lub zasoby dla testów.
     Test otrzymuje ją, podając jej nazwę jako parametr.
-    Kod po yield w fixture wykonuje sprzątanie.
-    Zakres (scope: function, module, session) określa, jak często fixture jest tworzona; wspólne fixtures trzyma się w conftest.py.
+    Kod po `yield` w `fixture` wykonuje sprzątanie.
+    Zakres (scope: function, module, session) określa, jak często `fixture` jest tworzona; wspólne fixtures trzyma się w `conftest.py`.
 
 - id: 55
   text: Czym są PEP 8 i narzędzia do jakości kodu?
   answer: |
-    PEP 8 to oficjalny przewodnik stylu Pythona: wcięcia 4 spacjami, snake_case dla funkcji i zmiennych, PascalCase dla klas.
+    PEP 8 to oficjalny przewodnik stylu Pythona: wcięcia 4 spacjami, `snake_case` dla funkcji i zmiennych, PascalCase dla klas.
     Ruff to bardzo szybki linter i formatter, zastępujący flake8, isort i w dużej mierze Black.
     mypy lub pyright sprawdzają typy statycznie.
     Narzędzia te uruchamia się w pre-commit i w pipeline CI.
@@ -459,46 +459,46 @@
   text: Czym różni się WSGI od ASGI?
   answer: |
     WSGI to synchroniczny standard interfejsu między serwerem a aplikacją webową w Pythonie (Flask, klasyczne Django).
-    ASGI to jego asynchroniczny następca, wspierający async/await, WebSockety i długie połączenia (FastAPI, Starlette, Django async).
+    ASGI to jego asynchroniczny następca, wspierający `async/await`, WebSockety i długie połączenia (FastAPI, Starlette, Django `async`).
     Serwery WSGI to np. Gunicorn i uWSGI, ASGI - Uvicorn, Hypercorn i Daphne.
 
 - id: 58
   text: Jak połączyć się z SQL Server z Pythona?
   answer: |
-    Najczęściej przez pyodbc z sterownikiem ODBC Driver 18 for SQL Server lub nowy, oficjalny mssql-python od Microsoftu.
+    Najczęściej przez pyodbc z sterownikiem ODBC Driver 18 `for` SQL Server lub nowy, oficjalny mssql-python od Microsoftu.
     SQLAlchemy dostarcza warstwę ORM i Core działającą na tych sterownikach (dialekt mssql+pyodbc).
-    Zawsze używa się zapytań parametryzowanych: cursor.execute("SELECT * FROM Users WHERE Id = ?", user_id).
-    Do analizy danych wyniki można wczytać do pandas przez read_sql.
+    Zawsze używa się zapytań parametryzowanych: `cursor.execute("SELECT * FROM Users WHERE Id = ?", user_id)`.
+    Do analizy danych wyniki można wczytać do pandas przez `read_sql`.
 
 - id: 59
   text: Czym są NumPy i pandas?
   answer: |
     NumPy dostarcza wydajne, wielowymiarowe tablice (ndarray) i operacje wektorowe zaimplementowane w C.
-    pandas oferuje DataFrame - tabelaryczne struktury danych z indeksowaniem, grupowaniem, łączeniem i obsługą brakujących wartości.
+    pandas oferuje `DataFrame` - tabelaryczne struktury danych z indeksowaniem, grupowaniem, łączeniem i obsługą brakujących wartości.
     Operacje wektorowe są wielokrotnie szybsze niż pętle w Pythonie.
     Alternatywą dla pandas, szczególnie przy dużych danych, jest Polars.
 
 - id: 60
   text: Jak czytać i zapisywać pliki w Pythonie?
   answer: |
-    Używa się open() w instrukcji with: with open('dane.txt', encoding='utf-8') as f: content = f.read().
+    Używa się `open()` w instrukcji `with`: `with open('dane.txt', encoding='utf-8') as f: content = f.read()`.
     Tryby: 'r' (odczyt), 'w' (zapis z nadpisaniem), 'a' (dopisywanie), 'b' (binarnie).
-    Duże pliki czyta się linia po linii: for line in f.
-    pathlib.Path oferuje nowoczesne API: Path('dane.txt').read_text(encoding='utf-8'); do formatów są moduły json i csv.
+    Duże pliki czyta się linia po linii: `for` line `in` f.
+    `pathlib.Path` oferuje nowoczesne API: `Path('dane.txt').read_text(encoding='utf-8')`; do formatów są moduły json i csv.
 
 - id: 61
   text: Jakie są nowości w Pythonie 3.12-3.14?
   answer: |
-    3.12: nowa składnia typów generycznych (class Box[T]) i instrukcja type, lepsze komunikaty błędów, elastyczniejsze f-stringi.
+    3.12: nowa składnia typów generycznych (`class Box[T]`) i instrukcja type, lepsze komunikaty błędów, elastyczniejsze f-stringi.
     3.13: nowy interaktywny REPL, eksperymentalny tryb free-threaded bez GIL i eksperymentalny kompilator JIT.
-    3.14: template strings (t-stringi), leniwie wyliczane adnotacje, oficjalne wsparcie free-threaded i wielu interpreterów w module concurrent.interpreters.
+    3.14: template strings (t-stringi), leniwie wyliczane adnotacje, oficjalne wsparcie free-threaded i wielu interpreterów w module `concurrent.interpreters`.
     Każda wersja przynosi też poprawki wydajności CPythona.
 
 - id: 62
   text: Napisz funkcję zwracającą n najczęstszych słów w tekście.
   answer: |
     Normalizujemy tekst (małe litery), wyciągamy słowa wyrażeniem regularnym i zliczamy je Counterem.
-    most_common(n) zwraca listę par (słowo, liczba) posortowaną malejąco.
+    `most_common(n)` zwraca listę par (słowo, liczba) posortowaną malejąco.
     ```python
     import re
     from collections import Counter
@@ -512,7 +512,7 @@
   text: Napisz generator czytający duży plik w paczkach linii.
   answer: |
     Generator czyta plik leniwie i zwraca listy po size linii, więc pamięć nie rośnie wraz z rozmiarem pliku.
-    Od Pythona 3.12 to samo daje itertools.batched(f, size).
+    Od Pythona 3.12 to samo daje `itertools.batched(f, size)`.
     ```python
     from collections.abc import Iterator
 

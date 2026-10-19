@@ -1,0 +1,1154 @@
+- id: 1
+  question: Od czego należy zacząć rozwiązywanie zadania z projektowania systemu na rozmowie?
+  answers:
+    - text: Od wyboru konkretnych technologii, np. Kafka i Kubernetes, a potem dopasowania do nich wymagań
+      correct: false
+    - text: Od narysowania szczegółowego schematu bazy danych ze wszystkimi indeksami
+      correct: false
+    - text: Od doprecyzowania wymagań i skali
+      correct: true
+    - text: Od napisania kodu najważniejszego endpointu API w wybranym języku
+      correct: false
+  explanation: |
+    Wymagania funkcjonalne i niefunkcjonalne (liczba użytkowników, opóźnienia, spójność) decydują o całej architekturze.
+    Szczegóły schematu, technologie i kod przychodzą później - zaczynanie od nich prowadzi do rozwiązania, które nie odpowiada problemowi.
+
+- id: 2
+  question: Które wymaganie jest niefunkcjonalne?
+  answers:
+    - text: Użytkownik może wystawić fakturę korygującą do istniejącej faktury
+      correct: false
+    - text: 99,9% żądań obsłużonych poniżej 200 ms
+      correct: true
+    - text: Administrator może zablokować konto użytkownika z poziomu panelu
+      correct: false
+    - text: System wysyła e-mail z potwierdzeniem po złożeniu zamówienia
+      correct: false
+  explanation: |
+    Wymagania niefunkcjonalne opisują, jak dobrze system działa: wydajność, dostępność, bezpieczeństwo, skalowalność.
+    Pozostałe odpowiedzi opisują, co system robi, więc są funkcjonalne.
+
+- id: 3
+  question: Ile średnio żądań na sekundę generuje 1 milion żądań dziennie?
+  answers:
+    - text: Około 1,2
+      correct: false
+    - text: Około 1200
+      correct: false
+    - text: Około 12
+      correct: true
+    - text: Około 120
+      correct: false
+  explanation: |
+    Doba ma około 86 400 sekund, więc 1 000 `000 / 86` 400 ≈ 11,6.
+    W szczycie ruch bywa 2-10 razy wyższy, ale średnia to rząd kilkunastu żądań na sekundę.
+
+- id: 4
+  question: Jaka jest główna wada skalowania pionowego?
+  answers:
+    - text: Działa wyłącznie w chmurze, a nie na serwerach fizycznych
+      correct: false
+    - text: Nie pozwala na zwiększenie pamięci RAM, tylko liczby procesorów
+      correct: false
+    - text: Wymaga przepisania aplikacji na mikroserwisy przed pierwszym wdrożeniem
+      correct: false
+    - text: Ma twardy limit i tworzy pojedynczy punkt awarii
+      correct: true
+  explanation: |
+    Jedna, coraz większa maszyna w końcu przestaje rosnąć i nadal jest jedna - jej awaria zatrzymuje system.
+    Skalowanie pionowe nie wymaga mikroserwisów, obejmuje RAM, CPU i dyski i działa także na serwerach fizycznych.
+
+- id: 5
+  question: Co jest warunkiem łatwego skalowania poziomego usługi?
+  answers:
+    - text: Uruchamianie wszystkich instancji na tym samym serwerze fizycznym
+      correct: false
+    - text: Przechowywanie sesji użytkowników w pamięci każdej instancji
+      correct: false
+    - text: Używanie jednej, współdzielonej puli wątków dla wszystkich instancji
+      correct: false
+    - text: Bezstanowość instancji
+      correct: true
+  explanation: |
+    Jeśli każde żądanie może obsłużyć dowolna instancja, wystarczy dodać kolejne za load balancerem.
+    Sesje w pamięci instancji wymuszają sticky sessions, a jeden serwer i wspólna pula wątków przeczą idei skalowania poziomego.
+
+- id: 6
+  question: Na jakim poziomie działa load balancer L7?
+  answers:
+    - text: Na poziomie HTTP - może routować po ścieżce i nagłówkach
+      correct: true
+    - text: Na poziomie DNS, zwracając różne adresy IP przy każdym zapytaniu
+      correct: false
+    - text: Na poziomie fizycznym, rozdzielając ruch między kable sieciowe
+      correct: false
+    - text: Na poziomie TCP/UDP, bez wglądu w treść żądań HTTP
+      correct: false
+  explanation: |
+    L7 rozumie protokół aplikacyjny, więc może np. kierować `/api` do jednej puli, a `/static` do drugiej.
+    Działanie na TCP/UDP to L4, a rozdzielanie przez DNS to osobna technika (DNS load balancing).
+
+- id: 7
+  question: Który algorytm load balancingu kieruje żądanie do instancji z najmniejszą liczbą aktywnych połączeń?
+  answers:
+    - text: Least connections
+      correct: true
+    - text: Weighted random
+      correct: false
+    - text: IP hash
+      correct: false
+    - text: Round robin
+      correct: false
+  explanation: |
+    Least connections dobrze sprawdza się, gdy żądania mają różny czas obsługi.
+    Round robin rozdziela po kolei, IP hash przypisuje klienta do instancji na stałe, a weighted random losuje z wagami.
+
+- id: 8
+  question: Co mówi twierdzenie CAP?
+  answers:
+    - text: Bazy relacyjne zawsze wybierają dostępność, a NoSQL zawsze spójność
+      correct: false
+    - text: Przy podziale sieci system musi wybrać między spójnością a dostępnością
+      correct: true
+    - text: System może jednocześnie zawsze zapewnić spójność, dostępność i odporność na podział sieci
+      correct: false
+    - text: Cache, API i Partycje to trzy warstwy każdego systemu rozproszonego
+      correct: false
+  explanation: |
+    Podziałów sieci nie da się uniknąć, więc realny wybór podczas awarii to CP lub AP.
+    Wszystkie trzy właściwości naraz są niemożliwe, przypisanie kategorii do typów baz jest uproszczeniem bez pokrycia, a rozwinięcie skrótu jest zmyślone.
+
+- id: 9
+  question: Co dodaje PACELC do twierdzenia CAP?
+  answers:
+    - text: Wybór między opóźnieniem a spójnością bez podziału sieci
+      correct: true
+    - text: Zasadę, że każda partycja danych musi mieć własny load balancer
+      correct: false
+    - text: Wybór między kosztem a wydajnością w chmurze publicznej
+      correct: false
+    - text: Wymóg szyfrowania danych w tranzycie i w spoczynku
+      correct: false
+  explanation: |
+    PACELC: przy Partition wybierz A lub C, Else wybierz Latency lub Consistency.
+    Nie dotyczy szyfrowania, kosztów chmury ani load balancerów.
+
+- id: 10
+  question: Czym jest spójność ostateczna (eventual consistency)?
+  answers:
+    - text: Repliki mogą chwilowo się różnić, ale z czasem zbiegną się do jednego stanu
+      correct: true
+    - text: Każdy odczyt zawsze zwraca najnowszy zatwierdzony zapis, niezależnie od tego, z której repliki pochodzi
+      correct: false
+    - text: Dane są zapisywane tylko raz dziennie w ramach procesu wsadowego
+      correct: false
+    - text: System gwarantuje, że żaden zapis nie zostanie nigdy utracony przy awarii
+      correct: false
+  explanation: |
+    Ostateczna spójność daje lepszą dostępność i niższe opóźnienia kosztem chwilowych rozbieżności.
+    Najnowszy zapis przy każdym odczycie to silna spójność, a zapis wsadowy i brak utraty danych to inne właściwości.
+
+- id: 11
+  question: Kiedy baza relacyjna jest rozsądnym domyślnym wyborem?
+  answers:
+    - text: Gdy system wymaga zapisu milionów zdarzeń na sekundę bez żadnych relacji
+      correct: false
+    - text: Gdy głównym zadaniem jest przechodzenie po grafie powiązań między użytkownikami
+      correct: false
+    - text: Gdy dane są relacyjne i potrzebne są transakcje, np. przy fakturach
+      correct: true
+    - text: Gdy dane mają całkowicie dowolny, zmienny schemat dokumentów
+      correct: false
+  explanation: |
+    Transakcje ACID, więzy integralności i złożone zapytania to mocne strony SQL, a nowoczesne bazy relacyjne dobrze się skalują i obsługują JSON.
+    Ekstremalne zapisy, dowolny schemat i grafy to typowe argumenty za specjalizowanymi bazami NoSQL.
+
+- id: 12
+  question: Jakie jest ryzyko replikacji asynchronicznej?
+  answers:
+    - text: Każdy zapis musi czekać na potwierdzenie od wszystkich replik
+      correct: false
+    - text: Repliki nie mogą obsługiwać zapytań odczytu
+      correct: false
+    - text: Utrata ostatnich zapisów przy awarii lidera i opóźnienie replik
+      correct: true
+    - text: Replikacja asynchroniczna działa tylko w obrębie jednego serwera
+      correct: false
+  explanation: |
+    Lider potwierdza zapis przed przesłaniem go do replik, więc przy awarii część danych może zginąć, a repliki mogą zwracać nieaktualne dane.
+    Czekanie na wszystkie repliki to replikacja synchroniczna, repliki asynchroniczne często obsługują odczyty, a replikacja dotyczy wielu serwerów.
+
+- id: 13
+  question: Jaki problem rozwiązuje sharding?
+  answers:
+    - text: Potrzebę szyfrowania danych osobowych w bazie
+      correct: false
+    - text: Brak kopii zapasowych w przypadku awarii serwera bazy danych
+      correct: false
+    - text: Ograniczoną przepustowość zapisu jednej bazy
+      correct: true
+    - text: Zbyt wolne zapytania z powodu braku indeksów
+      correct: false
+  explanation: |
+    Dane są dzielone między wiele baz według klucza, np. `tenant_id`, więc rośnie łączna przepustowość i pojemność.
+    Sharding nie zastępuje kopii zapasowych, indeksów ani szyfrowania.
+
+- id: 14
+  question: Która strategia shardingu najlepiej rozkłada równomiernie dane o sekwencyjnych kluczach?
+  answers:
+    - text: Haszowa (hash) - shard wybiera się na podstawie skrótu klucza
+      correct: true
+    - text: Losowa - każdy rekord trafia do przypadkowego shardu bez zapisu, gdzie trafił
+      correct: false
+    - text: Zakresowa (range) - kolejne zakresy kluczy trafiają do kolejnych shardów
+      correct: false
+    - text: Ręczna - administrator przypisuje każdy rekord do shardu przy jego tworzeniu
+      correct: false
+  explanation: |
+    Hash rozprasza kolejne wartości po wszystkich shardach, więc nowe rekordy nie trafiają do jednego "gorącego" shardu.
+    Strategia zakresowa przy rosnących kluczach (np. datach) kieruje wszystkie nowe zapisy do jednego shardu, ręczna nie skaluje się, a losowa uniemożliwia odnalezienie danych.
+
+- id: 15
+  question: Jaka jest główna zaleta consistent hashing?
+  answers:
+    - text: Eliminuje potrzebę replikacji danych między węzłami
+      correct: false
+    - text: Gwarantuje, że każdy węzeł ma dokładnie tyle samo danych bez wirtualnych węzłów
+      correct: false
+    - text: Pozwala wyszukiwać dane po dowolnym atrybucie, a nie tylko po kluczu
+      correct: false
+    - text: Dodanie lub usunięcie węzła przenosi tylko niewielką część kluczy
+      correct: true
+  explanation: |
+    Przy `hash % N` zmiana liczby węzłów przenosi prawie wszystkie klucze, a na pierścieniu - tylko te z sąsiedniego zakresu.
+    Równomierny rozkład wymaga wirtualnych węzłów, a consistent hashing nie zastępuje replikacji i nie wspiera wyszukiwania po atrybutach.
+
+- id: 16
+  question: Dla jakich danych cache sprawdza się najlepiej?
+  answers:
+    - text: Zmieniających się przy każdym żądaniu i rzadko odczytywanych
+      correct: false
+    - text: Danych, które są odczytywane tylko raz po zapisie
+      correct: false
+    - text: Wymagających silnej spójności przy każdym odczycie
+      correct: false
+    - text: Często czytanych i rzadko zmienianych
+      correct: true
+  explanation: |
+    Wysoki współczynnik trafień daje największy zysk, gdy dane są czytane wielokrotnie, a zmieniają się rzadko.
+    Dane zmienne, wymagające silnej spójności lub czytane raz dają mało trafień i problemy z unieważnianiem.
+
+- id: 17
+  question: Jak działa strategia cache-aside?
+  answers:
+    - text: Cache sam pobiera dane z bazy przy chybieniu, a aplikacja komunikuje się wyłącznie z cache
+      correct: false
+    - text: Aplikacja przy chybieniu pobiera dane z bazy i sama zapisuje je do cache
+      correct: true
+    - text: Każdy zapis trafia jednocześnie do cache i do bazy w jednej operacji
+      correct: false
+    - text: Zapis trafia najpierw do cache, a do bazy asynchronicznie w tle
+      correct: false
+  explanation: |
+    Cache-aside (lazy loading) jest najpopularniejszy i daje aplikacji pełną kontrolę.
+    Samodzielne pobieranie przez cache to read-through, jednoczesny zapis - write-through, a zapis asynchroniczny do bazy - write-behind.
+
+- id: 18
+  question: Którą politykę usuwania z cache stosuje się najczęściej?
+  answers:
+    - text: Losowe usuwanie
+      correct: false
+    - text: FIFO
+      correct: false
+    - text: MRU
+      correct: false
+    - text: LRU
+      correct: true
+  explanation: |
+    LRU (Least Recently Used) usuwa najdawniej używane wpisy, co dobrze odpowiada typowym wzorcom dostępu.
+    FIFO ignoruje częstość użycia, losowe usuwanie jest nieprzewidywalne, a MRU usuwa ostatnio używane - przydaje się tylko w szczególnych przypadkach.
+
+- id: 19
+  question: Co pomaga przy problemie cache stampede?
+  answers:
+    - text: Wyłączenie cache dla najpopularniejszych kluczy
+      correct: false
+    - text: Usuwanie całego cache co godzinę w celu odświeżenia wszystkich danych naraz
+      correct: false
+    - text: Odtwarzanie wpisu przez jedno żądanie i losowy TTL
+      correct: true
+    - text: Skrócenie TTL wszystkich wpisów do jednej sekundy
+      correct: false
+  explanation: |
+    Gdy popularny wpis wygasa, single-flight sprawia, że bazę odpytuje tylko jedno żądanie, a jitter TTL rozkłada wygasanie w czasie.
+    Krótszy TTL i czyszczenie całego cache nasilają problem, a wyłączenie cache dla gorących kluczy przenosi cały ruch na bazę.
+
+- id: 20
+  question: Co jest głównym zadaniem CDN?
+  answers:
+    - text: Przechowywanie danych transakcyjnych aplikacji w wielu regionach
+      correct: false
+    - text: Serwowanie treści z serwera najbliższego użytkownikowi
+      correct: true
+    - text: Szyfrowanie bazy danych w spoczynku
+      correct: false
+    - text: Uruchamianie zadań cyklicznych w różnych strefach czasowych
+      correct: false
+  explanation: |
+    CDN cache'uje pliki statyczne (a czasem odpowiedzi API) blisko użytkowników, zmniejszając opóźnienia i obciążenie serwerów źródłowych.
+    Nie jest bazą transakcyjną, mechanizmem szyfrowania bazy ani harmonogramem zadań.
+
+- id: 21
+  question: Jak wymusić pobranie nowej wersji pliku JS z CDN po wdrożeniu?
+  answers:
+    - text: Poprosić użytkowników o wyczyszczenie cache przeglądarki
+      correct: false
+    - text: Dodać hash zawartości do nazwy pliku
+      correct: true
+    - text: Wyłączyć cache CDN na stałe
+      correct: false
+    - text: Zmienić nazwę domeny CDN przy każdym wdrożeniu
+      correct: false
+  explanation: |
+    `app.3f9a1c.js` to nowy URL, więc CDN i przeglądarka pobiorą go od razu, a stare pliki można cache'ować długo.
+    Zmiana domeny i wyłączenie cache niszczą korzyści CDN, a proszenie użytkowników nie jest rozwiązaniem (alternatywą jest purge cache).
+
+- id: 22
+  question: Jaka jest główna korzyść z kolejki komunikatów między usługami?
+  answers:
+    - text: Gwarancja natychmiastowej odpowiedzi dla użytkownika
+      correct: false
+    - text: Eliminacja potrzeby obsługi błędów w konsumentach
+      correct: false
+    - text: Silna spójność danych między wszystkimi usługami
+      correct: false
+    - text: Luźne powiązanie i buforowanie skoków obciążenia
+      correct: true
+  explanation: |
+    Producent nie czeka na konsumenta, wiadomości czekają na przetworzenie, a konsumentów można skalować niezależnie.
+    Kolejka wprowadza asynchroniczność (a więc nie natychmiastową odpowiedź), konsumenci nadal muszą obsługiwać błędy, a spójność staje się ostateczna.
+
+- id: 23
+  question: Czym pub/sub różni się od kolejki point-to-point?
+  answers:
+    - text: Pub/sub zawsze przechowuje wiadomości trwale, a kolejka tylko w pamięci
+      correct: false
+    - text: W kolejce wiadomość trafia do wszystkich konsumentów, a w pub/sub tylko do jednego subskrybenta
+      correct: false
+    - text: Kolejka działa tylko synchronicznie, a pub/sub asynchronicznie
+      correct: false
+    - text: W pub/sub wiadomość trafia do każdego subskrybenta, w kolejce - do jednego
+      correct: true
+  explanation: |
+    Kolejka rozdziela pracę między konsumentów, a pub/sub rozgłasza zdarzenia - w Azure Service Bus to Queues i Topics.
+    Odwrócenie ról jest błędne, a trwałość i asynchroniczność zależą od konkretnego brokera, a nie od modelu.
+
+- id: 24
+  question: Do czego Kafka nadaje się lepiej niż RabbitMQ?
+  answers:
+    - text: Do kolejek zadań, w których wiadomość jest usuwana po przetworzeniu
+      correct: false
+    - text: Do priorytetyzacji pojedynczych wiadomości w kolejce
+      correct: false
+    - text: Do strumieniowania zdarzeń czytanych wielokrotnie przez różne grupy
+      correct: true
+    - text: Do złożonego routingu pojedynczych wiadomości przez exchange'e i klucze routingu
+      correct: false
+  explanation: |
+    Kafka to trwały log zdarzeń z ogromną przepustowością i kolejnością w obrębie partycji.
+    Elastyczny routing, kolejki zadań i priorytety to mocne strony RabbitMQ.
+
+- id: 25
+  question: Jaka gwarancja dostarczenia jest najczęstsza w brokerach komunikatów?
+  answers:
+    - text: Exactly-once bez żadnych dodatkowych mechanizmów
+      correct: false
+    - text: At-least-once
+      correct: true
+    - text: Best-effort bez potwierdzeń
+      correct: false
+    - text: At-most-once
+      correct: false
+  explanation: |
+    At-least-once oznacza, że wiadomość może dotrzeć wielokrotnie, więc konsument musi być idempotentny.
+    At-most-once dopuszcza utratę, exactly-once w praktyce wymaga idempotentności lub transakcji, a best-effort nie daje gwarancji.
+
+- id: 26
+  question: Jak zapewnić idempotentność żądania płatności?
+  answers:
+    - text: Wydłużeniem timeoutu klienta do kilku minut
+      correct: false
+    - text: Kluczem idempotentności zapisywanym razem z wynikiem operacji
+      correct: true
+    - text: Ponawianiem żądania aż do skutku, bez żadnego identyfikatora
+      correct: false
+    - text: Wysyłaniem żądania przez dwa niezależne serwery dla pewności
+      correct: false
+  explanation: |
+    Ponowne żądanie z tym samym Idempotency-Key zwraca zapisany wynik zamiast obciążać klienta drugi raz.
+    Ponawianie bez identyfikatora i wysyłanie przez dwa serwery powodują duplikaty, a dłuższy timeout nie rozwiązuje problemu.
+
+- id: 27
+  question: Jaki problem rozwiązuje wzorzec Transactional Outbox?
+  answers:
+    - text: Ograniczenie liczby wiadomości wysyłanych w ciągu sekundy
+      correct: false
+    - text: Atomowy zapis zmian w bazie i publikację wiadomości do brokera
+      correct: true
+    - text: Szyfrowanie wiadomości wysyłanych poza sieć firmową
+      correct: false
+    - text: Przechowywanie wiadomości, których nie udało się przetworzyć
+      correct: false
+  explanation: |
+    Wiadomość zapisuje się w tabeli outbox w tej samej transakcji co dane, a osobny proces ją publikuje - nie zdarzy się, że zapis się uda, a wiadomość zginie.
+    Szyfrowanie, rate limiting i przechowywanie nieprzetworzonych wiadomości (DLQ) to inne mechanizmy.
+
+- id: 28
+  question: Do czego służy dead letter queue?
+  answers:
+    - text: Do przechowywania wiadomości usuniętych przez administratora
+      correct: false
+    - text: Do odkładania wiadomości, których nie udało się przetworzyć
+      correct: true
+    - text: Do archiwizacji wszystkich poprawnie przetworzonych wiadomości na potrzeby audytu
+      correct: false
+    - text: Do kolejkowania wiadomości o najwyższym priorytecie
+      correct: false
+  explanation: |
+    DLQ zapobiega blokowaniu kolejki przez "trujące" wiadomości, które można później przeanalizować i przetworzyć ponownie.
+    Nie jest archiwum, koszem administratora ani kolejką priorytetową.
+
+- id: 29
+  question: Kiedy mikroserwisy mają najwięcej sensu?
+  answers:
+    - text: Gdy zespół chce uniknąć problemów systemów rozproszonych
+      correct: false
+    - text: Gdy potrzebne są transakcje ACID obejmujące wszystkie dane systemu
+      correct: false
+    - text: Gdy wiele zespołów musi niezależnie rozwijać i wdrażać części systemu
+      correct: true
+    - text: Gdy system rozwija jedna lub dwie osoby i zależy im na prostocie
+      correct: false
+  explanation: |
+    Mikroserwisy rozwiązują głównie problemy organizacyjne dużych zespołów, kosztem złożoności rozproszenia.
+    Mały zespół, transakcje obejmujące cały system i chęć uniknięcia rozproszenia przemawiają za monolitem lub modularnym monolitem.
+
+- id: 30
+  question: Czym charakteryzuje się modularny monolit?
+  answers:
+    - text: Aplikacją podzieloną na warstwy prezentacji, logiki i danych bez innych granic
+      correct: false
+    - text: Zbiorem niezależnie wdrażanych usług komunikujących się przez sieć
+      correct: false
+    - text: Jedną aplikacją z modułami o wyraźnych granicach i własnymi danymi
+      correct: true
+    - text: Monolitem, w którym każdy moduł ma osobny proces systemowy
+      correct: false
+  explanation: |
+    Moduły komunikują się przez publiczne API lub zdarzenia i nie sięgają do cudzych danych, a całość wdraża się jako jedna aplikacja.
+    Niezależnie wdrażane usługi to mikroserwisy, sam podział na warstwy to klasyczna architektura warstwowa, a osobne procesy przeczą idei monolitu.
+
+- id: 31
+  question: Według jakiego kryterium najlepiej wyznaczać granice modułów lub usług?
+  answers:
+    - text: Według domeny biznesowej (bounded contexts z DDD)
+      correct: true
+    - text: Według tabel w bazie danych - jedna tabela, jeden moduł
+      correct: false
+    - text: "Według warstw technicznych: kontrolery, serwisy, repozytoria"
+      correct: false
+    - text: Według liczby linii kodu - moduły powinny mieć podobny rozmiar
+      correct: false
+  explanation: |
+    Moduł powinien grupować dane i reguły, które zmieniają się razem.
+    Podział techniczny lub według tabel prowadzi do "rozproszonego monolitu", a rozmiar kodu nie jest kryterium granic.
+
+- id: 32
+  question: Co NIE jest typową rolą API Gateway?
+  answers:
+    - text: Agregacja odpowiedzi z kilku usług
+      correct: false
+    - text: Uwierzytelnianie i rate limiting
+      correct: false
+    - text: Routing żądań do odpowiednich usług backendowych
+      correct: false
+    - text: Przechowywanie danych domenowych
+      correct: true
+  explanation: |
+    Gateway to punkt wejścia z funkcjami przekrojowymi, a dane należą do usług.
+    Routing, uwierzytelnianie, rate limiting i agregacja to klasyczne zadania bramki, np. Azure API Management czy YARP.
+
+- id: 33
+  question: Do czego najlepiej nadaje się gRPC?
+  answers:
+    - text: Do szybkiej, silnie typowanej komunikacji między usługami
+      correct: true
+    - text: Do zapytań, w których klient sam wybiera zestaw pól jak w GraphQL
+      correct: false
+    - text: Do przesyłania plików statycznych przez CDN
+      correct: false
+    - text: Do publicznych API konsumowanych bezpośrednio z przeglądarki bez proxy
+      correct: false
+  explanation: |
+    gRPC używa HTTP/2 i Protobuf, wspiera streaming i generuje klientów z kontraktu.
+    Przeglądarki nie obsługują go bezpośrednio (potrzebny jest gRPC-Web), wybór pól to cecha GraphQL, a pliki statyczne serwuje CDN.
+
+- id: 34
+  question: Jaki problem rozwiązuje GraphQL?
+  answers:
+    - text: Brak możliwości cache'owania odpowiedzi HTTP
+      correct: false
+    - text: Konieczność uwierzytelniania każdego żądania
+      correct: false
+    - text: Over-fetching i under-fetching danych
+      correct: true
+    - text: Ograniczoną przepustowość baz relacyjnych
+      correct: false
+  explanation: |
+    Klient w jednym zapytaniu określa dokładnie, jakich danych potrzebuje.
+    GraphQL wręcz utrudnia cache'owanie HTTP, nie eliminuje uwierzytelniania i nie zmienia przepustowości bazy.
+
+- id: 35
+  question: Jaka jest wada synchronicznej komunikacji między usługami?
+  answers:
+    - text: Spójność ostateczna danych
+      correct: false
+    - text: Konieczność używania brokera komunikatów
+      correct: false
+    - text: Brak możliwości zwrócenia wyniku do wywołującego
+      correct: false
+    - text: Powiązanie czasowe i ryzyko kaskadowych awarii
+      correct: true
+  explanation: |
+    Gdy usługa B nie działa, usługa A też nie może obsłużyć żądania - awaria rozlewa się po łańcuchu wywołań.
+    Komunikacja synchroniczna zwraca wynik, nie wymaga brokera, a spójność ostateczna to cecha komunikacji asynchronicznej.
+
+- id: 36
+  question: Który adres URL jest zgodny z dobrymi praktykami REST?
+  answers:
+    - text: "`GET /getInvoice?id=123`"
+      correct: false
+    - text: "`POST /invoices/123/delete`"
+      correct: false
+    - text: "`GET /invoices/123`"
+      correct: true
+    - text: "`GET /invoice/fetchAll`"
+      correct: false
+  explanation: |
+    Zasoby to rzeczowniki w liczbie mnogiej, a operacje wyrażają metody HTTP.
+    Czasowniki w URL (`getInvoice`, delete, `fetchAll`) dublują znaczenie metod HTTP i są typowe dla API w stylu RPC.
+
+- id: 37
+  question: Jaki standard opisuje format błędów API (`ProblemDetails`)?
+  answers:
+    - text: RFC 9457
+      correct: true
+    - text: RFC 2616
+      correct: false
+    - text: ISO 8601
+      correct: false
+    - text: RFC 4122
+      correct: false
+  explanation: |
+    RFC 9457 (następca RFC 7807) definiuje JSON z polami type, title, status i detail.
+    RFC 2616 to stara specyfikacja HTTP/1.1, ISO 8601 to format dat, a RFC 4122 opisywał UUID.
+
+- id: 38
+  question: Która praktyka najlepiej chroni klientów API przed łamiącymi zmianami?
+  answers:
+    - text: Dodawanie nowych pól zamiast zmieniania istniejących
+      correct: true
+    - text: Zmiana typów pól w odpowiedziach bez wersjonowania
+      correct: false
+    - text: Usuwanie nieużywanych pól bez zapowiedzi
+      correct: false
+    - text: Zmiana nazw endpointów przy każdym wydaniu
+      correct: false
+  explanation: |
+    Dodanie pola nie psuje klientów, którzy go nie znają - zmiany łamiące wymagają nowej wersji API i okresu przejściowego.
+    Zmiana typów, usuwanie pól i zmiana nazw bez wersjonowania psują istniejące integracje.
+
+- id: 39
+  question: Jaki kod statusu zwraca się po przekroczeniu limitu żądań?
+  answers:
+    - text: 403 Forbidden
+      correct: false
+    - text: 503 Service Unavailable
+      correct: false
+    - text: 400 Bad Request
+      correct: false
+    - text: 429 Too Many Requests
+      correct: true
+  explanation: |
+    429 z nagłówkiem Retry-After informuje klienta, kiedy może spróbować ponownie.
+    403 oznacza brak uprawnień, 503 - niedostępność usługi, a 400 - niepoprawne żądanie.
+
+- id: 40
+  question: Która cecha wyróżnia algorytm token bucket?
+  answers:
+    - text: Pozwala na krótkie skoki ruchu do pojemności wiadra
+      correct: true
+    - text: Liczy żądania w sztywnych oknach czasowych od pełnej minuty
+      correct: false
+    - text: Gwarantuje idealnie równy odstęp między żądaniami
+      correct: false
+    - text: Odrzuca wszystkie żądania po przekroczeniu średniej z ostatniej doby
+      correct: false
+  explanation: |
+    Tokeny przybywają w stałym tempie, a zgromadzony zapas pozwala obsłużyć chwilowy skok.
+    Równy odstęp to cecha leaky bucket, sztywne okna to fixed window, a średnia z doby nie jest standardowym algorytmem.
+
+- id: 41
+  question: Co robi circuit breaker w stanie Open?
+  answers:
+    - text: Od razu zwraca błąd, nie wywołując zawodnej usługi
+      correct: true
+    - text: Przepuszcza wszystkie żądania i liczy błędy
+      correct: false
+    - text: Przepuszcza tylko kilka próbnych żądań, aby sprawdzić usługę
+      correct: false
+    - text: Restartuje zawodną usługę
+      correct: false
+  explanation: |
+    Stan Open chroni usługę przed dalszym obciążaniem i daje jej czas na powrót.
+    Normalne działanie to Closed, próbne żądania przepuszcza Half-Open, a restartowanie usług nie jest rolą circuit breakera.
+
+- id: 42
+  question: Jak poprawnie ponawiać żądania po błędach przejściowych?
+  answers:
+    - text: Wykładniczy backoff z jitterem i limitem prób
+      correct: true
+    - text: Ponawianie każdego błędu, w tym 400 i 401, z identycznym odstępem
+      correct: false
+    - text: Ponawianie operacji nieidempotentnych bez klucza idempotentności
+      correct: false
+    - text: Natychmiastowe ponawianie w nieskończoność, aż żądanie się powiedzie
+      correct: false
+  explanation: |
+    Rosnące, losowo przesunięte odstępy zapobiegają zsynchronizowanym falom ponowień (retry storm).
+    Nieskończone i natychmiastowe ponowienia przeciążają system, błędy 4xx zwykle nie są przejściowe, a ponawianie nieidempotentnych operacji tworzy duplikaty.
+
+- id: 43
+  question: Co oznacza wzorzec Bulkhead?
+  answers:
+    - text: Ponowne wysłanie żądania do innej instancji po przekroczeniu czasu
+      correct: false
+    - text: Łączenie wielu małych żądań w jedno większe w celu zmniejszenia narzutu sieci
+      correct: false
+    - text: Przechowywanie kopii danych w kilku regionach chmury
+      correct: false
+    - text: Izolację zasobów, by awaria jednej zależności nie blokowała innych
+      correct: true
+  explanation: |
+    Np. osobne pule połączeń dla usługi płatności i rekomendacji sprawiają, że wolne rekomendacje nie zablokują płatności.
+    Łączenie żądań to batching, ponowienie do innej instancji to hedging lub retry, a kopie w regionach to replikacja.
+
+- id: 44
+  question: Co wykonuje Saga w razie błędu w jednym z kroków?
+  answers:
+    - text: Natychmiastowy rollback wszystkich baz w jednej operacji
+      correct: false
+    - text: Transakcje kompensujące, cofające wcześniejsze kroki
+      correct: true
+    - text: Rozproszoną transakcję dwufazową (2PC) na wszystkich bazach
+      correct: false
+    - text: Ponowne uruchomienie całej Sagi od pierwszego kroku bez cofania zmian
+      correct: false
+  explanation: |
+    Każdy krok Sagi to lokalna transakcja, a błąd uruchamia kompensacje, np. anulowanie rezerwacji.
+    Saga istnieje właśnie po to, by uniknąć 2PC, nie ma globalnego rollbacku, a powtarzanie bez cofania zostawiłoby niespójne dane.
+
+- id: 45
+  question: Czym orkiestracja Sagi różni się od choreografii?
+  answers:
+    - text: Choreografia wymaga rozproszonej transakcji dwufazowej
+      correct: false
+    - text: W choreografii kroki koordynuje centralny orkiestrator, w orkiestracji usługi reagują na zdarzenia
+      correct: false
+    - text: Orkiestracja nie obsługuje transakcji kompensujących
+      correct: false
+    - text: W orkiestracji kroki koordynuje centralny orkiestrator, w choreografii usługi reagują na zdarzenia
+      correct: true
+  explanation: |
+    Orkiestracja jest łatwiejsza do śledzenia przy wielu krokach, a choreografia prostsza przy kilku.
+    Odwrócenie definicji jest błędne, oba podejścia obsługują kompensacje i żadne nie wymaga 2PC.
+
+- id: 46
+  question: Co jest istotą wzorca CQRS?
+  answers:
+    - text: Zapisywanie stanu jako sekwencji zdarzeń zamiast bieżących wartości
+      correct: false
+    - text: Rozdzielenie modelu zapisu (komend) od modelu odczytu (zapytań)
+      correct: true
+    - text: Kolejkowanie wszystkich zapytań w jednej kolejce komunikatów
+      correct: false
+    - text: Używanie wyłącznie baz NoSQL do odczytów i zapisów
+      correct: false
+  explanation: |
+    Model odczytu może być zdenormalizowany i zoptymalizowany pod widoki, nawet w innej bazie.
+    Sekwencja zdarzeń to Event Sourcing (często łączony z CQRS, ale osobny wzorzec), a CQRS nie wymaga kolejek ani NoSQL.
+
+- id: 47
+  question: Jak w Event Sourcing uzyskuje się bieżący stan obiektu?
+  answers:
+    - text: Przez odczyt kolumny z aktualnymi wartościami w tabeli encji
+      correct: false
+    - text: Przez odtworzenie zdarzeń, często od ostatniego snapshotu
+      correct: true
+    - text: Przez pobranie ostatniej kopii zapasowej bazy
+      correct: false
+    - text: Przez zapytanie do cache, które jest jedynym źródłem prawdy
+      correct: false
+  explanation: |
+    Stan jest pochodną historii zdarzeń, a snapshoty przyspieszają odtwarzanie.
+    Tabela z bieżącymi wartościami to klasyczny model CRUD (lub projekcja do odczytu), a cache i backup nie są źródłem prawdy.
+
+- id: 48
+  question: Co oznacza event-carried state transfer?
+  answers:
+    - text: Stan aplikacji jest przechowywany w przeglądarce użytkownika
+      correct: false
+    - text: Zdarzenia są przesyłane między usługami przez wspólną bazę danych
+      correct: false
+    - text: Zdarzenie zawiera tylko identyfikator, a konsument pobiera dane przez API
+      correct: false
+    - text: Zdarzenie zawiera pełne dane, więc konsument nie musi odpytywać źródła
+      correct: true
+  explanation: |
+    Konsument może zbudować własną kopię potrzebnych danych, co zmniejsza zależność od dostępności źródła.
+    Sam identyfikator to event notification, a przechowywanie stanu w przeglądarce i wspólna baza to inne koncepcje.
+
+- id: 49
+  question: Ile w przybliżeniu niedostępności rocznie oznacza dostępność 99,9%?
+  answers:
+    - text: Około 3,6 dnia
+      correct: false
+    - text: Około 5 minut
+      correct: false
+    - text: Około 53 minut
+      correct: false
+    - text: Około 8,8 godziny
+      correct: true
+  explanation: |
+    0,1% z 8760 godzin to około 8,76 godziny, czyli około 43 minuty miesięcznie.
+    53 minuty rocznie odpowiada 99,99%, 5 minut - 99,999%, a 3,6 dnia - 99%.
+
+- id: 50
+  question: Jaka jest dostępność systemu zależnego szeregowo od dwóch usług, każdej z dostępnością 99,9%?
+  answers:
+    - text: 99,9%
+      correct: false
+    - text: Około 99,8%
+      correct: true
+    - text: 100%
+      correct: false
+    - text: 99,99%
+      correct: false
+  explanation: |
+    Dostępności zależności szeregowych się mnoży: 0,999 × 0,999 ≈ 0,998.
+    Każda dodatkowa zależność obniża dostępność całości, więc nie może być wyższa niż pojedynczej usługi.
+
+- id: 51
+  question: Czym jest SLO?
+  answers:
+    - text: Umową z klientem z karami finansowymi za niedotrzymanie poziomu usług
+      correct: false
+    - text: Wewnętrznym celem dla mierzonej metryki
+      correct: true
+    - text: Samą mierzoną metryką, np. odsetkiem udanych żądań
+      correct: false
+    - text: Dokumentem opisującym procedurę reagowania na incydenty
+      correct: false
+  explanation: |
+    SLO wyznacza cel dla SLI i pozwala liczyć error budget.
+    Umowa z konsekwencjami to SLA, sama metryka to SLI, a procedura reagowania to runbook lub plan incydentowy.
+
+- id: 52
+  question: Co określa RPO?
+  answers:
+    - text: Ile danych można maksymalnie utracić przy awarii
+      correct: true
+    - text: Jak szybko system musi wrócić do działania po awarii
+      correct: false
+    - text: Jak długo przechowuje się logi aplikacji
+      correct: false
+    - text: Ile żądań na sekundę system musi obsłużyć w szczycie
+      correct: false
+  explanation: |
+    RPO (Recovery Point Objective) 15 minut oznacza, że kopie lub replikacja muszą obejmować dane sprzed co najwyżej 15 minut.
+    Czas powrotu do działania to RTO, a przepustowość i retencja logów to inne parametry.
+
+- id: 53
+  question: Jakie są trzy filary obserwowalności?
+  answers:
+    - text: Testy jednostkowe, integracyjne i E2E
+      correct: false
+    - text: Logi, metryki i ślady rozproszone
+      correct: true
+    - text: Alerty, dashboardy i raporty miesięczne
+      correct: false
+    - text: CPU, pamięć i dysk
+      correct: false
+  explanation: |
+    Logi opisują zdarzenia, metryki - liczby w czasie, a traces - drogę żądania przez usługi; standardem zbierania jest OpenTelemetry.
+    Testy, zasoby sprzętowe i formy prezentacji danych nie są filarami obserwowalności.
+
+- id: 54
+  question: Jak przekazuje się kontekst śledzenia między usługami w distributed tracing?
+  answers:
+    - text: W ciasteczku sesyjnym przeglądarki użytkownika
+      correct: false
+    - text: W treści każdego żądania jako pole JSON trace
+      correct: false
+    - text: W osobnej bazie danych odpytywanej przez każdą usługę przy obsłudze żądania
+      correct: false
+    - text: W nagłówkach HTTP, np. traceparent
+      correct: true
+  explanation: |
+    Nagłówek traceparent niesie trace ID i span ID, dzięki czemu narzędzia łączą spany z wielu usług.
+    Treść żądania, ciasteczka i wspólna baza nie są standardowym mechanizmem propagacji kontekstu.
+
+- id: 55
+  question: Dlaczego czasy odpowiedzi mierzy się percentylami, a nie średnią?
+  answers:
+    - text: Bo średnia ukrywa najwolniejsze żądania
+      correct: true
+    - text: Bo percentyle są zawsze niższe od średniej
+      correct: false
+    - text: Bo średniej nie da się policzyć dla dużych zbiorów danych w czasie rzeczywistym
+      correct: false
+    - text: Bo narzędzia monitoringu nie obsługują średniej
+      correct: false
+  explanation: |
+    Średnia 100 ms może ukrywać 1% żądań trwających 5 sekund - p99 to pokaże.
+    Średnią łatwo policzyć, percentyle wysokie (p99) bywają znacznie wyższe od średniej, a narzędzia obsługują oba.
+
+- id: 56
+  question: Co oznacza akronim RED w monitoringu usług?
+  answers:
+    - text: Rate, Errors, Duration
+      correct: true
+    - text: Read, Execute, Delete
+      correct: false
+    - text: Redundancy, Elasticity, Durability
+      correct: false
+    - text: Requests, Endpoints, Databases
+      correct: false
+  explanation: |
+    Liczba żądań, błędy i czas odpowiedzi to podstawowe metryki każdej usługi, a dla zasobów stosuje się USE.
+    Pozostałe rozwinięcia nie są nazwą tej metody.
+
+- id: 57
+  question: Jak najczęściej generuje się krótki kod w skracaczu linków?
+  answers:
+    - text: Szyfrowaniem pełnego URL algorytmem AES
+      correct: false
+    - text: Losowaniem trzech liter bez sprawdzania kolizji
+      correct: false
+    - text: Kodowaniem Base62 unikalnego identyfikatora
+      correct: true
+    - text: Skracaniem domeny docelowej do pierwszych liter
+      correct: false
+  explanation: |
+    Unikalny licznik zakodowany w Base62 (litery i cyfry) daje krótki, bezkolizyjny kod, np. 7 znaków to ponad 3,5 biliona kombinacji.
+    Trzy losowe litery szybko się wyczerpią i dadzą kolizje, szyfrowanie AES wydłuży wynik, a skracanie domeny nie jest unikalne.
+
+- id: 58
+  question: Gdzie w rozproszonym rate limiterze przechowuje się liczniki żądań?
+  answers:
+    - text: W ciasteczku przeglądarki klienta
+      correct: false
+    - text: W pamięci każdej instancji API osobno, bez synchronizacji
+      correct: false
+    - text: We współdzielonym magazynie, np. Redis z atomowymi operacjami
+      correct: true
+    - text: W tabeli SQL aktualizowanej przy każdym żądaniu w transakcji `SERIALIZABLE`
+      correct: false
+  explanation: |
+    Redis daje szybkie, atomowe operacje (INCR, skrypty Lua) widoczne dla wszystkich instancji.
+    Liczniki per instancja mnożą limit przez liczbę instancji, transakcje `SERIALIZABLE` w SQL są za wolne, a ciasteczko klient może dowolnie zmienić.
+
+- id: 59
+  question: Jak w systemie powiadomień uniknąć wysłania tej samej wiadomości dwukrotnie?
+  answers:
+    - text: Wysyłaniem każdego powiadomienia przez dwa kanały jednocześnie
+      correct: false
+    - text: Deduplikacją po kluczu idempotentności powiadomienia
+      correct: true
+    - text: Wyłączeniem ponowień po błędzie dostawcy
+      correct: false
+    - text: Wysyłaniem powiadomień tylko w godzinach nocnych
+      correct: false
+  explanation: |
+    Zapisany klucz pozwala workerowi rozpoznać, że wiadomość już wyszła, mimo dostarczania at-least-once.
+    Dwa kanały to duplikat z definicji, brak ponowień oznacza utratę wiadomości, a pora wysyłki nie ma związku z deduplikacją.
+
+- id: 60
+  question: Jak przy wystawianiu faktur zapewnić ciągłą, unikalną numerację?
+  answers:
+    - text: Nadawać numer w transakcji z unikalnym constraintem
+      correct: true
+    - text: Nadawać numer w przeglądarce użytkownika tuż przed wysłaniem formularza na serwer
+      correct: false
+    - text: Używać znacznika czasu w milisekundach jako numeru faktury
+      correct: false
+    - text: Generować numer losowo i sprawdzać unikalność raz dziennie
+      correct: false
+  explanation: |
+    Numer musi powstać atomowo z zapisem faktury, a constraint zabezpiecza przed duplikatem przy współbieżności.
+    Losowe numery łamią ciągłość, numer z przeglądarki można podrobić, a znacznik czasu nie gwarantuje ciągłości ani unikalności.
+
+- id: 61
+  question: Jak dostarczyć wiadomość czatu do odbiorcy połączonego przez WebSocket z innym serwerem?
+  answers:
+    - text: Przez zapis do bazy i odpytywanie jej przez odbiorcę co godzinę
+      correct: false
+    - text: Przez przekierowanie nadawcy na serwer odbiorcy
+      correct: false
+    - text: Przez wysłanie wiadomości bezpośrednio z przeglądarki nadawcy do przeglądarki odbiorcy
+      correct: false
+    - text: Przez pub/sub między serwerami, np. Redis lub Kafka
+      correct: true
+  explanation: |
+    Serwer nadawcy publikuje wiadomość, a serwer, z którym połączony jest odbiorca, przekazuje ją przez jego połączenie (SignalR ma do tego backplane).
+    Bezpośrednie połączenia przeglądarek wymagają WebRTC i nie zapewniają historii, rzadkie odpytywanie zabija "czas rzeczywisty", a przekierowanie nadawcy nie skaluje się dla wielu odbiorców.
+
+- id: 62
+  question: Jaką strategię fan-out stosuje się w feedzie dla kont z milionami obserwujących?
+  answers:
+    - text: Wysyłanie posta mailem do każdego obserwującego
+      correct: false
+    - text: Brak fan-outu - feed jest zawsze pusty dla obserwujących popularne konta
+      correct: false
+    - text: Fan-out on read - posty takich kont dociąga się przy odczycie
+      correct: true
+    - text: Fan-out on write - post kopiuje się od razu do feedów wszystkich obserwujących
+      correct: false
+  explanation: |
+    Kopiowanie jednego posta do milionów feedów przy zapisie jest zbyt drogie, więc stosuje się podejście hybrydowe.
+    Fan-out on write sprawdza się dla zwykłych kont, a pozostałe odpowiedzi nie są rozwiązaniem.
+
+- id: 63
+  question: Jaka struktura danych jest typowa dla podpowiedzi przy wyszukiwaniu (autocomplete)?
+  answers:
+    - text: Kopiec binarny
+      correct: false
+    - text: Trie (drzewo prefiksowe)
+      correct: true
+    - text: Graf skierowany acykliczny bez etykiet
+      correct: false
+    - text: Lista dwukierunkowa
+      correct: false
+  explanation: |
+    Trie pozwala szybko znaleźć wszystkie frazy zaczynające się od danego prefiksu, a w węzłach przechowuje się najpopularniejsze podpowiedzi.
+    Kopiec służy do kolejek priorytetowych, lista dwukierunkowa do sekwencyjnego dostępu, a DAG bez etykiet nie wspiera wyszukiwania prefiksów.
+
+- id: 64
+  question: Dlaczego losowy UUIDv4 bywa słabym kluczem w bazie relacyjnej?
+  answers:
+    - text: Bo losowe wartości powodują podziały stron i fragmentację indeksu
+      correct: true
+    - text: Bo bazy relacyjne nie pozwalają indeksować kolumn UUID
+      correct: false
+    - text: Bo UUIDv4 może się powtórzyć w obrębie jednej tabeli z dużym prawdopodobieństwem
+      correct: false
+    - text: Bo UUIDv4 zawiera adres MAC serwera, co jest ryzykiem bezpieczeństwa
+      correct: false
+  explanation: |
+    Wstawianie losowych kluczy w środek B-drzewa jest kosztowne - sortowalny UUIDv7 lub Snowflake ID rozwiązują ten problem.
+    Kolizje UUIDv4 są praktycznie niemożliwe, kolumny UUID można indeksować, a adres MAC zawierał UUIDv1, nie v4.
+
+- id: 65
+  question: Jak najlepiej obsłużyć upload dużych plików od użytkowników?
+  answers:
+    - text: Przez wysłanie pliku e-mailem do administratora systemu
+      correct: false
+    - text: Przez serwer aplikacji, który zapisuje plik w kolumnie `VARBINARY(MAX)` bazy
+      correct: false
+    - text: Bezpośrednio do magazynu obiektowego przez podpisany URL (SAS, presigned URL)
+      correct: true
+    - text: Przez zakodowanie pliku w Base64 w parametrze URL
+      correct: false
+  explanation: |
+    Klient wysyła plik prosto do Blob Storage lub S3, omijając serwer aplikacji, a w bazie trzyma się tylko metadane.
+    Pliki w bazie obciążają ją i backupy, e-mail nie jest mechanizmem uploadu, a URL ma ograniczoną długość.
+
+- id: 66
+  question: Jaka jest główna wada wspólnej bazy z kolumną `TenantId` w systemie multi-tenant?
+  answers:
+    - text: Brak możliwości wykonywania migracji schematu
+      correct: false
+    - text: Konieczność utrzymywania osobnego kodu aplikacji dla każdego tenanta
+      correct: false
+    - text: Ryzyko wycieku danych między tenantami i efekt "hałaśliwego sąsiada"
+      correct: true
+    - text: Najwyższy możliwy koszt utrzymania infrastruktury
+      correct: false
+  explanation: |
+    Każde zapytanie musi filtrować po `TenantId` (globalne filtry, Row-Level Security), a jeden duży tenant obciąża bazę wszystkim.
+    Wspólna baza jest najtańsza, migracje wykonuje się raz dla wszystkich, a kod aplikacji jest wspólny.
+
+- id: 67
+  question: Czym wdrożenie canary różni się od blue-green?
+  answers:
+    - text: Blue-green kieruje do nowej wersji najpierw mały procent ruchu, canary przełącza cały ruch naraz
+      correct: false
+    - text: Canary wymaga wyłączenia aplikacji na czas wdrożenia
+      correct: false
+    - text: Canary kieruje do nowej wersji najpierw mały procent ruchu, blue-green przełącza cały ruch naraz
+      correct: true
+    - text: Blue-green nie pozwala na szybki powrót do poprzedniej wersji
+      correct: false
+  explanation: |
+    Canary pozwala obserwować metryki na małej grupie użytkowników, a blue-green utrzymuje dwa środowiska z natychmiastowym przełączeniem i powrotem.
+    Odwrócenie definicji jest błędne, żadna z metod nie wymaga przestoju, a szybki powrót to zaleta blue-green.
+
+- id: 68
+  question: Dlaczego przy zmianie nazwy kolumny w bazie stosuje się wzorzec expand/contract?
+  answers:
+    - text: Bo zmiana nazwy kolumny zawsze wymaga odtworzenia bazy z kopii zapasowej
+      correct: false
+    - text: Bo bazy relacyjne nie pozwalają zmieniać nazw kolumn
+      correct: false
+    - text: Bo nowa kolumna musi być najpierw przetestowana na produkcji przez co najmniej tydzień
+      correct: false
+    - text: Bo podczas wdrożenia stara i nowa wersja aplikacji działają jednocześnie
+      correct: true
+  explanation: |
+    Najpierw dodaje się nową kolumnę i zapisuje do obu, potem przełącza odczyt, a starą usuwa w kolejnym wydaniu - dzięki temu nie ma przestojów.
+    Zmiana nazwy jest technicznie możliwa (`sp_rename`), nie wymaga odtwarzania bazy, a czas testów nie jest istotą wzorca.
+
+- id: 69
+  question: Który obiekt Kubernetes automatycznie skaluje liczbę podów na podstawie metryk?
+  answers:
+    - text: "`HorizontalPodAutoscaler`"
+      correct: true
+    - text: "`PersistentVolumeClaim`"
+      correct: false
+    - text: Ingress
+      correct: false
+    - text: "`ConfigMap`"
+      correct: false
+  explanation: |
+    HPA zwiększa lub zmniejsza liczbę replik np. na podstawie CPU lub własnych metryk, a cluster autoscaler dodaje węzły.
+    `ConfigMap` przechowuje konfigurację, Ingress kieruje ruch zewnętrzny, a PVC rezerwuje pamięć masową.
+
+- id: 70
+  question: Co zapewnia service mesh bez zmian w kodzie usług?
+  answers:
+    - text: Migracje schematu baz danych przy wdrożeniu
+      correct: false
+    - text: mTLS między usługami, retry, timeouty i telemetrię
+      correct: true
+    - text: Automatyczne generowanie kodu klientów API
+      correct: false
+    - text: Przechowywanie sekretów aplikacji w repozytorium Git
+      correct: false
+  explanation: |
+    Proxy (sidecar lub tryb ambient) przejmuje ruch sieciowy i dodaje funkcje przekrojowe - przykłady to Istio i Linkerd.
+    Service mesh nie generuje klientów, nie migruje baz i nie służy do przechowywania sekretów (a sekrety w Git to zła praktyka).
+
+- id: 71
+  question: Gdzie powinny być przechowywane sekrety aplikacji w chmurze?
+  answers:
+    - text: W menedżerze sekretów, np. Azure Key Vault
+      correct: true
+    - text: W komentarzach w pliku Dockerfile
+      correct: false
+    - text: W stałych zakodowanych w kodzie źródłowym i zaciemnionych przez kompilator
+      correct: false
+    - text: W pliku `appsettings.json` zapisanym w repozytorium
+      correct: false
+  explanation: |
+    Key Vault centralizuje sekrety, pozwala je rotować i audytować dostęp, a managed identity eliminuje hasła w konfiguracji.
+    Repozytorium, kod i Dockerfile są kopiowane i przeglądane przez wiele osób i narzędzi, więc sekrety szybko wyciekają.
+
+- id: 72
+  question: Jaka jest wada tokenów JWT w porównaniu z sesją po stronie serwera?
+  answers:
+    - text: Nie działają w aplikacjach mobilnych
+      correct: false
+    - text: Nie mogą zawierać informacji o rolach użytkownika
+      correct: false
+    - text: Trudno je natychmiast unieważnić przed wygaśnięciem
+      correct: true
+    - text: Wymagają współdzielonego magazynu sesji między instancjami
+      correct: false
+  explanation: |
+    Dlatego stosuje się krótkie access tokeny i refresh tokeny lub listy unieważnionych tokenów.
+    Współdzielony magazyn jest potrzebny właśnie dla sesji, a JWT może zawierać claims z rolami i działa na każdej platformie.
+
+- id: 73
+  question: Co oznacza backpressure?
+  answers:
+    - text: Kompresję danych przesyłanych przez sieć
+      correct: false
+    - text: Sygnał od wolnego konsumenta, by producent zwolnił
+      correct: true
+    - text: Ponowne wysłanie wiadomości po przekroczeniu czasu
+      correct: false
+    - text: Automatyczne skalowanie liczby konsumentów przy rosnącej kolejce wiadomości
+      correct: false
+  explanation: |
+    Bez backpressure bufory rosną bez ograniczeń - realizuje się go przez ograniczone kolejki, odrzucanie żądań i limity współbieżności.
+    Autoskalowanie, ponowienia i kompresja to inne mechanizmy.
+
+- id: 74
+  question: Na czym polega problem dual write?
+  answers:
+    - text: Na zapisie do dwóch systemów bez wspólnej transakcji
+      correct: true
+    - text: Na dwukrotnym zapisie tego samego wiersza przez dwa wątki
+      correct: false
+    - text: Na wysłaniu żądania zapisu przez dwa różne API
+      correct: false
+    - text: Na zapisie danych jednocześnie na dwa dyski w macierzy RAID 1 serwera bazy
+      correct: false
+  explanation: |
+    Gdy zapis do bazy się uda, a publikacja do brokera nie (lub odwrotnie), systemy się rozjeżdżają - rozwiązaniem jest outbox lub CDC.
+    Współbieżne zapisy wątków to race condition, a RAID i dwa API nie opisują tego problemu.
+
+- id: 75
+  question: Skąd zwykle Change Data Capture odczytuje zmiany w bazie?
+  answers:
+    - text: Z cyklicznych pełnych kopii tabel porównywanych co godzinę
+      correct: false
+    - text: Z logów serwera WWW
+      correct: false
+    - text: Z kodu aplikacji, który wywołuje specjalne API po każdym zapisie
+      correct: false
+    - text: Z logu transakcji bazy
+      correct: true
+  explanation: |
+    Odczyt logu transakcji nie obciąża aplikacji i nie wymaga zmian w kodzie - tak działają SQL Server CDC i Debezium.
+    Wywołania API z aplikacji to właśnie dual write, porównywanie kopii jest wolne i opóźnione, a logi serwera WWW nie zawierają zmian danych.
+
+- id: 76
+  question: Na czym polega wzorzec Strangler Fig?
+  answers:
+    - text: Na przepisaniu całego systemu od zera i przełączeniu użytkowników w jednym dniu
+      correct: false
+    - text: Na zamrożeniu starego systemu bez dalszego rozwoju
+      correct: false
+    - text: Na stopniowym przejmowaniu funkcji starego systemu przez nowy
+      correct: true
+    - text: Na równoległym utrzymywaniu obu systemów na zawsze
+      correct: false
+  explanation: |
+    Fasada lub proxy kieruje ruch do starego albo nowego systemu, a migracja odbywa się kawałek po kawałku.
+    Big bang rewrite jest ryzykowny, zamrożenie nie modernizuje systemu, a utrzymywanie obu na zawsze nie jest celem wzorca.
+
+- id: 77
+  question: Jak radzić sobie z gorącym kluczem przy zapisach, np. licznikiem polubień popularnego posta?
+  answers:
+    - text: Zwiększyć TTL tego klucza w cache do jednego roku
+      correct: false
+    - text: Zablokować zapisy do klucza po przekroczeniu progu
+      correct: false
+    - text: Przenieść klucz do osobnej bazy danych na tym samym serwerze fizycznym
+      correct: false
+    - text: Rozbić klucz na kilka podkluczy i sumować je przy odczycie
+      correct: true
+  explanation: |
+    Shardowane liczniki rozkładają zapisy na wiele partycji, a suma liczy się przy odczycie lub okresowo.
+    TTL nie zmniejsza liczby zapisów, osobna baza na tym samym serwerze nie zwiększa przepustowości, a blokowanie zapisów gubi dane.

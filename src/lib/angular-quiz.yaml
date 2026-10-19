@@ -1,0 +1,1051 @@
+- id: 1
+  question: Czym Angular (2+) różni się od AngularJS?
+  answers:
+    - text: To biblioteka do zarządzania stanem, którą dodaje się do istniejącej aplikacji AngularJS
+      correct: false
+    - text: To nowsza wersja AngularJS z tym samym API opartym na `$scope` i kontrolerach
+      correct: false
+    - text: To nazwa wersji AngularJS przeznaczonej do aplikacji mobilnych
+      correct: false
+    - text: To przepisany od zera framework oparty na komponentach i TypeScript
+      correct: true
+  explanation: |
+    Angular powstał jako zupełnie nowy framework - z komponentami, DI, RxJS, a dziś sygnałami.
+    AngularJS (`1.x`) używał `$scope` i kontrolerów, nie jest kompatybilny z Angularem i zakończył wsparcie w 2021 roku.
+    Angular nie jest biblioteką stanu ani wersją mobilną AngularJS.
+
+- id: 2
+  question: Które dyrektywy są oznaczone jako przestarzałe w Angular 20?
+  answers:
+    - text: "`*ngIf`, `*ngFor` i `*ngSwitch`"
+      correct: true
+    - text: "`routerLink` i `routerLinkActive`"
+      correct: false
+    - text: "`ngClass` i `ngStyle` z `CommonModule`"
+      correct: false
+    - text: "`ngModel` i `ngForm` z modułu `FormsModule`"
+      correct: false
+  explanation: |
+    Angular 20 deprecjonuje strukturalne dyrektywy na rzecz wbudowanego control flow `@if`, `@for` i `@switch`.
+    `ngModel`, `routerLink`, `ngClass` i `ngStyle` nadal są wspieranymi API (choć zamiast `ngClass/ngStyle` zaleca się bindowanie `[class]` i `[style]`).
+
+- id: 3
+  question: Co oznacza, że komponent jest standalone?
+  answers:
+    - text: Nie może mieć wejść ani wyjść, więc działa w całkowitej izolacji od rodzica
+      correct: false
+    - text: Sam importuje zależności w imports i nie wymaga deklaracji w `NgModule`
+      correct: true
+    - text: Jest renderowany wyłącznie po stronie serwera, bez kodu w przeglądarce
+      correct: false
+    - text: Musi być ładowany leniwie przez router i nie może być używany w szablonach
+      correct: false
+  explanation: |
+    Od Angular 19 komponenty są domyślnie standalone, więc flaga `standalone: true` nie jest potrzebna.
+    Komponent standalone może mieć `input()` i `output()`, działa w przeglądarce i można go używać w szablonach bez lazy loadingu.
+
+- id: 4
+  question: Jak uruchamia się aplikację opartą na komponentach standalone?
+  answers:
+    - text: "`new AppComponent().start()` w pliku `main.ts`"
+      correct: false
+    - text: "`bootstrapApplication(AppComponent, appConfig)`"
+      correct: true
+    - text: "`ng.bootstrap(document, ['app'])` w `index.html`"
+      correct: false
+    - text: "`platformBrowserDynamic().bootstrapModule(AppModule)`"
+      correct: false
+  explanation: |
+    `bootstrapApplication` przyjmuje główny komponent i konfigurację z providerami (`provideRouter`, `provideHttpClient` itd.).
+    `bootstrapModule` to starszy sposób z `NgModule`, a ręczne tworzenie komponentu i `ng.bootstrap` to składnia z AngularJS lub zmyślona.
+
+- id: 5
+  question: Jak zmienić wartość sygnału `count = signal(0)` na podstawie poprzedniej wartości?
+  answers:
+    - text: "`this.count.update(v => v + 1)`"
+      correct: true
+    - text: "`this.count.next(this.count() + 1)`"
+      correct: false
+    - text: "`this.count = this.count + 1`"
+      correct: false
+    - text: "`this.count.value++`"
+      correct: false
+  explanation: |
+    `update` przyjmuje funkcję otrzymującą bieżącą wartość, a `set` ustawia nową wartość bezpośrednio.
+    Przypisanie do pola nadpisze sam sygnał, sygnały w Angularze nie mają właściwości `value`, a `next` to metoda `Subject` z RxJS.
+
+- id: 6
+  question: Jak odczytać wartość sygnału w kodzie komponentu?
+  answers:
+    - text: Przez `this.count.get()`, które zwraca kopię wartości
+      correct: false
+    - text: Przez subskrypcję `this.count.subscribe(v => ...)`
+      correct: false
+    - text: Przez `this.count.value`, tak jak w Vue
+      correct: false
+    - text: Wywołując go jak funkcję, np. `this.count()`
+      correct: true
+  explanation: |
+    Sygnał jest funkcją-getterem - wywołanie zwraca wartość i rejestruje zależność, jeśli odbywa się w kontekście reaktywnym.
+    Sygnały Angulara nie mają `value` ani `get()`, a `subscribe` należy do `Observable` z RxJS.
+
+- id: 7
+  question: Czym różni się `computed` od `effect`?
+  answers:
+    - text: "`computed` działa tylko w szablonie, a `effect` tylko w serwisach"
+      correct: false
+    - text: Oba działają identycznie, ale `effect` jest szybszy
+      correct: false
+    - text: "`effect` zwraca nowy sygnał tylko do odczytu, a `computed` wykonuje kod z efektami ubocznymi"
+      correct: false
+    - text: "`computed` tworzy sygnał wyliczany z innych, a `effect` uruchamia efekty uboczne przy zmianach"
+      correct: true
+  explanation: |
+    `computed` jest leniwy i memoizowany - przelicza się, gdy zmieni się zależność i ktoś go odczyta.
+    `effect` służy do zapisu do `localStorage`, logowania czy integracji z kodem spoza Angulara, a nie do propagowania stanu.
+    Role nie są odwrócone i nie ma ograniczenia do szablonu ani serwisów.
+
+- id: 8
+  question: Do czego służy `linkedSignal`?
+  answers:
+    - text: Do synchronizacji sygnału między kartami przeglądarki przez `localStorage`
+      correct: false
+    - text: Do łączenia dwóch sygnałów w jeden `Observable` z RxJS
+      correct: false
+    - text: Do przekazywania sygnału z komponentu rodzica do dziecka zamiast funkcji `input()`
+      correct: false
+    - text: Do zapisywalnego sygnału, który resetuje się przy zmianie sygnału źródłowego
+      correct: true
+  explanation: |
+    Przykład: wybrana opcja z listy, którą użytkownik może zmienić, ale która wraca do pierwszego elementu, gdy zmieni się lista.
+    Łączenie z RxJS robi `toObservable`, synchronizacji między kartami Angular nie zapewnia, a do wejść służy `input()`.
+
+- id: 9
+  question: Co udostępnia `resource` w Angularze?
+  answers:
+    - text: Zarządzanie zasobami serwera podczas renderowania SSR
+      correct: false
+    - text: Sygnały `value`, `isLoading` i `error` dla danych ładowanych asynchronicznie
+      correct: true
+    - text: Dostęp do plików w folderze assets bez użycia `HttpClient`
+      correct: false
+    - text: Mechanizm cache'owania odpowiedzi HTTP w Service Workerze aplikacji PWA
+      correct: false
+  explanation: |
+    `resource` przyjmuje params (zależne od sygnałów) i loader zwracający `Promise`, a przy zmianie parametrów ładuje dane ponownie.
+    Nie dotyczy plików assets, Service Workera ani zasobów serwera SSR.
+
+- id: 10
+  question: Czym jest `httpResource`?
+  answers:
+    - text: Wariantem `resource` opartym na `HttpClient`, z URL zależnym od sygnałów
+      correct: true
+    - text: Dekoratorem oznaczającym serwis jako źródło danych REST
+      correct: false
+    - text: Interceptorem HTTP dodającym nagłówki do każdego żądania
+      correct: false
+    - text: Nową nazwą `HttpClient`, który od Angular 20 zwraca sygnały zamiast `Observable`
+      correct: false
+  explanation: |
+    ``httpResource(() => `/api/users/${this.id()}`)`` automatycznie ponawia żądanie i anuluje poprzednie przy zmianie `id` - w Angular 20 jest eksperymentalny.
+    `HttpClient` nadal zwraca `Observable`, interceptory to osobny mechanizm, a dekorator źródła REST nie istnieje.
+
+- id: 11
+  question: Jak zadeklarować wymagane wejście komponentu w nowym API?
+  answers:
+    - text: "`name = input.required<string>()`"
+      correct: true
+    - text: "`name = output.required<string>()`"
+      correct: false
+    - text: "`name = signal.input<string>()`"
+      correct: false
+    - text: "`@Input({ required: false })` name!: `string`"
+      correct: false
+  explanation: |
+    `input.required` wymusza przekazanie wartości przez rodzica już na etapie kompilacji szablonu.
+    Dekorator z `required: false` oznacza wejście opcjonalne, `output` służy do zdarzeń, a `signal.input` nie istnieje.
+
+- id: 12
+  question: Do czego służy funkcja `model()`?
+  answers:
+    - text: Do dwukierunkowego wiązania przez zapisywalny sygnał i składnię `[(value)]`
+      correct: true
+    - text: Do definiowania modelu danych formularza zamiast `FormGroup`
+      correct: false
+    - text: Do automatycznego generowania interfejsów TypeScript na podstawie odpowiedzi API
+      correct: false
+    - text: Do tworzenia modelu widoku przechowywanego w NgRx Store
+      correct: false
+  explanation: |
+    `model()` łączy wejście i wyjście z sufiksem Change, więc rodzic może użyć `[(value)]="prop"`.
+    Nie zastępuje formularzy reaktywnych, nie generuje typów i nie jest związana z NgRx.
+
+- id: 13
+  question: Jaka jest zaleta `input()` nad dekoratorem `@Input`?
+  answers:
+    - text: "`input()` przekazuje dane przez `localStorage` zamiast przez szablon"
+      correct: false
+    - text: "`input()` pozwala dziecku modyfikować wartość przekazaną przez rodzica"
+      correct: false
+    - text: "`input()` działa tylko w komponentach z domyślną strategią `ChangeDetectionStrategy.Default`"
+      correct: false
+    - text: Wartość jest sygnałem, więc `computed` aktualizują się bez `ngOnChanges`
+      correct: true
+  explanation: |
+    Z sygnałem nie trzeba `ngOnChanges` ani setterów - wystarczy `computed` lub `effect`.
+    `input()` działa z każdą strategią (najlepiej z `OnPush`), jest tylko do odczytu (do zapisu służy `model()`) i działa przez szablon.
+
+- id: 14
+  question: Co jest wymagane w bloku `@for`?
+  answers:
+    - text: Wyrażenie track, np. `track item.id`
+      correct: true
+    - text: Zmienna `$index` zadeklarowana jawnie przed pętlą
+      correct: false
+    - text: Blok `@empty` na wypadek pustej listy
+      correct: false
+    - text: Import `CommonModule` w komponencie
+      correct: false
+  explanation: |
+    track identyfikuje elementy między zmianami, więc Angular aktualizuje DOM minimalnie.
+    `@empty` jest opcjonalny, `$index` jest dostępny automatycznie, a wbudowany control flow nie wymaga `CommonModule`.
+
+- id: 15
+  question: Co robi blok `@defer` (on viewport)?
+  answers:
+    - text: Ładuje dane z API dopiero po przewinięciu, ale komponent jest w głównym bundlu
+      correct: false
+    - text: Opóźnia renderowanie całej aplikacji do momentu pierwszego przewinięcia strony przez użytkownika
+      correct: false
+    - text: Leniwie ładuje fragment szablonu, gdy jego placeholder pojawi się w widoku
+      correct: true
+    - text: Ukrywa fragment szablonu przed robotami wyszukiwarek
+      correct: false
+  explanation: |
+    Komponenty, dyrektywy i pipe'y z bloku `@defer` trafiają do osobnego chunka, ładowanego po wyzwalaczu.
+    Nie dotyczy całej aplikacji, nie chodzi o samo pobieranie danych z API (komponent nie jest w głównym bundlu) i nie ukrywa treści przed SEO jako cel.
+
+- id: 16
+  question: Do czego służy `@let` w szablonie?
+  answers:
+    - text: Do tworzenia zmiennej globalnej dostępnej we wszystkich komponentach aplikacji
+      correct: false
+    - text: Do deklaracji zmiennej, którą można modyfikować w obsłudze zdarzeń
+      correct: false
+    - text: Do deklaracji lokalnej zmiennej tylko do odczytu w szablonie
+      correct: true
+    - text: Do importowania zmiennej z pliku TypeScript do szablonu
+      correct: false
+  explanation: |
+    `@let` pozwala uniknąć powtarzania wyrażenia i wielu subskrypcji `async` pipe w tym samym widoku.
+    Zmiennej `@let` nie można przypisać na nowo, nie jest globalna i nie importuje niczego z TypeScript.
+
+- id: 17
+  question: Jak klasycznie działała detekcja zmian z `Zone.js`?
+  answers:
+    - text: "`Zone.js` odświeżał widok cyklicznie co 16 ms niezależnie od zdarzeń"
+      correct: false
+    - text: "`Zone.js` porównywał wirtualny DOM z poprzednią wersją, jak React"
+      correct: false
+    - text: "`Zone.js` przechwytywał zdarzenia asynchroniczne i po nich sprawdzał drzewo komponentów"
+      correct: true
+    - text: "`Zone.js` śledził zmiany sygnałów w komponentach i odświeżał tylko zmienione węzły DOM"
+      correct: false
+  explanation: |
+    Monkey-patching zdarzeń, timerów i XHR pozwalał Angularowi wiedzieć, kiedy coś mogło się zmienić.
+    Precyzyjne odświeżanie wynika z sygnałów, Angular nie używa wirtualnego DOM, a odświeżanie nie jest cykliczne.
+
+- id: 18
+  question: Kiedy komponent z `ChangeDetectionStrategy.OnPush` jest sprawdzany?
+  answers:
+    - text: Tylko przy pierwszym renderowaniu, później nigdy
+      correct: false
+    - text: Przy nowej referencji wejścia, zdarzeniu w komponencie lub zmianie odczytywanego sygnału
+      correct: true
+    - text: Przy każdym zdarzeniu w dowolnym miejscu aplikacji, dokładnie tak jak w strategii Default
+      correct: false
+    - text: Tylko po ręcznym wywołaniu `detectChanges()` przez programistę
+      correct: false
+  explanation: |
+    `OnPush` pomija komponent, dopóki nie zajdzie jeden z wyzwalaczy - mutacja obiektu bez zmiany referencji nie zostanie zauważona.
+    Sprawdzanie przy każdym zdarzeniu to Default, a ręczne `detectChanges` to tylko jeden z możliwych wyzwalaczy.
+
+- id: 19
+  question: Jak włączyć tryb zoneless w Angular 20?
+  answers:
+    - text: Import `ZonelessModule` w `AppModule`
+      correct: false
+    - text: "Ustawienie `\"zoneless\": true` w pliku `tsconfig.json`"
+      correct: false
+    - text: Dodanie `ChangeDetectionStrategy.OnPush` do komponentu głównego
+      correct: false
+    - text: "`provideZonelessChangeDetection()` i usunięcie `zone.js` z polyfills"
+      correct: true
+  explanation: |
+    Provider przełącza detekcję zmian na sygnały, zdarzenia szablonu i `markForCheck`, a usunięcie `zone.js` zmniejsza bundle.
+    `OnPush` to strategia komponentu, a nie wyłączenie `Zone.js`, a opcja w tsconfig i `ZonelessModule` nie istnieją.
+
+- id: 20
+  question: Co odświeży widok w trybie zoneless?
+  answers:
+    - text: Zmiana zwykłego pola klasy wewnątrz `setTimeout`
+      correct: false
+    - text: Zmiana zmiennej globalnej `window.appState`
+      correct: false
+    - text: Zmiana wartości w `localStorage`
+      correct: false
+    - text: Zmiana sygnału odczytywanego w szablonie
+      correct: true
+  explanation: |
+    Bez `Zone.js` Angular odświeża widok po zmianie sygnału, zdarzeniu z szablonu, emisji `async` pipe lub `markForCheck`.
+    Zwykłe pole zmienione w `setTimeout`, zmienne globalne i `localStorage` nie informują Angulara o zmianie.
+
+- id: 21
+  question: "Co oznacza `providedIn`: 'root' w dekoratorze `@Injectable`?"
+  answers:
+    - text: Serwis jest tworzony od nowa dla każdego komponentu, który go wstrzykuje przez `inject()`
+      correct: false
+    - text: Serwis jest dostępny tylko w komponencie głównym `AppComponent`
+      correct: false
+    - text: Serwis jest singletonem całej aplikacji i podlega tree-shakingowi
+      correct: true
+    - text: Serwis jest ładowany z serwera przy pierwszym użyciu
+      correct: false
+  explanation: |
+    Root injector tworzy jedną instancję, a nieużywany serwis jest usuwany z bundla.
+    Nowa instancja per komponent wymaga providers w komponencie, a serwis jest dostępny w całej aplikacji i nie jest pobierany z serwera.
+
+- id: 22
+  question: Gdzie można użyć funkcji `inject()`?
+  answers:
+    - text: Tylko w plikach `main.ts` i `app.config.ts`
+      correct: false
+    - text: W kontekście wstrzykiwania, np. w polach klasy i funkcyjnych guardach
+      correct: true
+    - text: W dowolnym miejscu kodu, także w zwykłej funkcji wywołanej asynchronicznie z `setTimeout`
+      correct: false
+    - text: Tylko w konstruktorze, jako alternatywa dla parametrów
+      correct: false
+  explanation: |
+    `inject()` działa, gdy Angular tworzy obiekt lub wykonuje funkcję w injection context (np. `runInInjectionContext`).
+    Wywołanie poza tym kontekstem, np. w `setTimeout`, rzuca błąd, a ograniczenie do konstruktora lub plików konfiguracyjnych jest nieprawdziwe.
+
+- id: 23
+  question: Jaki styl wstrzykiwania zależności zaleca nowy style guide Angulara?
+  answers:
+    - text: Parametry konstruktora z modyfikatorem `public`
+      correct: false
+    - text: Ręczne tworzenie serwisów przez `new` w `ngOnInit`
+      correct: false
+    - text: Globalne zmienne eksportowane z modułów
+      correct: false
+    - text: "`inject()` zamiast parametrów konstruktora"
+      correct: true
+  explanation: |
+    `inject()` działa w polach, ułatwia dziedziczenie i funkcyjne API, dlatego jest zalecany.
+    Publiczne parametry konstruktora to starszy styl, a zmienne globalne i ręczne `new` omijają DI.
+
+- id: 24
+  question: Co się stanie, gdy serwis zostanie dodany do tablicy providers komponentu?
+  answers:
+    - text: "Kompilator zgłosi błąd, jeśli serwis ma już ustawione `providedIn`: 'root'"
+      correct: false
+    - text: Serwis stanie się singletonem całej aplikacji
+      correct: false
+    - text: Komponent i jego dzieci dostaną osobną instancję serwisu
+      correct: true
+    - text: Serwis zostanie usunięty z root injectora
+      correct: false
+  explanation: |
+    Injector elementu tworzy własną instancję, która przesłania singleton z roota dla tego poddrzewa.
+    Singleton z root nadal istnieje dla reszty aplikacji, a połączenie obu sposobów nie jest błędem.
+
+- id: 25
+  question: Do czego służy `InjectionToken`?
+  answers:
+    - text: Do uwierzytelniania żądań HTTP tokenem JWT
+      correct: false
+    - text: Do generowania unikalnych identyfikatorów komponentów
+      correct: false
+    - text: Do zabezpieczenia serwisu przed wstrzyknięciem w nieuprawnionym komponencie
+      correct: false
+    - text: Do wstrzykiwania wartości, które nie są klasami, np. konfiguracji lub funkcji
+      correct: true
+  explanation: |
+    `new InjectionToken<string>('API_URL')` z providerem `useValue` pozwala wstrzyknąć konfigurację przez `inject(API_URL)`.
+    Nie ma związku z JWT, identyfikatorami komponentów ani kontrolą dostępu.
+
+- id: 26
+  question: Który hook cyklu życia służy do jednorazowej inicjalizacji po ustawieniu pierwszych wejść?
+  answers:
+    - text: "`ngOnInit`"
+      correct: true
+    - text: "`ngAfterViewChecked`"
+      correct: false
+    - text: "`ngOnDestroy`"
+      correct: false
+    - text: "`ngDoCheck`"
+      correct: false
+  explanation: |
+    `ngOnInit` wykonuje się raz, po pierwszym `ngOnChanges`.
+    `ngAfterViewChecked` i `ngDoCheck` wykonują się przy każdej detekcji zmian, a `ngOnDestroy` przed zniszczeniem komponentu.
+
+- id: 27
+  question: Co robi operator `takeUntilDestroyed()`?
+  answers:
+    - text: Niszczy komponent po pierwszej emisji `Observable`
+      correct: false
+    - text: Blokuje zniszczenie komponentu, dopóki obserwowany strumień nie zakończy się sam
+      correct: false
+    - text: Opóźnia emisję wartości do momentu zniszczenia komponentu
+      correct: false
+    - text: Kończy subskrypcję przy zniszczeniu komponentu lub serwisu
+      correct: true
+  explanation: |
+    W kontekście wstrzykiwania operator sam pobiera `DestroyRef`, a poza nim przyjmuje go jako argument.
+    Nie opóźnia emisji, nie niszczy komponentu i nie blokuje jego usunięcia.
+
+- id: 28
+  question: Jak powiązać właściwość aria-label, która nie ma odpowiednika we właściwościach DOM?
+  answers:
+    - text: "`{{aria-label}}=\"label\"`"
+      correct: false
+    - text: "`[attr.aria-label]=\"label\"`"
+      correct: true
+    - text: "`[aria-label]=\"label\"`"
+      correct: false
+    - text: "`(aria-label)=\"label\"`"
+      correct: false
+  explanation: |
+    Prefiks attr. ustawia atrybut HTML zamiast właściwości DOM.
+    `[aria-label]` próbowałoby ustawić nieistniejącą właściwość, nawiasy okrągłe służą do zdarzeń, a interpolacja nie działa w nazwie atrybutu.
+
+- id: 29
+  question: Czym różni się dyrektywa atrybutowa od strukturalnej?
+  answers:
+    - text: Strukturalna zmienia tylko style, a atrybutowa tylko atrybuty HTML
+      correct: false
+    - text: Atrybutowa zmienia istniejący element, a strukturalna dodaje lub usuwa elementy
+      correct: true
+    - text: Nie ma różnic - to podział historyczny bez znaczenia
+      correct: false
+    - text: Atrybutowe działają tylko w formularzach, a strukturalne wyłącznie w szablonach routera
+      correct: false
+  explanation: |
+    `NgClass` czy własna `appHighlight` zmieniają istniejący element, a `*ngIf` czy `*ngFor` decydują o jego istnieniu.
+    Podział nie dotyczy stylów kontra atrybutów ani formularzy kontra routera.
+
+- id: 30
+  question: Do czego służą host directives?
+  answers:
+    - text: Do oznaczania dyrektyw, które mają być dostępne globalnie w całej aplikacji
+      correct: false
+    - text: Do dołączenia dyrektyw do komponentu w jego metadanych
+      correct: true
+    - text: Do uruchamiania dyrektyw po stronie serwera przy SSR
+      correct: false
+    - text: Do przekazywania danych z hosta HTTP do komponentu
+      correct: false
+  explanation: |
+    `hostDirectives: [CdkDrag]` dodaje zachowanie bez dziedziczenia, a wybrane wejścia i wyjścia można wystawić na zewnątrz.
+    Nie dotyczą SSR, globalnej rejestracji ani danych z serwera HTTP.
+
+- id: 31
+  question: Kiedy wykonuje się pure pipe?
+  answers:
+    - text: Tylko po ręcznym wywołaniu metody transform
+      correct: false
+    - text: Przy każdym cyklu detekcji zmian
+      correct: false
+    - text: Tylko przy zmianie wartości lub referencji wejścia
+      correct: true
+    - text: Tylko raz, przy pierwszym renderowaniu komponentu, a potem wynik jest cache'owany
+      correct: false
+  explanation: |
+    Pure pipe działa jak memoizowana funkcja, więc jest wydajny.
+    Wykonywanie przy każdym cyklu to cecha impure pipe, a pipe nie jest ograniczony do pierwszego renderowania ani ręcznych wywołań.
+
+- id: 32
+  question: Jaka jest główna zaleta `async` pipe?
+  answers:
+    - text: Pozwala modyfikować wartość emitowaną przez `Observable` bezpośrednio w szablonie
+      correct: false
+    - text: Wymusza wykonanie żądania HTTP dwukrotnie dla pewności
+      correct: false
+    - text: Sam subskrybuje i wypisuje się przy zniszczeniu komponentu
+      correct: true
+    - text: Zamienia `Observable` na `Promise`, który jest szybszy
+      correct: false
+  explanation: |
+    `async` pipe zarządza subskrypcją, więc zapobiega wyciekom pamięci, i oznacza komponent do sprawdzenia przy nowej wartości.
+    Nie zamienia `Observable` na `Promise`, nie ponawia żądań i nie pozwala modyfikować strumienia.
+
+- id: 33
+  question: Jak wyświetlić w komponencie karty tylko treść z atrybutem header przekazaną przez rodzica?
+  answers:
+    - text: "`<ng-content select=\"[header]\" />`"
+      correct: true
+    - text: "`<ng-template name=\"header\" />`"
+      correct: false
+    - text: "`<ng-container *ngIf=\"header\" />`"
+      correct: false
+    - text: "`<router-outlet name=\"header\" />`"
+      correct: false
+  explanation: |
+    Atrybut select wybiera projektowaną treść pasującą do selektora CSS.
+    ng-template definiuje szablon, nie projektuje treści, router-outlet służy do routingu, a ng-container z warunkiem nie pobiera treści rodzica.
+
+- id: 34
+  question: Czym różni się `viewChild()` od `contentChild()`?
+  answers:
+    - text: "`contentChild()` szuka elementów w całym dokumencie HTML, a `viewChild()` tylko w rodzicu"
+      correct: false
+    - text: "`viewChild()` działa tylko w dyrektywach, a `contentChild()` tylko w komponentach"
+      correct: false
+    - text: "`viewChild()` zwraca `Observable`, a `contentChild()` sygnał"
+      correct: false
+    - text: "`viewChild()` szuka we własnym szablonie, a `contentChild()` w treści projektowanej"
+      correct: true
+  explanation: |
+    Treść projektowana pochodzi od rodzica, a widok to szablon samego komponentu.
+    Oba działają w komponentach, żadne nie przeszukuje całego dokumentu i oba w wersji sygnałowej zwracają sygnały.
+
+- id: 35
+  question: Czym jest ng-container?
+  answers:
+    - text: Kontenerem DI dla serwisów komponentu
+      correct: false
+    - text: Komponentem do wyświetlania błędów walidacji
+      correct: false
+    - text: Elementem grupującym, który nie tworzy węzła w DOM
+      correct: true
+    - text: Elementem renderującym komponenty z innego modułu
+      correct: false
+  explanation: |
+    ng-container pozwala zastosować dyrektywę lub grupować elementy bez dodawania znacznika do HTML.
+    Nie jest kontenerem DI, nie renderuje komponentów z innych modułów i nie wyświetla błędów.
+
+- id: 36
+  question: Jak najlepiej współdzielić stan między niepowiązanymi komponentami?
+  answers:
+    - text: Przez zapis stanu w atrybutach `data-*` elementów DOM
+      correct: false
+    - text: Przez wspólny serwis przechowujący stan w sygnałach lub `Observable`
+      correct: true
+    - text: Przez łańcuch `input()` i `output()` przez wszystkie komponenty pośrednie
+      correct: false
+    - text: Przez zmienne globalne przypisane do obiektu window
+      correct: false
+  explanation: |
+    Serwis z `providedIn`: 'root' i sygnałami daje jedno źródło prawdy, z którego korzysta każdy komponent.
+    Przekazywanie przez wiele poziomów (prop drilling) jest uciążliwe, a zmienne globalne i atrybuty DOM omijają reaktywność Angulara.
+
+- id: 37
+  question: Co daje opcja `withComponentInputBinding()` w `provideRouter`?
+  answers:
+    - text: Router automatycznie waliduje typy parametrów trasy na podstawie typów `input()`
+      correct: false
+    - text: Parametry trasy trafiają bezpośrednio do `input()` komponentu o tej samej nazwie
+      correct: true
+    - text: Komponenty na trasach są ładowane leniwie bez potrzeby używania `loadComponent`
+      correct: false
+    - text: Parametry trasy są zapisywane w `localStorage`
+      correct: false
+  explanation: |
+    Zamiast subskrybować `ActivatedRoute`, wystarczy `id = input<string>()` dla trasy `users/:id`.
+    Nie dodaje walidacji typów, nie włącza lazy loadingu i nie zapisuje niczego w `localStorage`.
+
+- id: 38
+  question: Jak leniwie załadować komponent na trasie?
+  answers:
+    - text: "`component: Admin, lazy: true, preload: false`"
+      correct: false
+    - text: "`loadComponent`: `() => import('./admin').then(m => m.Admin)`"
+      correct: true
+    - text: "`loadModule: './admin/admin.routes#AdminRoutes'`"
+      correct: false
+    - text: "component: `lazy(Admin)`"
+      correct: false
+  explanation: |
+    Dynamiczny `import` tworzy osobny chunk ładowany przy pierwszym wejściu na trasę.
+    `lazy()` i opcja `lazy: true` nie istnieją, a składnia ze stringiem i `#` była używana w bardzo starych wersjach dla `loadChildren`.
+
+- id: 39
+  question: Co może zwrócić funkcyjny guard `canActivate`, aby przekierować użytkownika na stronę logowania?
+  answers:
+    - text: Wywołanie `window.location.reload()`
+      correct: false
+    - text: Wartość `null`, którą router traktuje jako przekierowanie na stronę główną
+      correct: false
+    - text: "`UrlTree` utworzony przez `createUrlTree(['/login'])`"
+      correct: true
+    - text: Obiekt `Error` z adresem strony logowania
+      correct: false
+  explanation: |
+    Zwrócenie `UrlTree` anuluje bieżącą nawigację i rozpoczyna nową do wskazanego adresu.
+    Przeładowanie strony nie jest sposobem na przekierowanie w guardzie, a `null` i `Error` nie powodują przekierowania.
+
+- id: 40
+  question: Który guard pozwala w ogóle nie dopasować trasy, np. dla innej roli użytkownika?
+  answers:
+    - text: "`canActivateChild`"
+      correct: false
+    - text: "`canDeactivate`"
+      correct: false
+    - text: resolve
+      correct: false
+    - text: "`canMatch`"
+      correct: true
+  explanation: |
+    `canMatch` decyduje, czy dana konfiguracja trasy jest brana pod uwagę, co pozwala mieć różne komponenty pod tą samą ścieżką.
+    `canDeactivate` pilnuje opuszczenia trasy, `canActivateChild` - dostępu do tras potomnych, a resolve pobiera dane.
+
+- id: 41
+  question: Jaka jest wada resolverów w routingu?
+  answers:
+    - text: Resolvery nie mogą korzystać z `HttpClient`
+      correct: false
+    - text: Nawigacja czeka na dane, więc użytkownik dłużej nie widzi nowej strony
+      correct: true
+    - text: Dane z resolvera nie są dostępne w komponencie
+      correct: false
+    - text: Resolver działa tylko przy pierwszym uruchomieniu aplikacji, a potem zwraca dane z cache
+      correct: false
+  explanation: |
+    Dlatego często woli się ładowanie danych w komponencie ze stanem loading.
+    Resolvery mogą używać `HttpClient` przez `inject()`, dane trafiają do `ActivatedRoute.data` lub `input()`, a resolver działa przy każdej nawigacji na trasę.
+
+- id: 42
+  question: Jak skonfigurować `HttpClient` w aplikacji standalone?
+  answers:
+    - text: Import `HttpClientModule` w każdym komponencie korzystającym z HTTP
+      correct: false
+    - text: Dodanie atrybutu `@Http` nad klasą serwisu
+      correct: false
+    - text: "`provideHttpClient()` w `appConfig`"
+      correct: true
+    - text: "`new HttpClient()` w konstruktorze serwisu"
+      correct: false
+  explanation: |
+    `provideHttpClient` rejestruje `HttpClient` w root injectorze, a funkcje `with*` dodają interceptory i backend `fetch`.
+    `HttpClientModule` to starszy sposób, ręczne `new` omija DI, a dekorator `@Http` nie istnieje.
+
+- id: 43
+  question: Kiedy `HttpClient` faktycznie wysyła żądanie?
+  answers:
+    - text: Przy pierwszym renderowaniu komponentu
+      correct: false
+    - text: Natychmiast po wywołaniu metody `get()`
+      correct: false
+    - text: Po wywołaniu metody `send()` na obiekcie żądania
+      correct: false
+    - text: Przy subskrypcji zwróconego `Observable`
+      correct: true
+  explanation: |
+    `Observable` z `HttpClient` jest zimny - bez subskrypcji (lub `async` pipe, `toSignal`) żądanie nie wyjdzie.
+    Metoda `get()` tylko tworzy `Observable`, renderowanie nie ma wpływu, a `send()` nie istnieje.
+
+- id: 44
+  question: Jak dodać nagłówek do żądania w interceptorze `HttpInterceptorFn`?
+  answers:
+    - text: "`next(req.clone({ setHeaders: { Authorization: token } }))`"
+      correct: true
+    - text: "`req.addHeader('Authorization', token)`"
+      correct: false
+    - text: "`window.fetch.headers['Authorization'] = token`"
+      correct: false
+    - text: "`req.headers.set('Authorization', token); return next(req);`"
+      correct: false
+  explanation: |
+    `HttpRequest` jest niemutowalny, więc modyfikuje się go przez `clone()`.
+    `headers.set` zwraca nowy obiekt, a nie zmienia żądania, `addHeader` nie istnieje, a modyfikacja fetch omija `HttpClient`.
+
+- id: 45
+  question: Kiedy lepiej wybrać Reactive forms zamiast Template-driven forms?
+  answers:
+    - text: Gdy formularz ma być zdefiniowany wyłącznie w HTML bez kodu w klasie
+      correct: false
+    - text: Przy prostym polu wyszukiwania z jednym inputem
+      correct: false
+    - text: Przy złożonych formularzach z dynamicznymi polami
+      correct: true
+    - text: Gdy nie chcemy używać żadnej walidacji
+      correct: false
+  explanation: |
+    Reactive forms definiuje się w kodzie (`FormGroup`, `FormControl`), więc są przewidywalne, silnie typowane i łatwe do testowania.
+    Proste formularze i definiowanie w HTML to domena Template-driven, a walidacja jest dostępna w obu podejściach.
+
+- id: 46
+  question: Jak dodać walidację między polami, np. zgodność hasła i jego potwierdzenia?
+  answers:
+    - text: Przez `Validators.required` na polu potwierdzenia
+      correct: false
+    - text: Przez atrybut HTML `equalTo` na polu `input`
+      correct: false
+    - text: Przez `Validators.pattern` ustawiony na wartość pierwszego hasła przy jego zmianie
+      correct: false
+    - text: Przez walidator na poziomie `FormGroup` porównujący obie kontrolki
+      correct: true
+  explanation: |
+    Walidator grupy ma dostęp do wszystkich kontrolek i zwraca błąd, gdy wartości się różnią.
+    `required` sprawdza tylko wypełnienie, pattern porównuje ze stałym wzorcem, a atrybut `equalTo` nie istnieje w HTML ani Angularze.
+
+- id: 47
+  question: Co daje opcja `nonNullable` dla `FormControl`?
+  answers:
+    - text: Reset przywraca wartość początkową zamiast `null`
+      correct: true
+    - text: Wartość kontrolki nie może być zmieniona po utworzeniu
+      correct: false
+    - text: Kontrolka nie może pozostać pusta, bo opcja działa jak `Validators.required`
+      correct: false
+    - text: Kontrolka jest pomijana w `form.value`
+      correct: false
+  explanation: |
+    Bez `nonNullable FormControl<string>` ma typ `string | null`, bo reset ustawia `null`.
+    Nie jest to walidacja wymagalności, kontrolka pozostaje edytowalna i jest normalnie częścią `form.value`.
+
+- id: 48
+  question: Do czego służy `ControlValueAccessor`?
+  answers:
+    - text: Do odczytu wartości dowolnego elementu DOM bez formularza
+      correct: false
+    - text: Do sprawienia, by własny komponent działał jak kontrolka formularza
+      correct: true
+    - text: Do blokowania dostępu do pól formularza na podstawie ról zalogowanego użytkownika
+      correct: false
+    - text: Do walidacji formularza na serwerze
+      correct: false
+  explanation: |
+    Komponent implementuje `writeValue`, `registerOnChange` i `registerOnTouched` i rejestruje się przez `NG_VALUE_ACCESSOR`.
+    Nie służy do odczytu DOM, walidacji serwerowej ani kontroli dostępu.
+
+- id: 49
+  question: Który operator RxJS najlepiej nadaje się do wyszukiwania w trakcie pisania?
+  answers:
+    - text: "`switchMap`"
+      correct: true
+    - text: "`mergeMap`"
+      correct: false
+    - text: "`exhaustMap`"
+      correct: false
+    - text: "`concatMap`"
+      correct: false
+  explanation: |
+    `switchMap` anuluje poprzednie żądanie przy nowej frazie, więc wyniki zawsze odpowiadają ostatniemu wpisowi.
+    `concatMap` czekałby na wszystkie wcześniejsze, `mergeMap` mógłby zwrócić wyniki w złej kolejności, a `exhaustMap` ignorowałby nowe frazy.
+
+- id: 50
+  question: Który operator RxJS zapobiega wielokrotnemu wysłaniu formularza przy kilku kliknięciach?
+  answers:
+    - text: "`combineLatest`"
+      correct: false
+    - text: "`switchMap`"
+      correct: false
+    - text: "`mergeMap`"
+      correct: false
+    - text: "`exhaustMap`"
+      correct: true
+  explanation: |
+    `exhaustMap` ignoruje nowe wartości, dopóki trwa bieżąca operacja, więc kolejne kliknięcia nic nie zrobią.
+    `switchMap` anulowałby poprzedni zapis, `mergeMap` wysłałby wszystkie, a `combineLatest` łączy najnowsze wartości kilku strumieni.
+
+- id: 51
+  question: Czym `BehaviorSubject` różni się od `Subject`?
+  answers:
+    - text: Działa wyłącznie z wartościami typu `boolean`
+      correct: false
+    - text: Emituje wartość tylko raz, a potem automatycznie kończy strumień i odrzuca subskrybentów
+      correct: false
+    - text: Ma wartość początkową i od razu przekazuje ją nowemu subskrybentowi
+      correct: true
+    - text: Nie pozwala na wielu subskrybentów jednocześnie
+      correct: false
+  explanation: |
+    `BehaviorSubject` zawsze ma bieżącą wartość (`getValue()`), więc nadawał się do stanu w serwisach - dziś często zastępują go sygnały.
+    Nie kończy się po jednej emisji, obsługuje wielu subskrybentów i działa z dowolnym typem.
+
+- id: 52
+  question: Jak zamienić `Observable` na sygnał?
+  answers:
+    - text: "`signal(observable$)`"
+      correct: false
+    - text: "`computed(() => observable$.value)`"
+      correct: false
+    - text: "`toSignal(observable$)`"
+      correct: true
+    - text: "`observable$.toSignal()`"
+      correct: false
+  explanation: |
+    `toSignal` z `@angular/core/rxjs-interop` subskrybuje strumień i zarządza subskrypcją w kontekście wstrzykiwania.
+    `signal` i `computed` z `Observable` przechowałyby sam obiekt strumienia, a `Observable` nie ma metody `toSignal`.
+
+- id: 53
+  question: Który sposób najlepiej zapobiega wyciekom pamięci przy subskrypcjach w komponentach?
+  answers:
+    - text: Ustawienie `ChangeDetectionStrategy.OnPush`
+      correct: false
+    - text: Wywoływanie `detectChanges()` po każdej emisji
+      correct: false
+    - text: Subskrybowanie w konstruktorze komponentu zamiast w `ngOnInit`
+      correct: false
+    - text: "`async` pipe, `toSignal` lub `takeUntilDestroyed`"
+      correct: true
+  explanation: |
+    Te mechanizmy automatycznie kończą subskrypcje przy zniszczeniu kontekstu.
+    Miejsce subskrypcji, strategia detekcji zmian i `detectChanges` nie kończą długotrwałych strumieni (interval, WebSocket, `valueChanges`).
+
+- id: 54
+  question: Czym jest NgRx `SignalStore`?
+  answers:
+    - text: Rozszerzeniem przeglądarki do debugowania sygnałów
+      correct: false
+    - text: Lekką biblioteką stanu opartą na sygnałach
+      correct: true
+    - text: Magazynem sygnałów zapisywanym automatycznie w IndexedDB
+      correct: false
+    - text: Nową nazwą klasycznego NgRx Store z akcjami, reducerami i efektami
+      correct: false
+  explanation: |
+    `SignalStore` jest znacznie mniej rozwlekły niż Store z akcjami, reducerami i efektami i może być globalny lub per komponent.
+    Nie jest rozszerzeniem przeglądarki, nie zapisuje danych w IndexedDB i nie zastępuje nazwy klasycznego NgRx Store.
+
+- id: 55
+  question: Co daje hydration w aplikacji Angular z SSR?
+  answers:
+    - text: Serwer odświeża stronę co kilka sekund, aby dane były aktualne
+      correct: false
+    - text: Aplikacja działa bez JavaScriptu w przeglądarce
+      correct: false
+    - text: Przeglądarka przejmuje HTML z serwera bez ponownego tworzenia DOM
+      correct: true
+    - text: Wszystkie komponenty są renderowane ponownie po stronie klienta od zera, a HTML z serwera jest usuwany
+      correct: false
+  explanation: |
+    `provideClientHydration()` ponownie wykorzystuje istniejący DOM, co eliminuje migotanie i przyspiesza start.
+    Serwer nie odświeża strony cyklicznie, aplikacja nadal potrzebuje JavaScriptu, a renderowanie od zera to zachowanie bez hydration.
+
+- id: 56
+  question: Na czym opiera się incremental hydration?
+  answers:
+    - text: Na Service Workerze, który pobiera komponenty w tle
+      correct: false
+    - text: Na blokach `@defer` z wyzwalaczami hydrate
+      correct: true
+    - text: Na ręcznym wywołaniu metody `hydrate()` w `ngOnInit` każdego komponentu
+      correct: false
+    - text: Na podziale aplikacji na osobne mikrofrontendy
+      correct: false
+  explanation: |
+    Fragment pozostaje statycznym HTML, a jego kod JS jest pobierany i hydratowany dopiero po wyzwalaczu - funkcja jest stabilna od Angular 20.
+    Nie wymaga Service Workera, ręcznych wywołań ani mikrofrontendów.
+
+- id: 57
+  question: Jakiego narzędzia budowania używa domyślnie współczesny Angular CLI?
+  answers:
+    - text: buildera opartego na esbuild i Vite
+      correct: true
+    - text: Gulpa z zadaniami kompilacji TypeScript i Sass
+      correct: false
+    - text: webpacka z ręczną konfiguracją
+      correct: false
+    - text: Parcela z zerową konfiguracją
+      correct: false
+  explanation: |
+    Od Angular 17 domyślny builder korzysta z esbuild (budowanie) i Vite (serwer deweloperski), co znacznie przyspiesza pracę.
+    webpack był domyślny wcześniej, a Gulp i Parcel nie są używane przez Angular CLI.
+
+- id: 58
+  question: Która komenda aktualizuje Angulara z automatycznymi migracjami kodu?
+  answers:
+    - text: "`ng upgrade`"
+      correct: false
+    - text: "`ng update`"
+      correct: true
+    - text: "`npm update` `@angular`"
+      correct: false
+    - text: "`ng migrate --all`"
+      correct: false
+  explanation: |
+    `ng update` aktualizuje pakiety i uruchamia schematiki migracji, np. zmiany API.
+    `ng upgrade` i `ng migrate` nie istnieją, a `npm update` nie uruchamia migracji kodu.
+
+- id: 59
+  question: Jak ustawić wartość `input()` komponentu w teście jednostkowym?
+  answers:
+    - text: "`componentRef.setInput('name', 'Jan')`"
+      correct: true
+    - text: "`TestBed.overrideInput(MyComponent, 'name', 'Jan')`"
+      correct: false
+    - text: "`component.name = 'Jan'`"
+      correct: false
+    - text: "`component.name.set('Jan')`"
+      correct: false
+  explanation: |
+    `setInput` ustawia wejście tak, jak zrobiłby to rodzic, i działa z sygnałowymi `input()`.
+    `input()` jest tylko do odczytu, więc nie ma `set`, przypisanie nadpisałoby sygnał, a `overrideInput` nie istnieje.
+
+- id: 60
+  question: Który runner testów jednostkowych jest przestarzały w nowym Angularze?
+  answers:
+    - text: Vitest
+      correct: false
+    - text: Karma
+      correct: true
+    - text: Jest
+      correct: false
+    - text: Playwright
+      correct: false
+  explanation: |
+    Karma jest oznaczona jako przestarzała, a Angular 20 eksperymentalnie wspiera Vitest; popularny jest też Jest.
+    Playwright służy głównie do testów E2E i nie jest przestarzały.
+
+- id: 61
+  question: Dlaczego wywoływanie metod w szablonie może szkodzić wydajności?
+  answers:
+    - text: Bo metoda wykonuje się przy każdym cyklu detekcji zmian
+      correct: true
+    - text: Bo Angular kompiluje metody szablonu przy każdym kliknięciu
+      correct: false
+    - text: Bo metody w szablonie wyłączają strategię `OnPush`
+      correct: false
+    - text: Bo metody w szablonie nie mogą zwracać wartości
+      correct: false
+  explanation: |
+    `{{ calculate() }}` jest liczone przy każdym sprawdzeniu widoku - zamiast tego lepiej użyć `computed` lub pure pipe.
+    Metody w szablonie zwracają wartości, nie są kompilowane przy kliknięciach i nie wyłączają `OnPush`.
+
+- id: 62
+  question: Co wymusza dyrektywa `NgOptimizedImage`?
+  answers:
+    - text: Podanie wymiarów obrazu, co zapobiega przesunięciom layoutu
+      correct: true
+    - text: Ładowanie obrazów wyłącznie z folderu assets, z pominięciem zewnętrznych CDN
+      correct: false
+    - text: Wyłączenie lazy loadingu dla obrazów
+      correct: false
+    - text: Konwersję wszystkich obrazów do formatu SVG
+      correct: false
+  explanation: |
+    `ngSrc` wymaga wymiarów, ustawia lazy loading i fetchpriority oraz generuje srcset.
+    Nie konwertuje obrazów, nie ogranicza źródła do assets i włącza, a nie wyłącza lazy loading.
+
+- id: 63
+  question: Jak Angular domyślnie chroni przed XSS przy wiązaniu danych?
+  answers:
+    - text: Rzuca wyjątek przy każdej próbie wstawienia znacznika HTML w interpolacji
+      correct: false
+    - text: Wymaga ręcznego wywołania `DomSanitizer` dla każdej wartości
+      correct: false
+    - text: Sanityzuje wartości wstawiane do DOM
+      correct: true
+    - text: Szyfruje dane przed wstawieniem ich do szablonu
+      correct: false
+  explanation: |
+    Interpolacja i property binding usuwają niebezpieczny HTML, URL-e i style.
+    Interpolacja nie rzuca wyjątków (escapuje treść jako tekst), dane nie są szyfrowane, a `DomSanitizer` służy do świadomego omijania zabezpieczeń.
+
+- id: 64
+  question: Co robi domyślny tryb `ViewEncapsulation.Emulated`?
+  answers:
+    - text: Dodaje unikalne atrybuty do elementów i selektorów CSS
+      correct: true
+    - text: Używa natywnego Shadow DOM przeglądarki
+      correct: false
+    - text: Wyłącza izolację stylów, czyniąc je globalnymi
+      correct: false
+    - text: Przenosi style każdego komponentu do osobnego pliku CSS ładowanego leniwie
+      correct: false
+  explanation: |
+    Atrybuty typu `_ngcontent-xyz` ograniczają zasięg selektorów do komponentu.
+    Natywny Shadow DOM to `ViewEncapsulation.ShadowDom`, globalne style to None, a style nie są przenoszone do osobnych plików.
+
+- id: 65
+  question: Czym jest Angular CDK?
+  answers:
+    - text: Narzędziem do generowania dokumentacji komponentów
+      correct: false
+    - text: Kompilatorem szablonów Angulara do kodu natywnego
+      correct: false
+    - text: Zestawem niestylowanych narzędzi do budowy własnych komponentów
+      correct: true
+    - text: Gotową biblioteką ostylowanych komponentów w stylu Material Design
+      correct: false
+  explanation: |
+    CDK dostarcza zachowania bez narzucania wyglądu, a Angular Material buduje na nim gotowe komponenty.
+    Nie jest kompilatorem ani generatorem dokumentacji, a gotowe komponenty Material Design to Angular Material.
+
+- id: 66
+  question: Czym `Observable` różni się od `Promise`?
+  answers:
+    - text: "`Promise` można anulować przez unsubscribe, a `Observable` nie"
+      correct: false
+    - text: "`Observable` może emitować wiele wartości, jest leniwy i można go anulować"
+      correct: true
+    - text: "`Promise` może emitować wiele wartości, a `Observable` tylko jedną"
+      correct: false
+    - text: "`Observable` wykonuje się natychmiast po utworzeniu, a `Promise` po subskrypcji"
+      correct: false
+  explanation: |
+    `Observable` działa dopiero po subskrypcji i daje bogaty zestaw operatorów.
+    `Promise` rozstrzyga się raz, jest wykonywany od razu (eager) i nie ma unsubscribe - pozostałe odpowiedzi odwracają te cechy.
+
+- id: 67
+  question: Jak nowy style guide Angular 20 nazywa pliki komponentów?
+  answers:
+    - text: Zawsze z sufiksem, np. `user-profile.component.ts` z klasą `UserProfileComponent`
+      correct: false
+    - text: Z prefiksem ng-, np. `ng-user-profile.ts`
+      correct: false
+    - text: Wielkimi literami, np. `USER_PROFILE.ts`
+      correct: false
+    - text: Bez sufiksów typu `.component`, np. `user-profile.ts` z klasą `UserProfile`
+      correct: true
+  explanation: |
+    Nowy style guide upraszcza nazwy, rezygnując z sufiksów, choć stare nazewnictwo nadal działa.
+    Wielkie litery i prefiks ng- nie są zalecaną konwencją.
+
+- id: 68
+  question: Co robi `provideBrowserGlobalErrorListeners()` w Angular 20?
+  answers:
+    - text: Przekazuje globalne błędy przeglądarki do `ErrorHandler`
+      correct: true
+    - text: Blokuje działanie aplikacji po pierwszym błędzie
+      correct: false
+    - text: Wyłącza wyświetlanie błędów w konsoli przeglądarki w trybie produkcyjnym
+      correct: false
+    - text: Wysyła błędy automatycznie do Google Analytics
+      correct: false
+  explanation: |
+    Nieobsłużone błędy i odrzucenia `Promise` trafiają wtedy do `ErrorHandler`, gdzie można je zalogować np. do Sentry.
+    Nie wyłącza konsoli, nie integruje się z analityką i nie zatrzymuje aplikacji.
+
+- id: 69
+  question: Dlaczego w kontenerach lepiej ładować konfigurację w czasie działania niż przez `environment.ts`?
+  answers:
+    - text: Bo `environment.ts` nie jest obsługiwany przez application builder
+      correct: false
+    - text: Bo `environment.ts` działa tylko w trybie deweloperskim
+      correct: false
+    - text: Bo jeden obraz Dockera działa wtedy na wszystkich środowiskach
+      correct: true
+    - text: Bo konfiguracja ładowana w czasie działania jest automatycznie szyfrowana przez Angular
+      correct: false
+  explanation: |
+    `environment.ts` jest wkompilowany w bundle, więc obraz trzeba budować osobno dla każdego środowiska.
+    `environment.ts` działa w obu trybach i z nowym builderem, a Angular nie szyfruje konfiguracji.
+
+- id: 70
+  question: Co robi `provideAppInitializer`?
+  answers:
+    - text: Rejestruje funkcję, na której zakończenie aplikacja czeka przy starcie
+      correct: true
+    - text: Uruchamia testy jednostkowe przed startem aplikacji
+      correct: false
+    - text: Tworzy nową instancję aplikacji dla każdego zalogowanego użytkownika osobno
+      correct: false
+    - text: Inicjalizuje bazę danych po stronie serwera
+      correct: false
+  explanation: |
+    Jeśli funkcja zwróci `Promise` lub `Observable`, start aplikacji czeka na jej zakończenie - np. przy wczytywaniu `config.json`.
+    Zastąpił token `APP_INITIALIZER` i nie ma związku z instancjami per użytkownik, bazą danych ani testami.

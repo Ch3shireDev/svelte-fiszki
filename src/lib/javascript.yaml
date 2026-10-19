@@ -1,72 +1,72 @@
 - id: 1
   text: Jakie są typy danych w JavaScript?
   answer: |
-    Typy prymitywne: string, number, bigint, boolean, undefined, null i symbol.
-    Wszystko inne to obiekty: zwykłe obiekty, tablice, funkcje, Date, Map, Set itd.
+    Typy prymitywne: `string`, `number`, `bigint`, `boolean`, `undefined`, `null` i `symbol`.
+    Wszystko inne to obiekty: zwykłe obiekty, tablice, funkcje, Date, `Map`, `Set` itd.
     Prymitywy są niemutowalne i przekazywane przez wartość, obiekty - przez referencję.
-    typeof null zwraca "object", co jest historycznym błędem języka.
+    `typeof null` zwraca "object", co jest historycznym błędem języka.
 
 - id: 2
-  text: Czym różnią się var, let i const?
+  text: Czym różnią się `var`, `let` i `const`?
   answer: |
-    var ma zasięg funkcyjny, jest hoistowany z wartością undefined i można go ponownie deklarować.
-    let i const mają zasięg blokowy i podlegają temporal dead zone - nie można ich użyć przed deklaracją.
-    const nie pozwala na ponowne przypisanie, ale obiekt pod const można modyfikować.
-    W nowoczesnym kodzie domyślnie używa się const, let gdy wartość się zmienia, a var w ogóle.
+    `var` ma zasięg funkcyjny, jest hoistowany z wartością `undefined` i można go ponownie deklarować.
+    `let` i `const` mają zasięg blokowy i podlegają temporal dead zone - nie można ich użyć przed deklaracją.
+    `const` nie pozwala na ponowne przypisanie, ale obiekt pod `const` można modyfikować.
+    W nowoczesnym kodzie domyślnie używa się `const`, `let` gdy wartość się zmienia, a `var` w ogóle.
 
 - id: 3
   text: Czym jest hoisting?
   answer: |
     Hoisting to mechanizm, w którym deklaracje są "przenoszone" na początek zasięgu przed wykonaniem kodu.
-    Deklaracje funkcji (function foo() {}) są hoistowane w całości, więc można je wywołać przed definicją.
-    var jest hoistowany z wartością undefined.
-    let, const i class są hoistowane, ale do momentu deklaracji znajdują się w temporal dead zone i rzucają ReferenceError.
+    Deklaracje funkcji (`function foo() {}`) są hoistowane w całości, więc można je wywołać przed definicją.
+    `var` jest hoistowany z wartością `undefined`.
+    `let`, `const` i `class` są hoistowane, ale do momentu deklaracji znajdują się w temporal dead zone i rzucają `ReferenceError`.
 
 - id: 4
-  text: Czym różni się == od ===?
+  text: Czym różni się `==` od `===`?
   answer: |
-    == porównuje wartości po niejawnej konwersji typów, np. "5" == 5 daje true, a null == undefined również true.
-    === porównuje wartości i typy bez konwersji, więc "5" === 5 daje false.
-    Niejawne konwersje == prowadzą do zaskakujących wyników, np. [] == false to true.
-    Zaleca się zawsze używać ===; Object.is dodatkowo rozróżnia NaN i -0.
+    `==` porównuje wartości po niejawnej konwersji typów, np. `"5" == 5` daje `true`, a `null == undefined` również `true`.
+    `===` porównuje wartości i typy bez konwersji, więc `"5" === 5` daje `false`.
+    Niejawne konwersje `==` prowadzą do zaskakujących wyników, np. `[] == false` to `true`.
+    Zaleca się zawsze używać `===`; `Object.is` dodatkowo rozróżnia `NaN` i -0.
 
 - id: 5
-  text: Czym różni się null od undefined?
+  text: Czym różni się `null` od `undefined`?
   answer: |
-    undefined oznacza, że zmienna została zadeklarowana, ale nie ma przypisanej wartości, lub właściwość nie istnieje.
-    null to celowo przypisana wartość "brak wartości".
-    typeof undefined to "undefined", a typeof null to "object".
+    `undefined` oznacza, że zmienna została zadeklarowana, ale nie ma przypisanej wartości, lub właściwość nie istnieje.
+    `null` to celowo przypisana wartość "brak wartości".
+    `typeof undefined` to "undefined", a `typeof null` to "object".
     Operatory ?? i ?. traktują obie wartości tak samo jako "puste".
 
 - id: 6
   text: Czym są wartości truthy i falsy?
   answer: |
-    Wartości falsy to: false, 0, -0, 0n, "" (pusty string), null, undefined i NaN.
-    Wszystkie pozostałe wartości są truthy, w tym "0", "false", [] i {}.
+    Wartości falsy to: `false`, `0`, `-0`, `0n`, `""` (pusty string), `null`, `undefined` i `NaN`.
+    Wszystkie pozostałe wartości są truthy, w tym `"0"`, `"false"`, `[]` i `{}`.
     Ma to znaczenie w warunkach i operatorach logicznych.
-    Pułapka: if (count) traktuje 0 jako brak wartości - wtedy lepiej sprawdzić count != null.
+    Pułapka: if (count) traktuje 0 jako brak wartości - wtedy lepiej sprawdzić `count != null`.
 
 - id: 7
-  text: Czym różnią się operatory ?? i ||?
+  text: Czym różnią się operatory ?? i `||`?
   answer: |
-    || zwraca prawy operand, gdy lewy jest falsy - więc 0, "" i false też zostaną zastąpione.
-    ?? (nullish coalescing) zwraca prawy operand tylko, gdy lewy to null lub undefined.
-    Przykład: 0 || 10 daje 10, a 0 ?? 10 daje 0.
-    Istnieją też operatory przypisania ||=, &&= i ??=.
+    `||` zwraca prawy operand, gdy lewy jest falsy - więc 0, "" i `false` też zostaną zastąpione.
+    ?? (nullish coalescing) zwraca prawy operand tylko, gdy lewy to `null` lub `undefined`.
+    Przykład: `0 || 10` daje 10, a 0 ?? 10 daje 0.
+    Istnieją też operatory przypisania `||=`, `&&= i ??=`.
 
 - id: 8
   text: Czym jest optional chaining (?.)?
   answer: |
-    ?. pozwala bezpiecznie odwołać się do zagnieżdżonej właściwości, zwracając undefined zamiast rzucać błąd, gdy po drodze jest null lub undefined.
-    Przykład: user?.address?.city, arr?.[0], callback?.().
-    Skraca kod pełen sprawdzeń typu user && user.address && user.address.city.
+    ?. pozwala bezpiecznie odwołać się do zagnieżdżonej właściwości, zwracając `undefined` zamiast rzucać błąd, gdy po drodze jest `null` lub `undefined`.
+    Przykład: user?.address?.city, `arr?.[0]`, `callback?.()`.
+    Skraca kod pełen sprawdzeń typu `user && user.address && user.address.city`.
     Nie należy go nadużywać - ukrywa błędy tam, gdzie wartość powinna zawsze istnieć.
 
 - id: 9
   text: Czym jest domknięcie (closure)?
   answer: |
     Domknięcie to funkcja wraz z dostępem do zmiennych z zasięgu, w którym została utworzona, nawet po jego zakończeniu.
-    Przykład: function counter() { let c = 0; return () => ++c; } - zwracana funkcja pamięta c.
+    Przykład: `function counter() { let c = 0; return () => ++c; }` - zwracana funkcja pamięta c.
     Domknięcia służą do enkapsulacji prywatnego stanu, fabryk funkcji, memoizacji i callbacków.
     Trzymają referencje do zmiennych, więc nieostrożnie użyte mogą powodować wycieki pamięci.
 
@@ -74,48 +74,48 @@
   text: Czym jest zasięg (scope) w JavaScript?
   answer: |
     Zasięg określa, gdzie zmienna jest dostępna.
-    Istnieją zasięg globalny, modułu, funkcyjny i blokowy (let, const w {}).
+    Istnieją zasięg globalny, modułu, funkcyjny i blokowy (`let`, `const` w `{}`).
     JavaScript ma zasięg leksykalny - o dostępie decyduje miejsce zapisu kodu, a nie wywołania.
     Wyszukiwanie zmiennych idzie łańcuchem zasięgów od wewnętrznego do zewnętrznego.
 
 - id: 11
-  text: Jak działa this w JavaScript?
+  text: Jak działa `this` w JavaScript?
   answer: |
-    Wartość this zależy od sposobu wywołania funkcji, a nie miejsca jej definicji.
-    W metodzie obiektu (obj.method()) this to obj; w zwykłym wywołaniu to undefined (strict mode) lub obiekt globalny.
-    Przy new to nowo tworzony obiekt; call, apply i bind ustawiają this jawnie.
-    Funkcje strzałkowe nie mają własnego this - dziedziczą je z otaczającego zasięgu.
+    Wartość `this` zależy od sposobu wywołania funkcji, a nie miejsca jej definicji.
+    W metodzie obiektu (`obj.method()`) `this` to obj; w zwykłym wywołaniu to `undefined` (strict mode) lub obiekt globalny.
+    Przy `new` to nowo tworzony obiekt; call, apply i bind ustawiają `this` jawnie.
+    Funkcje strzałkowe nie mają własnego `this` - dziedziczą je z otaczającego zasięgu.
 
 - id: 12
   text: Czym różnią się call, apply i bind?
   answer: |
-    call wywołuje funkcję z podanym this i argumentami przekazanymi po kolei: fn.call(obj, a, b).
-    apply robi to samo, ale argumenty przyjmuje jako tablicę: fn.apply(obj, [a, b]).
-    bind nie wywołuje funkcji, tylko zwraca nową funkcję z na stałe przypisanym this i opcjonalnie argumentami.
+    call wywołuje funkcję z podanym `this` i argumentami przekazanymi po kolei: `fn.call(obj, a, b)`.
+    apply robi to samo, ale argumenty przyjmuje jako tablicę: `fn.apply(obj, [a, b])`.
+    bind nie wywołuje funkcji, tylko zwraca nową funkcję z na stałe przypisanym `this` i opcjonalnie argumentami.
     bind stosuje się np. przy przekazywaniu metod jako callbacków.
 
 - id: 13
   text: Czym różnią się funkcje strzałkowe od zwykłych funkcji?
   answer: |
-    Funkcje strzałkowe nie mają własnego this, arguments, super ani new.target - dziedziczą je leksykalnie.
-    Nie mogą być użyte jako konstruktory (new) i nie mają prototype.
-    Mają krótszą składnię i niejawny return dla jednowyrażeniowych ciał.
-    Nie nadają się na metody obiektów korzystające z this, ale świetnie sprawdzają się jako callbacki.
+    Funkcje strzałkowe nie mają własnego `this`, arguments, `super` ani `new.target` - dziedziczą je leksykalnie.
+    Nie mogą być użyte jako konstruktory (`new`) i nie mają prototype.
+    Mają krótszą składnię i niejawny `return` dla jednowyrażeniowych ciał.
+    Nie nadają się na metody obiektów korzystające z `this`, ale świetnie sprawdzają się jako callbacki.
 
 - id: 14
   text: Czym jest prototyp i dziedziczenie prototypowe?
   answer: |
-    Każdy obiekt ma ukryte powiązanie [[Prototype]] z innym obiektem, z którego dziedziczy właściwości.
-    Przy odwołaniu do właściwości JavaScript szuka jej w obiekcie, a potem w łańcuchu prototypów aż do null.
-    Funkcje konstruujące mają właściwość prototype, która staje się prototypem obiektów tworzonych przez new.
-    Object.create(proto) tworzy obiekt z wybranym prototypem, a Object.getPrototypeOf go odczytuje.
+    Każdy obiekt ma ukryte powiązanie `[[Prototype]]` z innym obiektem, z którego dziedziczy właściwości.
+    Przy odwołaniu do właściwości JavaScript szuka jej w obiekcie, a potem w łańcuchu prototypów aż do `null`.
+    Funkcje konstruujące mają właściwość prototype, która staje się prototypem obiektów tworzonych przez `new`.
+    `Object.create(proto)` tworzy obiekt z wybranym prototypem, a `Object.getPrototypeOf` go odczytuje.
 
 - id: 15
   text: Czym są klasy w JavaScript?
   answer: |
     Klasy (ES2015) to składnia nad dziedziczeniem prototypowym, a nie nowy model obiektowy.
-    Wspierają constructor, metody, gettery/settery, static, extends i super.
-    Od ES2022 dostępne są pola klasy, pola prywatne (#field) i bloki statyczne.
+    Wspierają constructor, metody, gettery/settery, `static`, `extends` i `super`.
+    Od ES2022 dostępne są pola klasy, pola prywatne (`#field`) i bloki statyczne.
     Klasy są zawsze w strict mode i nie są hoistowane jak funkcje.
 
 - id: 16
@@ -123,56 +123,56 @@
   answer: |
     JavaScript wykonuje kod w jednym wątku ze stosem wywołań (call stack).
     Operacje asynchroniczne (timery, I/O, zdarzenia) są delegowane do środowiska, a ich callbacki trafiają do kolejek.
-    Gdy stos jest pusty, pętla zdarzeń najpierw opróżnia kolejkę mikrozadań (Promise, queueMicrotask), potem pobiera jedno makrozadanie (setTimeout, zdarzenie).
+    Gdy stos jest pusty, pętla zdarzeń najpierw opróżnia kolejkę mikrozadań (`Promise`, `queueMicrotask`), potem pobiera jedno makrozadanie (`setTimeout`, zdarzenie).
     W przeglądarce pomiędzy makrozadaniami może nastąpić renderowanie.
 
 - id: 17
   text: Czym różnią się mikrozadania od makrozadań?
   answer: |
-    Mikrozadania to callbacki Promise (then, catch, finally), await, queueMicrotask i MutationObserver.
-    Makrozadania to setTimeout, setInterval, zdarzenia DOM, I/O i MessageChannel.
+    Mikrozadania to callbacki `Promise` (then, `catch`, `finally`), `await`, `queueMicrotask` i `MutationObserver`.
+    Makrozadania to `setTimeout`, `setInterval`, zdarzenia DOM, I/O i `MessageChannel`.
     Po każdym makrozadaniu wykonywane są wszystkie oczekujące mikrozadania.
-    Dlatego Promise.resolve().then(...) wykona się przed setTimeout(..., 0).
+    Dlatego `Promise.resolve().then(...)` wykona się przed `setTimeout(..., 0)`.
 
 - id: 18
-  text: Czym jest Promise?
+  text: Czym jest `Promise`?
   answer: |
-    Promise reprezentuje wynik operacji asynchronicznej, który będzie dostępny w przyszłości.
+    `Promise` reprezentuje wynik operacji asynchronicznej, który będzie dostępny w przyszłości.
     Ma trzy stany: pending, fulfilled i rejected; po rozstrzygnięciu stan się nie zmienia.
-    Wynik obsługuje się przez then, catch i finally, a łańcuchy then pozwalają sekwencjonować operacje.
-    Rozwiązał problem "callback hell" i jest podstawą async/await.
+    Wynik obsługuje się przez then, `catch` i `finally`, a łańcuchy then pozwalają sekwencjonować operacje.
+    Rozwiązał problem "callback hell" i jest podstawą `async/await`.
 
 - id: 19
-  text: Czym różnią się Promise.all, allSettled, race i any?
+  text: Czym różnią się `Promise.all`, `allSettled`, race i `any`?
   answer: |
-    Promise.all czeka na wszystkie i odrzuca przy pierwszym błędzie.
-    Promise.allSettled czeka na wszystkie i zwraca status każdego, nigdy nie odrzuca.
-    Promise.race rozstrzyga się wynikiem pierwszego zakończonego (sukces lub błąd) - przydaje się do timeoutów.
-    Promise.any zwraca pierwszy sukces i odrzuca AggregateError, gdy wszystkie zawiodą.
+    `Promise.all` czeka na wszystkie i odrzuca przy pierwszym błędzie.
+    `Promise.allSettled` czeka na wszystkie i zwraca status każdego, nigdy nie odrzuca.
+    `Promise.race` rozstrzyga się wynikiem pierwszego zakończonego (sukces lub błąd) - przydaje się do timeoutów.
+    `Promise.any` zwraca pierwszy sukces i odrzuca `AggregateError`, gdy wszystkie zawiodą.
 
 - id: 20
-  text: Jak działa async/await?
+  text: Jak działa `async/await`?
   answer: |
-    Funkcja async zawsze zwraca Promise.
-    await wstrzymuje wykonanie funkcji do rozstrzygnięcia Promise, nie blokując wątku.
-    Błędy obsługuje się przez try/catch, tak jak w kodzie synchronicznym.
-    Niezależne operacje warto uruchamiać równolegle przez Promise.all, zamiast czekać na nie kolejno.
+    Funkcja `async` zawsze zwraca `Promise`.
+    `await` wstrzymuje wykonanie funkcji do rozstrzygnięcia `Promise`, nie blokując wątku.
+    Błędy obsługuje się przez `try/catch`, tak jak w kodzie synchronicznym.
+    Niezależne operacje warto uruchamiać równolegle przez `Promise.all`, zamiast czekać na nie kolejno.
 
 - id: 21
-  text: Co się stanie, gdy Promise zostanie odrzucony, a nikt nie obsłuży błędu?
+  text: Co się stanie, gdy `Promise` zostanie odrzucony, a nikt nie obsłuży błędu?
   answer: |
     Powstaje unhandled rejection.
     W przeglądarce pojawia się ostrzeżenie w konsoli i zdarzenie unhandledrejection na window.
     W Node.js od wersji 15 domyślnie kończy to proces.
-    Dlatego każdy łańcuch Promise powinien kończyć się catch lub być w try/catch z await.
+    Dlatego każdy łańcuch `Promise` powinien kończyć się `catch` lub być w `try/catch` z `await`.
 
 - id: 22
   text: Czym są callbacki i callback hell?
   answer: |
     Callback to funkcja przekazana jako argument i wywoływana później, np. po zakończeniu operacji.
     Callback hell to głęboko zagnieżdżone callbacki przy sekwencji operacji asynchronicznych - kod jest nieczytelny i trudny w obsłudze błędów.
-    Rozwiązaniem są Promise i async/await.
-    W Node.js util.promisify zamienia API callbackowe na Promise.
+    Rozwiązaniem są `Promise` i `async/await`.
+    W Node.js `util.promisify` zamienia API callbackowe na `Promise`.
 
 - id: 23
   text: Czym różnią się debounce i throttle?
@@ -180,44 +180,44 @@
     Debounce opóźnia wywołanie, aż zdarzenia przestaną napływać przez określony czas - np. wyszukiwanie po skończeniu pisania.
     Throttle wywołuje funkcję co najwyżej raz na określony przedział czasu - np. obsługa scrolla lub resize.
     Obie techniki ograniczają liczbę kosztownych wywołań.
-    Implementuje się je przez setTimeout i domknięcia lub bierze z bibliotek (lodash).
+    Implementuje się je przez `setTimeout` i domknięcia lub bierze z bibliotek (lodash).
 
 - id: 24
-  text: Czym różnią się map, filter, reduce i forEach?
+  text: Czym różnią się map, filter, reduce i `forEach`?
   answer: |
     map zwraca nową tablicę z przekształconymi elementami.
     filter zwraca nową tablicę z elementami spełniającymi warunek.
     reduce redukuje tablicę do jednej wartości, np. sumy lub obiektu.
-    forEach tylko iteruje i zwraca undefined - nie da się go przerwać ani połączyć w łańcuch.
+    `forEach` tylko iteruje i zwraca `undefined` - nie da się go przerwać ani połączyć w łańcuch.
 
 - id: 25
   text: Które metody tablic mutują, a które nie?
   answer: |
-    Mutujące: push, pop, shift, unshift, splice, sort, reverse, fill, copyWithin.
-    Niemutujące: map, filter, slice, concat, flat, flatMap, find, includes.
-    Od ES2023 istnieją niemutujące odpowiedniki: toSorted, toReversed, toSpliced i with.
-    W React czy Angularze z OnPush mutacja tablicy może nie wywołać odświeżenia widoku.
+    Mutujące: push, pop, shift, unshift, splice, sort, reverse, fill, `copyWithin`.
+    Niemutujące: map, filter, slice, concat, flat, `flatMap`, find, includes.
+    Od ES2023 istnieją niemutujące odpowiedniki: `toSorted`, `toReversed`, `toSpliced` i with.
+    W React czy Angularze z `OnPush` mutacja tablicy może nie wywołać odświeżenia widoku.
 
 - id: 26
   text: Czym różni się slice od splice?
   answer: |
-    slice(start, end) zwraca kopię fragmentu tablicy, nie zmieniając oryginału.
-    splice(start, deleteCount, ...items) modyfikuje oryginalną tablicę - usuwa i/lub wstawia elementy - i zwraca usunięte.
+    `slice(start, end)` zwraca kopię fragmentu tablicy, nie zmieniając oryginału.
+    `splice(start, deleteCount, ...items)` modyfikuje oryginalną tablicę - usuwa i/lub wstawia elementy - i zwraca usunięte.
     slice działa też na stringach, splice tylko na tablicach.
 
 - id: 27
   text: Czym jest destrukturyzacja?
   answer: |
     Destrukturyzacja pozwala wyciągać wartości z tablic i obiektów do zmiennych.
-    Obiekty: const { name, age = 18, address: { city } } = user;
-    Tablice: const [first, , third, ...rest] = arr;
+    Obiekty: `const { name, age = 18, address: { city } } = user`;
+    Tablice: `const [first, , third, ...rest] = arr`;
     Działa też w parametrach funkcji i pozwala ustawiać wartości domyślne i zmieniać nazwy.
 
 - id: 28
   text: Czym różnią się operator spread i rest?
   answer: |
-    Spread (...) rozpakowuje elementy: [...arr1, ...arr2], { ...obj, name: 'X' }, fn(...args).
-    Rest (...) zbiera pozostałe elementy w tablicę lub obiekt: function f(a, ...others), const { id, ...rest } = obj.
+    Spread (...) rozpakowuje elementy: `[...arr1, ...arr2]`, `{ ...obj, name: 'X' }`, `fn(...args)`.
+    Rest (...) zbiera pozostałe elementy w tablicę lub obiekt: `function f(a, ...others)`, `const { id, ...rest } = obj`.
     Składnia jest ta sama, różni się kontekst użycia.
     Spread tworzy płytką kopię.
 
@@ -225,87 +225,87 @@
   text: Czym różni się płytka kopia od głębokiej?
   answer: |
     Płytka kopia kopiuje tylko pierwszy poziom - zagnieżdżone obiekty nadal są współdzielone.
-    Spread, Object.assign i Array.from tworzą płytkie kopie.
-    Głęboka kopia kopiuje całą strukturę - w nowoczesnym JS służy do tego structuredClone(obj).
-    JSON.parse(JSON.stringify(obj)) też działa, ale gubi daty, undefined, funkcje, Map i Set.
+    Spread, `Object.assign` i `Array.from` tworzą płytkie kopie.
+    Głęboka kopia kopiuje całą strukturę - w nowoczesnym JS służy do tego `structuredClone(obj)`.
+    `JSON.parse(JSON.stringify(obj))` też działa, ale gubi daty, `undefined`, funkcje, `Map` i `Set`.
 
 - id: 30
-  text: Czym są Map i Set? Czym różni się Map od obiektu?
+  text: Czym są `Map` i `Set`? Czym różni się `Map` od obiektu?
   answer: |
-    Map przechowuje pary klucz-wartość, gdzie kluczem może być dowolna wartość, także obiekt.
-    Set przechowuje unikalne wartości, np. do deduplikacji: [...new Set(arr)].
-    Map zachowuje kolejność wstawiania, ma właściwość size i jest wydajniejszy przy częstym dodawaniu i usuwaniu.
-    Zwykły obiekt ma tylko klucze string i symbol oraz dziedziczy właściwości z prototypu.
+    `Map` przechowuje pary klucz-wartość, gdzie kluczem może być dowolna wartość, także obiekt.
+    `Set` przechowuje unikalne wartości, np. do deduplikacji: `[...new Set(arr)]`.
+    `Map` zachowuje kolejność wstawiania, ma właściwość size i jest wydajniejszy przy częstym dodawaniu i usuwaniu.
+    Zwykły obiekt ma tylko klucze `string` i `symbol` oraz dziedziczy właściwości z prototypu.
 
 - id: 31
-  text: Czym są WeakMap i WeakSet?
+  text: Czym są `WeakMap` i `WeakSet`?
   answer: |
-    WeakMap i WeakSet trzymają słabe referencje do obiektów-kluczy - nie blokują ich usunięcia przez GC.
+    `WeakMap` i `WeakSet` trzymają słabe referencje do obiektów-kluczy - nie blokują ich usunięcia przez GC.
     Kluczami mogą być tylko obiekty (lub niezarejestrowane symbole).
     Nie da się po nich iterować ani sprawdzić rozmiaru.
     Służą do przechowywania metadanych o obiektach bez ryzyka wycieku pamięci, np. cache per element DOM.
 
 - id: 32
-  text: Czym jest Symbol?
+  text: Czym jest `Symbol`?
   answer: |
-    Symbol to unikalny i niezmienny prymityw, tworzony przez Symbol('opis').
+    `Symbol` to unikalny i niezmienny prymityw, tworzony przez `Symbol('opis')`.
     Służy jako klucz właściwości, który nie koliduje z innymi kluczami i nie pojawia się w zwykłej iteracji.
-    Wbudowane symbole, jak Symbol.iterator czy Symbol.asyncIterator, pozwalają dostosować zachowanie obiektów.
-    Symbol.for tworzy symbole w globalnym rejestrze.
+    Wbudowane symbole, jak `Symbol.iterator` czy `Symbol.asyncIterator`, pozwalają dostosować zachowanie obiektów.
+    `Symbol.for` tworzy symbole w globalnym rejestrze.
 
 - id: 33
   text: Czym są iteratory i generatory?
   answer: |
-    Iterator to obiekt z metodą next() zwracającą { value, done }; obiekt iterowalny implementuje Symbol.iterator.
-    Generator (function*) to funkcja, która może wstrzymywać się przez yield i wznawiać.
+    Iterator to obiekt z metodą `next()` zwracającą `{ value, done }`; obiekt iterowalny implementuje `Symbol.iterator`.
+    Generator (`function*`) to funkcja, która może wstrzymywać się przez `yield` i wznawiać.
     Generatory leniwie produkują sekwencje i automatycznie implementują protokół iteratora.
-    Async generatory (async function*) i for await...of obsługują strumienie asynchroniczne.
+    Async generatory (`async function*`) i `for await...of` obsługują strumienie asynchroniczne.
 
 - id: 34
-  text: Czym są moduły ES (import/export)?
+  text: Czym są moduły ES (`import/export`)?
   answer: |
-    Moduły ES to natywny system modułów JavaScript: export i import.
-    Eksporty nazwane (export const a) i domyślny (export default) importuje się odpowiednio przez import { a } i import x.
+    Moduły ES to natywny system modułów JavaScript: `export` i `import`.
+    Eksporty nazwane (`export const` a) i domyślny (`export` default) importuje się odpowiednio przez `import { a }` i `import` x.
     Moduły mają własny zasięg, działają w strict mode i są ładowane statycznie, co umożliwia tree-shaking.
-    Dynamiczny import() ładuje moduł asynchronicznie, np. do lazy loadingu.
+    Dynamiczny `import()` ładuje moduł asynchronicznie, np. do lazy loadingu.
 
 - id: 35
   text: Czym różnią się moduły ES od CommonJS?
   answer: |
-    CommonJS (require, module.exports) to historyczny system modułów Node.js, ładowany synchronicznie w czasie wykonania.
-    ES modules są ładowane statycznie i asynchronicznie, wspierają tree-shaking i top-level await.
-    W Node.js ESM włącza się przez "type": "module" w package.json lub rozszerzenie .mjs.
-    Interoperacyjność bywa problematyczna, ale nowsze Node.js pozwala nawet na require() modułów ESM.
+    CommonJS (`require`, `module.exports`) to historyczny system modułów Node.js, ładowany synchronicznie w czasie wykonania.
+    ES modules są ładowane statycznie i asynchronicznie, wspierają tree-shaking i top-level `await`.
+    W Node.js ESM włącza się przez `"type": "module"` w `package.json` lub rozszerzenie `.mjs`.
+    Interoperacyjność bywa problematyczna, ale nowsze Node.js pozwala nawet na `require()` modułów ESM.
 
 - id: 36
   text: Czym jest strict mode?
   answer: |
     Strict mode ("use strict") włącza bardziej restrykcyjną wersję JavaScript.
     Zamienia ciche błędy w wyjątki, np. przypisanie do niezadeklarowanej zmiennej.
-    this w zwykłym wywołaniu funkcji to undefined zamiast obiektu globalnego.
+    `this` w zwykłym wywołaniu funkcji to `undefined` zamiast obiektu globalnego.
     Moduły ES i klasy są automatycznie w strict mode.
 
 - id: 37
   text: Czym jest IIFE?
   answer: |
-    IIFE (Immediately Invoked Function Expression) to funkcja wywoływana natychmiast po zdefiniowaniu: (function () { ... })();
+    IIFE (Immediately Invoked Function Expression) to funkcja wywoływana natychmiast po zdefiniowaniu: (`function` () `{ ... })(`);
     Tworzy własny zasięg, dzięki czemu zmienne nie zaśmiecają zasięgu globalnego.
     Była popularna przed modułami ES jako wzorzec modułu.
-    Dziś stosuje się ją rzadko, np. do async IIFE: (async () => { await ... })().
+    Dziś stosuje się ją rzadko, np. do `async` IIFE: `(async () => { await ... })()`.
 
 - id: 38
   text: Czym są funkcje wyższego rzędu?
   answer: |
     Funkcja wyższego rzędu przyjmuje funkcję jako argument lub zwraca funkcję.
-    Przykłady to map, filter, reduce, setTimeout oraz fabryki funkcji.
+    Przykłady to map, filter, reduce, `setTimeout` oraz fabryki funkcji.
     Pozwalają abstrahować zachowanie i komponować kod.
     Są podstawą programowania funkcyjnego w JavaScript.
 
 - id: 39
   text: Czym jest currying?
   answer: |
-    Currying to przekształcenie funkcji wieloargumentowej w łańcuch funkcji jednoargumentowych: add(a, b) staje się add(a)(b).
-    Pozwala tworzyć wyspecjalizowane funkcje przez częściowe zastosowanie, np. const add10 = add(10).
+    Currying to przekształcenie funkcji wieloargumentowej w łańcuch funkcji jednoargumentowych: `add(a, b)` staje się `add(a)(b)`.
+    Pozwala tworzyć wyspecjalizowane funkcje przez częściowe zastosowanie, np. `const add10 = add(10)`.
     Realizuje się go przez domknięcia.
     Jest popularny w bibliotekach funkcyjnych, np. Ramda.
 
@@ -313,9 +313,9 @@
   text: Czym jest memoizacja?
   answer: |
     Memoizacja to cache'owanie wyników funkcji dla danych argumentów, by nie liczyć ich ponownie.
-    Implementuje się ją przez domknięcie z Map przechowującą wyniki.
+    Implementuje się ją przez domknięcie z `Map` przechowującą wyniki.
     Działa poprawnie tylko dla czystych funkcji (bez efektów ubocznych).
-    Przykładem jest computed w Angularze czy useMemo w React.
+    Przykładem jest computed w Angularze czy `useMemo` w React.
 
 - id: 41
   text: Czym jest czysta funkcja?
@@ -323,38 +323,38 @@
     Czysta funkcja dla tych samych argumentów zawsze zwraca ten sam wynik.
     Nie ma efektów ubocznych - nie modyfikuje zewnętrznego stanu, nie wykonuje I/O.
     Jest łatwa do testowania, cache'owania i równoległego wykonywania.
-    Przykładowo Math.max jest czysta, a Math.random i Date.now nie.
+    Przykładowo `Math.max` jest czysta, a `Math.random` i `Date.now` nie.
 
 - id: 42
   text: Czym jest event bubbling i capturing?
   answer: |
     Zdarzenie DOM przechodzi trzy fazy: capturing (od window w dół do celu), target i bubbling (od celu w górę).
-    Domyślnie listenery działają w fazie bubbling; capture: true w addEventListener przełącza na capturing.
-    stopPropagation zatrzymuje dalsze rozchodzenie się zdarzenia.
+    Domyślnie listenery działają w fazie bubbling; `capture: true` w `addEventListener` przełącza na capturing.
+    `stopPropagation` zatrzymuje dalsze rozchodzenie się zdarzenia.
     Niektóre zdarzenia, np. focus, nie bąbelkują (zamiast nich są focusin/focusout).
 
 - id: 43
   text: Czym jest delegacja zdarzeń?
   answer: |
     Delegacja to podpięcie jednego listenera na wspólnym rodzicu zamiast na każdym elemencie potomnym.
-    Dzięki bubblingowi zdarzenia z dzieci trafiają do rodzica, a cel ustala się przez event.target i closest().
+    Dzięki bubblingowi zdarzenia z dzieci trafiają do rodzica, a cel ustala się przez `event.target` i `closest()`.
     Oszczędza pamięć i automatycznie obsługuje elementy dodane później.
     Typowe zastosowanie to listy i tabele z wieloma wierszami.
 
 - id: 44
-  text: Czym różni się preventDefault od stopPropagation?
+  text: Czym różni się `preventDefault` od `stopPropagation`?
   answer: |
-    preventDefault blokuje domyślne zachowanie przeglądarki, np. wysłanie formularza lub przejście linku.
-    stopPropagation zatrzymuje rozchodzenie się zdarzenia do kolejnych elementów.
-    stopImmediatePropagation dodatkowo blokuje inne listenery na tym samym elemencie.
+    `preventDefault` blokuje domyślne zachowanie przeglądarki, np. wysłanie formularza lub przejście linku.
+    `stopPropagation` zatrzymuje rozchodzenie się zdarzenia do kolejnych elementów.
+    `stopImmediatePropagation` dodatkowo blokuje inne listenery na tym samym elemencie.
     Są niezależne - często używa się tylko jednego z nich.
 
 - id: 45
   text: Jakie są sposoby przechowywania danych w przeglądarce?
   answer: |
-    localStorage - trwały, synchroniczny magazyn klucz-wartość (stringi, ok. 5 MB) dla domeny.
-    sessionStorage - jak localStorage, ale tylko na czas karty.
-    Cookies - małe dane wysyłane z każdym żądaniem; z HttpOnly niedostępne dla JS.
+    `localStorage` - trwały, synchroniczny magazyn klucz-wartość (stringi, ok. 5 MB) dla domeny.
+    `sessionStorage` - jak `localStorage`, ale tylko na czas karty.
+    Cookies - małe dane wysyłane z każdym żądaniem; z `HttpOnly` niedostępne dla JS.
     IndexedDB - asynchroniczna baza obiektów na większe dane; dodatkowo Cache API dla Service Workerów.
 
 - id: 46
@@ -368,18 +368,18 @@
 - id: 47
   text: Jak działa fetch API?
   answer: |
-    fetch(url, options) zwraca Promise z obiektem Response.
-    Promise jest odrzucany tylko przy błędzie sieci - kody 4xx i 5xx trzeba sprawdzić przez response.ok.
-    Treść odczytuje się metodami response.json(), text() czy blob().
-    Żądanie można anulować przez AbortController, a timeout ustawić przez AbortSignal.timeout(ms).
+    `fetch(url, options)` zwraca `Promise` z obiektem Response.
+    `Promise` jest odrzucany tylko przy błędzie sieci - kody 4xx i 5xx trzeba sprawdzić przez `response.ok`.
+    Treść odczytuje się metodami `response.json()`, `text()` czy `blob()`.
+    Żądanie można anulować przez `AbortController`, a timeout ustawić przez `AbortSignal.timeout(ms)`.
 
 - id: 48
-  text: Czym jest AbortController?
+  text: Czym jest `AbortController`?
   answer: |
-    AbortController pozwala anulować operacje asynchroniczne wspierające AbortSignal, np. fetch.
-    Tworzy się const ctrl = new AbortController(), przekazuje { signal: ctrl.signal } i wywołuje ctrl.abort().
-    Anulowany fetch odrzuca Promise z błędem AbortError.
-    Sygnał można też przekazać do addEventListener, by automatycznie usunąć listenery.
+    `AbortController` pozwala anulować operacje asynchroniczne wspierające `AbortSignal`, np. fetch.
+    Tworzy się `const ctrl = new AbortController()`, przekazuje `{ signal: ctrl.signal }` i wywołuje `ctrl.abort()`.
+    Anulowany fetch odrzuca `Promise` z błędem `AbortError`.
+    Sygnał można też przekazać do `addEventListener`, by automatycznie usunąć listenery.
 
 - id: 49
   text: Jak działa garbage collection w JavaScript?
@@ -390,60 +390,60 @@
     Wycieki diagnozuje się w zakładce Memory w DevTools przez heap snapshoty.
 
 - id: 50
-  text: Czym są Object.freeze, Object.seal i Object.preventExtensions?
+  text: Czym są `Object.freeze`, `Object.seal` i `Object.preventExtensions`?
   answer: |
-    Object.preventExtensions blokuje dodawanie nowych właściwości.
-    Object.seal dodatkowo blokuje usuwanie właściwości, ale pozwala zmieniać istniejące.
-    Object.freeze blokuje wszystko - obiekt staje się niemutowalny.
+    `Object.preventExtensions` blokuje dodawanie nowych właściwości.
+    `Object.seal` dodatkowo blokuje usuwanie właściwości, ale pozwala zmieniać istniejące.
+    `Object.freeze` blokuje wszystko - obiekt staje się niemutowalny.
     Wszystkie działają płytko - zagnieżdżone obiekty nadal można modyfikować.
 
 - id: 51
   text: Czym są gettery i settery?
   answer: |
-    Gettery i settery to akcesory właściwości: get fullName() { ... } i set fullName(v) { ... }.
+    Gettery i settery to akcesory właściwości: `get fullName() { ... }` i `set fullName(v) { ... }`.
     Pozwalają wyliczać wartość przy odczycie lub walidować przy zapisie.
     Z zewnątrz wyglądają jak zwykłe właściwości.
-    Można je też definiować przez Object.defineProperty.
+    Można je też definiować przez `Object.defineProperty`.
 
 - id: 52
-  text: Czym jest Proxy i Reflect?
+  text: Czym jest `Proxy` i `Reflect`?
   answer: |
-    Proxy opakowuje obiekt i pozwala przechwytywać operacje na nim: odczyt, zapis, usuwanie, wywołanie (pułapki get, set, has itd.).
-    Reflect to obiekt z metodami odpowiadającymi tym operacjom, ułatwiający przekazanie domyślnego zachowania.
-    Proxy jest podstawą reaktywności w Vue 3 i MobX.
+    `Proxy` opakowuje obiekt i pozwala przechwytywać operacje na nim: odczyt, zapis, usuwanie, wywołanie (pułapki `get`, `set`, has itd.).
+    `Reflect` to obiekt z metodami odpowiadającymi tym operacjom, ułatwiający przekazanie domyślnego zachowania.
+    `Proxy` jest podstawą reaktywności w Vue 3 i MobX.
     Stosuje się go do walidacji, logowania, obserwacji zmian i wirtualnych obiektów.
 
 - id: 53
-  text: Czym różni się Number od BigInt?
+  text: Czym różni się Number od `BigInt`?
   answer: |
-    Number to 64-bitowa liczba zmiennoprzecinkowa (IEEE 754) - precyzyjna dla liczb całkowitych tylko do Number.MAX_SAFE_INTEGER (2^53 - 1).
-    BigInt przechowuje dowolnie duże liczby całkowite, zapisywane z sufiksem n, np. 123n.
-    Nie można mieszać BigInt i Number w działaniach bez jawnej konwersji.
-    BigInt przydaje się przy dużych identyfikatorach, np. z baz danych BIGINT.
+    Number to 64-bitowa liczba zmiennoprzecinkowa (IEEE 754) - precyzyjna dla liczb całkowitych tylko do `Number.MAX_SAFE_INTEGER` (2^53 - 1).
+    `BigInt` przechowuje dowolnie duże liczby całkowite, zapisywane z sufiksem n, np. 123n.
+    Nie można mieszać `BigInt` i Number w działaniach bez jawnej konwersji.
+    `BigInt` przydaje się przy dużych identyfikatorach, np. z baz danych BIGINT.
 
 - id: 54
-  text: Dlaczego 0.1 + 0.2 !== 0.3?
+  text: Dlaczego `0.1 + 0.2 !== 0.3`?
   answer: |
     Liczby w JS są zapisywane binarnie w formacie IEEE 754, a 0.1 i 0.2 nie mają dokładnej reprezentacji binarnej.
     Wynik to 0.30000000000000004.
-    Do porównań używa się tolerancji: Math.abs(a - b) < Number.EPSILON.
+    Do porównań używa się tolerancji: `Math.abs(a - b)` `< Number.EPSILON`.
     Przy kwotach pieniężnych liczy się w groszach (liczbach całkowitych) lub używa bibliotek dziesiętnych.
 
 - id: 55
-  text: Czym jest NaN i jak go wykryć?
+  text: Czym jest `NaN` i jak go wykryć?
   answer: |
-    NaN (Not a Number) to wynik niepoprawnej operacji liczbowej, np. 0 / 0 lub Number('abc').
-    NaN nie jest równy niczemu, nawet samemu sobie: NaN === NaN daje false.
-    Wykrywa się go przez Number.isNaN(x) lub Object.is(x, NaN).
-    Globalne isNaN najpierw konwertuje argument na liczbę, więc isNaN('abc') daje true.
+    `NaN` (Not a Number) to wynik niepoprawnej operacji liczbowej, np. `0 / 0` lub `Number('abc')`.
+    `NaN` nie jest równy niczemu, nawet samemu sobie: `NaN === NaN` daje `false`.
+    Wykrywa się go przez `Number.isNaN(x)` lub `Object.is(x, NaN)`.
+    Globalne `isNaN` najpierw konwertuje argument na liczbę, więc `isNaN('abc')` daje `true`.
 
 - id: 56
   text: Czym są template literals i tagged templates?
   answer: |
-    Template literals to stringi w backtickach z interpolacją: `Cześć ${name}`, wspierające wiele linii.
-    Tagged template to wywołanie funkcji na szablonie: tag`tekst ${x}` - funkcja dostaje fragmenty i wartości osobno.
+    Template literals to stringi w backtickach z interpolacją: `` `Cześć ${name}` ``, wspierające wiele linii.
+    Tagged template to wywołanie funkcji na szablonie: ``tag`tekst ${x}` `` - funkcja dostaje fragmenty i wartości osobno.
     Tagi służą np. do bezpiecznego budowania SQL, stylów (styled-components) czy tłumaczeń.
-    String.raw to wbudowany tag ignorujący sekwencje ucieczki.
+    `String.raw` to wbudowany tag ignorujący sekwencje ucieczki.
 
 - id: 57
   text: Czym jest TypeScript i dlaczego się go używa?
@@ -454,34 +454,34 @@
     Typy istnieją tylko w czasie kompilacji - w runtime nie ma ich, więc dane z zewnątrz trzeba walidować (np. Zod).
 
 - id: 58
-  text: Czym różni się interface od type w TypeScript?
+  text: Czym różni się `interface` od `type` w TypeScript?
   answer: |
     Oba opisują kształt obiektu i w większości przypadków są zamienne.
-    interface można rozszerzać przez extends i scalać deklaracje (declaration merging).
-    type pozwala na unie, typy krotek, mapowane i warunkowe oraz aliasy typów prostych.
-    Częsta konwencja: interface dla kształtów obiektów i API, type dla unii i kompozycji typów.
+    `interface` można rozszerzać przez `extends` i scalać deklaracje (declaration merging).
+    `type` pozwala na unie, typy krotek, mapowane i warunkowe oraz aliasy typów prostych.
+    Częsta konwencja: `interface` dla kształtów obiektów i API, `type` dla unii i kompozycji typów.
 
 - id: 59
-  text: Czym różnią się any, unknown i never?
+  text: Czym różnią się `any`, `unknown` i `never`?
   answer: |
-    any wyłącza sprawdzanie typów - pozwala na wszystko i niszczy bezpieczeństwo typów.
-    unknown przyjmuje dowolną wartość, ale wymaga zawężenia typu (type guard) przed użyciem - to bezpieczny odpowiednik any.
-    never oznacza typ, który nigdy nie występuje, np. funkcja zawsze rzucająca wyjątek lub wyczerpany switch.
-    never przydaje się do sprawdzania kompletności obsługi unii (exhaustiveness check).
+    `any` wyłącza sprawdzanie typów - pozwala na wszystko i niszczy bezpieczeństwo typów.
+    `unknown` przyjmuje dowolną wartość, ale wymaga zawężenia typu (`type` guard) przed użyciem - to bezpieczny odpowiednik `any`.
+    `never` oznacza typ, który nigdy nie występuje, np. funkcja zawsze rzucająca wyjątek lub wyczerpany switch.
+    `never` przydaje się do sprawdzania kompletności obsługi unii (exhaustiveness check).
 
 - id: 60
   text: Czym są typy generyczne i utility types w TypeScript?
   answer: |
-    Typy generyczne pozwalają pisać kod działający dla wielu typów: function first<T>(arr: T[]): T.
-    Utility types to wbudowane transformacje typów: Partial, Required, Readonly, Pick, Omit, Record, ReturnType, Awaited.
-    Przykład: Omit<User, 'password'> tworzy typ bez pola password.
-    Ograniczenia (T extends object) zawężają dopuszczalne typy.
+    Typy generyczne pozwalają pisać kod działający dla wielu typów: `function first<T>(arr: T[])`: T.
+    Utility types to wbudowane transformacje typów: Partial, Required, Readonly, Pick, Omit, Record, `ReturnType`, Awaited.
+    Przykład: `Omit<User, 'password'>` tworzy typ bez pola password.
+    Ograniczenia (T `extends object`) zawężają dopuszczalne typy.
 
 - id: 61
   text: Czym są Web Workers?
   answer: |
     Web Workers pozwalają uruchamiać JavaScript w osobnym wątku, nie blokując głównego wątku UI.
-    Komunikacja odbywa się przez postMessage i zdarzenie message - wątki nie współdzielą pamięci (poza SharedArrayBuffer).
+    Komunikacja odbywa się przez `postMessage` i zdarzenie message - wątki nie współdzielą pamięci (poza `SharedArrayBuffer`).
     Worker nie ma dostępu do DOM.
     Stosuje się je do ciężkich obliczeń: parsowania dużych plików, kompresji, przetwarzania obrazów.
 
@@ -496,42 +496,42 @@
 - id: 63
   text: Czym są XSS i CSRF w kontekście frontendu?
   answer: |
-    XSS to wstrzyknięcie złośliwego skryptu do strony, np. przez niesanityzowane dane wstawione przez innerHTML.
-    Chroni przed nim używanie textContent, sanityzacja (DOMPurify), escapowanie przez frameworki i Content Security Policy.
+    XSS to wstrzyknięcie złośliwego skryptu do strony, np. przez niesanityzowane dane wstawione przez `innerHTML`.
+    Chroni przed nim używanie `textContent`, sanityzacja (DOMPurify), escapowanie przez frameworki i Content Security Policy.
     CSRF to wykonanie żądania w imieniu zalogowanego użytkownika z innej strony.
-    Chronią przed nim tokeny CSRF, ciasteczka SameSite i uwierzytelnianie tokenem w nagłówku zamiast ciasteczka.
+    Chronią przed nim tokeny CSRF, ciasteczka `SameSite` i uwierzytelnianie tokenem w nagłówku zamiast ciasteczka.
 
 - id: 64
-  text: Czym różni się async od defer w tagu script?
+  text: Czym różni się `async` od defer w tagu script?
   answer: |
     Bez atrybutów skrypt blokuje parsowanie HTML do czasu pobrania i wykonania.
-    async pobiera skrypt równolegle i wykonuje go od razu po pobraniu - kolejność skryptów nie jest gwarantowana.
+    `async` pobiera skrypt równolegle i wykonuje go od razu po pobraniu - kolejność skryptów nie jest gwarantowana.
     defer pobiera równolegle i wykonuje po sparsowaniu dokumentu, w kolejności występowania.
-    Skrypty type="module" zachowują się domyślnie jak defer.
+    Skrypty `type="module"` zachowują się domyślnie jak defer.
 
 - id: 65
   text: Jak działa sortowanie tablic w JavaScript i jakie ma pułapki?
   answer: |
-    Domyślnie sort() konwertuje elementy na stringi i porównuje je leksykograficznie, więc [10, 2, 1].sort() daje [1, 10, 2].
-    Liczby sortuje się z komparatorem: arr.sort((a, b) => a - b).
-    sort() mutuje tablicę - niemutujący odpowiednik to toSorted().
-    Do sortowania tekstów z polskimi znakami używa się localeCompare lub Intl.Collator('pl').
+    Domyślnie `sort()` konwertuje elementy na stringi i porównuje je leksykograficznie, więc `[10, 2, 1].sort()` daje `[1, 10, 2]`.
+    Liczby sortuje się z komparatorem: `arr.sort((a, b) => a - b)`.
+    `sort()` mutuje tablicę - niemutujący odpowiednik to `toSorted()`.
+    Do sortowania tekstów z polskimi znakami używa się `localeCompare` lub `Intl.Collator('pl')`.
 
 - id: 66
   text: Czym jest obiekt Intl?
   answer: |
     Intl to wbudowane API do internacjonalizacji.
-    Intl.NumberFormat formatuje liczby i waluty, np. new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).
-    Intl.DateTimeFormat formatuje daty, Intl.Collator porównuje stringi, Intl.PluralRules obsługuje liczbę mnogą, a Intl.RelativeTimeFormat czas względny.
+    `Intl.NumberFormat` formatuje liczby i waluty, np. `new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' })`.
+    `Intl.DateTimeFormat` formatuje daty, `Intl.Collator` porównuje stringi, `Intl.PluralRules` obsługuje liczbę mnogą, a `Intl.RelativeTimeFormat` czas względny.
     Pozwala uniknąć ciężkich bibliotek do formatowania.
 
 - id: 67
   text: Jak wyglądają nowsze funkcje JavaScript (ES2022-ES2025)?
   answer: |
-    ES2022: top-level await, pola prywatne klas (#x), Array.prototype.at, Object.hasOwn, Error cause.
-    ES2023: findLast, toSorted, toReversed, toSpliced, with.
-    ES2024: Object.groupBy, Map.groupBy, Promise.withResolvers, ArrayBuffer resize.
-    ES2025: metody Set (union, intersection, difference), iterator helpers, Promise.try, import attributes i RegExp.escape.
+    ES2022: top-level `await`, pola prywatne klas (`#x`), `Array.prototype.at`, `Object.hasOwn`, `Error` cause.
+    ES2023: `findLast`, `toSorted`, `toReversed`, `toSpliced`, with.
+    ES2024: `Object.groupBy`, `Map.groupBy`, `Promise.withResolvers`, `ArrayBuffer` resize.
+    ES2025: metody `Set` (union, intersection, difference), iterator helpers, `Promise.try`, `import` attributes i `RegExp.escape`.
 
 - id: 68
   text: Napisz funkcję debounce.
@@ -551,7 +551,7 @@
 - id: 69
   text: Napisz funkcję grupującą elementy tablicy po kluczu.
   answer: |
-    W nowoczesnym JS służy do tego Object.groupBy(items, item => item.category).
+    W nowoczesnym JS służy do tego `Object.groupBy(items, item => item.category)`.
     Ręczna implementacja przez reduce buduje obiekt, w którym każdy klucz ma tablicę elementów.
     ```javascript
     function groupBy(items, keyFn) {
