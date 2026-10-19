@@ -23,30 +23,30 @@
 	let questions: QuestionType[] = [];
 
 	if (category === 'dotnet') {
-		questions.push(...parse(dotnetRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(dotnetRaw)); //.sort(() => Math.random() - 0.5));
 	}
 	if (category === 'angular') {
-		questions.push(...parse(angularRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(angularRaw)); //.sort(() => Math.random() - 0.5));
 	}
 	if (category === 'python') {
-		questions.push(...parse(pythonRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(pythonRaw)); //.sort(() => Math.random() - 0.5));
 	}
 	if (category === 'javascript') {
-		questions.push(...parse(javascriptRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(javascriptRaw)); //.sort(() => Math.random() - 0.5));
 	}
 	if (category === 'sql') {
-		questions.push(...parse(sqlRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(sqlRaw)); //.sort(() => Math.random() - 0.5));
 	}
 	if (category === 'system-design') {
-		questions.push(...parse(systemDesignRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(systemDesignRaw)); //.sort(() => Math.random() - 0.5));
 	}
 	if (category === 'all') {
-		questions.push(...parse(dotnetRaw).sort(() => Math.random() - 0.5));
-		questions.push(...parse(angularRaw).sort(() => Math.random() - 0.5));
-		questions.push(...parse(pythonRaw).sort(() => Math.random() - 0.5));
-		questions.push(...parse(javascriptRaw).sort(() => Math.random() - 0.5));
-		questions.push(...parse(sqlRaw).sort(() => Math.random() - 0.5));
-		questions.push(...parse(systemDesignRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(dotnetRaw)); //.sort(() => Math.random() - 0.5));
+		questions.push(...parse(angularRaw)); //.sort(() => Math.random() - 0.5));
+		questions.push(...parse(pythonRaw)); //.sort(() => Math.random() - 0.5));
+		questions.push(...parse(javascriptRaw)); //.sort(() => Math.random() - 0.5));
+		questions.push(...parse(sqlRaw)); //.sort(() => Math.random() - 0.5));
+		questions.push(...parse(systemDesignRaw)); //.sort(() => Math.random() - 0.5));
 	}
 
 	const titles: Record<string, string> = {
