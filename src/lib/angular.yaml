@@ -1,0 +1,534 @@
+- id: 1
+  text: Czym jest Angular i czym różni się od AngularJS?
+  answer: |
+    Angular to framework do budowy aplikacji webowych (głównie SPA) rozwijany przez Google, pisany w TypeScript.
+    AngularJS (1.x) był oparty na JavaScript, kontrolerach i $scope, a jego wsparcie zakończyło się w 2021 roku.
+    Angular (2+) to przepisany od zera framework oparty na komponentach, DI, RxJS, a od wersji 16+ na sygnałach.
+    Angular 20 stawia na standalone components, sygnały, nowy control flow i działanie bez Zone.js.
+
+- id: 2
+  text: Jakie są najważniejsze nowości w Angular 20?
+  answer: |
+    Stabilne API sygnałów: signal, computed, effect, linkedSignal oraz toSignal/toObservable.
+    Zoneless change detection przeszło z eksperymentu do developer preview (a w 20.2 do stable).
+    Stabilne incremental hydration i ustawienia SSR, eksperymentalne resource i httpResource.
+    Dyrektywy *ngIf, *ngFor i *ngSwitch są oznaczone jako przestarzałe na rzecz @if, @for, @switch; nowy style guide usuwa sufiksy typu .component z nazw plików.
+
+- id: 3
+  text: Czym jest komponent standalone?
+  answer: |
+    Komponent standalone nie wymaga deklaracji w NgModule - sam importuje potrzebne zależności w tablicy imports.
+    Od Angular 19 komponenty są domyślnie standalone, więc flaga standalone: true nie jest potrzebna.
+    Aplikację uruchamia się przez bootstrapApplication(AppComponent, appConfig).
+    Upraszcza to strukturę, lazy loading i tree-shaking.
+
+- id: 4
+  text: Czy NgModule jest jeszcze potrzebny?
+  answer: |
+    W nowych aplikacjach praktycznie nie - wszystko da się zrobić komponentami standalone i funkcjami provide*.
+    NgModule wciąż istnieje i działa, więc starsze aplikacje i biblioteki mogą go używać.
+    Komponenty standalone mogą importować moduły, np. starsze biblioteki UI.
+    Migrację ułatwia schematic ng generate @angular/core:standalone.
+
+- id: 5
+  text: Czym są sygnały (signals) w Angularze?
+  answer: |
+    Sygnał to reaktywny kontener na wartość, który powiadamia konsumentów o zmianach.
+    Tworzy się go przez signal(0), odczytuje wywołaniem count(), a zmienia przez set() lub update(v => v + 1).
+    Angular śledzi, które szablony i obliczenia czytają dany sygnał, i aktualizuje tylko to, co trzeba.
+    Sygnały są fundamentem precyzyjnej detekcji zmian i trybu zoneless.
+
+- id: 6
+  text: Czym są computed i effect?
+  answer: |
+    computed tworzy sygnał tylko do odczytu, wyliczany z innych sygnałów, np. total = computed(() => this.price() * this.qty()).
+    Jest leniwy i memoizowany - przelicza się tylko, gdy zmieni się zależność i ktoś go odczyta.
+    effect uruchamia kod z efektami ubocznymi przy zmianie odczytanych sygnałów, np. zapis do localStorage lub logowanie.
+    effect nie powinien służyć do propagowania stanu między sygnałami - do tego jest computed lub linkedSignal.
+
+- id: 7
+  text: Czym jest linkedSignal?
+  answer: |
+    linkedSignal to zapisywalny sygnał, którego wartość jest wyliczana z innego sygnału, ale można ją też ręcznie nadpisać.
+    Gdy źródło się zmieni, wartość jest resetowana według funkcji obliczającej.
+    Typowy przykład: wybrana opcja z listy, która resetuje się do pierwszego elementu, gdy zmieni się lista.
+    Jest stabilny od Angular 20.
+
+- id: 8
+  text: Czym są resource i httpResource?
+  answer: |
+    resource to API do asynchronicznego ładowania danych zależnego od sygnałów - przyjmuje params i loader zwracający Promise.
+    Udostępnia sygnały value, isLoading, error i status oraz metodę reload.
+    httpResource to wariant oparty na HttpClient: httpResource(() => `/api/users/${this.id()}`).
+    W Angular 20 są eksperymentalne - automatycznie anulują poprzednie żądanie przy zmianie parametrów.
+
+- id: 9
+  text: Czym są funkcje input(), output() i model()?
+  answer: |
+    input() tworzy wejście komponentu jako sygnał tylko do odczytu, np. name = input.required<string>().
+    output() tworzy zdarzenie wyjściowe: saved = output<User>() i emituje przez this.saved.emit(user).
+    model() tworzy dwukierunkowe wiązanie - sygnał zapisywalny wspierający składnię [(value)].
+    Zastępują dekoratory @Input, @Output i ręczne pary Input/Output z sufiksem Change.
+
+- id: 10
+  text: Czym różni się input() od dekoratora @Input?
+  answer: |
+    input() zwraca sygnał, więc wartość odczytuje się przez this.name(), a zależności computed aktualizują się automatycznie.
+    Nie trzeba ngOnChanges ani setterów, by reagować na zmiany - wystarczy computed lub effect.
+    input.required wymusza podanie wartości na etapie kompilacji szablonu.
+    Obsługuje transform i alias tak jak @Input, a dekorator wciąż działa, ale nowy kod powinien używać input().
+
+- id: 11
+  text: Czym jest nowy control flow (@if, @for, @switch)?
+  answer: |
+    To wbudowana składnia sterowania w szablonach, zastępująca dyrektywy strukturalne.
+    @if (user) { ... } @else { ... }, @switch (status) { @case ('a') { ... } }, @for (item of items; track item.id) { ... } @empty { ... }.
+    Nie wymaga importu CommonModule, jest szybsza i lepiej typowana.
+    W Angular 20 *ngIf, *ngFor i *ngSwitch są przestarzałe; migruje się je komendą ng generate @angular/core:control-flow.
+
+- id: 12
+  text: Dlaczego w @for wymagane jest track?
+  answer: |
+    track mówi Angularowi, jak identyfikować elementy listy między zmianami, np. track item.id.
+    Dzięki temu przy zmianach DOM jest aktualizowany minimalnie, zamiast niszczyć i tworzyć elementy od nowa.
+    Śledzenie po indeksie ($index) lub samym obiekcie przy niemutowalnych danych powoduje zbędne przebudowy.
+    W @for dostępne są też zmienne $index, $first, $last, $even, $odd i $count.
+
+- id: 13
+  text: Czym jest @defer?
+  answer: |
+    @defer pozwala leniwie ładować fragment szablonu wraz z jego komponentami, dyrektywami i pipe'ami.
+    Wyzwalacze to m.in. on viewport, on idle, on interaction, on hover, on timer(2s) i when warunek.
+    Bloki @placeholder, @loading i @error określają, co pokazać przed i w trakcie ładowania.
+    Zmniejsza początkowy bundle bez ręcznego konfigurowania lazy loadingu.
+
+- id: 14
+  text: Czym jest @let w szablonach?
+  answer: |
+    @let deklaruje lokalną zmienną tylko do odczytu w szablonie, np. @let user = user$ | async;
+    Pozwala uniknąć wielokrotnego powtarzania tego samego wyrażenia lub wielu subskrypcji async pipe.
+    Zmienna jest dostępna w bieżącym widoku i jego potomkach i aktualizuje się automatycznie.
+
+- id: 15
+  text: Jak działa detekcja zmian w Angularze?
+  answer: |
+    Detekcja zmian synchronizuje stan komponentów z DOM, sprawdzając wiązania w szablonach.
+    Klasycznie Zone.js przechwytywał zdarzenia asynchroniczne (kliknięcia, timery, HTTP) i uruchamiał sprawdzanie całego drzewa.
+    Strategia OnPush ogranicza sprawdzanie do komponentów ze zmienionymi wejściami, zdarzeniami lub sygnałami.
+    Z sygnałami Angular wie dokładnie, które widoki trzeba odświeżyć, co pozwala na tryb zoneless.
+
+- id: 16
+  text: Czym jest strategia ChangeDetectionStrategy.OnPush?
+  answer: |
+    OnPush sprawia, że komponent jest sprawdzany tylko, gdy zmieni się referencja wejścia, wystąpi zdarzenie w komponencie, emisja async pipe lub zmiana odczytywanego sygnału.
+    Znacząco poprawia wydajność w dużych drzewach komponentów.
+    Wymaga pracy na niemutowalnych danych - mutacja obiektu bez zmiany referencji nie zostanie zauważona.
+    W nowoczesnym Angularze z sygnałami OnPush jest zalecanym domyślnym wyborem.
+
+- id: 17
+  text: Czym jest tryb zoneless?
+  answer: |
+    Zoneless to działanie Angulara bez Zone.js - detekcję zmian wyzwalają sygnały, zdarzenia szablonu, async pipe i markForCheck.
+    Włącza się go przez provideZonelessChangeDetection() i usunięcie zone.js z polyfills.
+    Daje mniejszy bundle, lepszą wydajność, czytelniejsze stack trace'y i brak "magii".
+    Kod modyfikujący stan poza sygnałami (np. zwykłe pole w setTimeout) nie odświeży widoku bez sygnału lub markForCheck.
+
+- id: 18
+  text: Czym jest Dependency Injection w Angularze?
+  answer: |
+    DI to mechanizm, w którym Angular dostarcza klasom ich zależności zamiast tworzyć je ręcznie.
+    Serwis oznacza się @Injectable({ providedIn: 'root' }), co tworzy singleton dla całej aplikacji i pozwala na tree-shaking.
+    Zależności pobiera się funkcją inject() lub przez konstruktor.
+    Injectory tworzą hierarchię: środowiskowe (root, trasy) i elementowe (komponenty, dyrektywy).
+
+- id: 19
+  text: Czym różni się inject() od wstrzykiwania przez konstruktor?
+  answer: |
+    inject() pobiera zależność w kontekście wstrzykiwania, np. private http = inject(HttpClient);
+    Działa w polach klasy, funkcjonalnych guardach, interceptorach i resolverach, gdzie konstruktora nie ma.
+    Ułatwia dziedziczenie, bo klasa pochodna nie musi przekazywać zależności do super().
+    Nowy style guide Angulara zaleca inject() zamiast parametrów konstruktora.
+
+- id: 20
+  text: Jakie są sposoby dostarczania serwisów (providers)?
+  answer: |
+    providedIn: 'root' - singleton aplikacji, preferowany sposób.
+    providers w konfiguracji aplikacji (appConfig) lub na trasie - zakres środowiskowy, np. per lazy-loaded feature.
+    providers w komponencie - nowa instancja dla komponentu i jego dzieci; viewProviders - tylko dla widoku.
+    Rodzaje: useClass, useValue, useFactory, useExisting.
+
+- id: 21
+  text: Czym jest InjectionToken?
+  answer: |
+    InjectionToken pozwala wstrzykiwać wartości, które nie są klasami, np. konfigurację, stringi czy funkcje.
+    Przykład: export const API_URL = new InjectionToken<string>('API_URL'); i provider { provide: API_URL, useValue: '/api' }.
+    Pobiera się go przez inject(API_URL).
+    Może mieć fabrykę z providedIn: 'root', działającą jak wartość domyślna.
+
+- id: 22
+  text: Jakie są hooki cyklu życia komponentu?
+  answer: |
+    ngOnChanges - zmiana wejść; ngOnInit - jednorazowa inicjalizacja po pierwszych wejściach.
+    ngDoCheck - własna detekcja zmian; ngAfterContentInit/Checked - po projekcji treści; ngAfterViewInit/Checked - po utworzeniu widoku.
+    ngOnDestroy - sprzątanie przed zniszczeniem komponentu.
+    Nowsze alternatywy to afterNextRender/afterEveryRender oraz DestroyRef.onDestroy.
+
+- id: 23
+  text: Czym jest DestroyRef i takeUntilDestroyed?
+  answer: |
+    DestroyRef pozwala zarejestrować sprzątanie przy niszczeniu komponentu lub serwisu: inject(DestroyRef).onDestroy(() => ...).
+    takeUntilDestroyed() to operator RxJS automatycznie kończący subskrypcję przy zniszczeniu kontekstu.
+    W kontekście wstrzykiwania (pole, konstruktor) nie wymaga argumentu, poza nim przyjmuje DestroyRef.
+    Zastępuje ręczny wzorzec Subject + takeUntil + ngOnDestroy.
+
+- id: 24
+  text: Jakie są rodzaje data bindingu w Angularze?
+  answer: |
+    Interpolacja {{ wartość }} - z komponentu do widoku.
+    Property binding [property]="wyrażenie" - ustawianie właściwości elementu lub wejścia.
+    Event binding (event)="handler($event)" - zdarzenia z widoku do komponentu.
+    Two-way binding [(ngModel)] lub [(value)] przez model() - połączenie obu kierunków.
+
+- id: 25
+  text: Czym różnią się atrybut HTML od właściwości DOM w bindingu?
+  answer: |
+    Atrybut HTML inicjalizuje element, a właściwość DOM przechowuje jego bieżący stan.
+    [value] wiąże się z właściwością, a [attr.aria-label] z atrybutem.
+    Do atrybutów bez odpowiednika we właściwościach (aria-*, colspan, data-*) używa się [attr.nazwa].
+    Do klas i stylów służą [class.active] i [style.width.px].
+
+- id: 26
+  text: Czym są dyrektywy i jakie są ich rodzaje?
+  answer: |
+    Dyrektywa to klasa dodająca zachowanie do elementów DOM.
+    Komponenty to dyrektywy z szablonem.
+    Dyrektywy atrybutowe zmieniają wygląd lub zachowanie elementu, np. NgClass, NgStyle lub własna appHighlight.
+    Dyrektywy strukturalne zmieniają strukturę DOM (*ngIf, *ngFor), dziś zastępowane przez wbudowany control flow.
+
+- id: 27
+  text: Czym są host directives?
+  answer: |
+    Host directives pozwalają dołączyć dyrektywy do komponentu w jego metadanych: hostDirectives: [CdkDrag].
+    Można wybrać, które wejścia i wyjścia dyrektywy są wystawione na zewnątrz.
+    To kompozycja zachowań zamiast dziedziczenia.
+    Działają tylko z dyrektywami standalone.
+
+- id: 28
+  text: Czym są pipe'y? Czym różnią się pure od impure?
+  answer: |
+    Pipe przekształca wartość w szablonie, np. {{ date | date:'short' }}, {{ price | currency:'PLN' }}.
+    Pure pipe (domyślny) wykonuje się tylko przy zmianie referencji wejścia - jest wydajny.
+    Impure pipe wykonuje się przy każdej detekcji zmian, co może być kosztowne.
+    Własny pipe tworzy się klasą z @Pipe i metodą transform.
+
+- id: 29
+  text: Jak działa async pipe?
+  answer: |
+    async pipe subskrybuje Observable lub Promise i zwraca jego ostatnią wartość.
+    Automatycznie wypisuje się przy zniszczeniu komponentu, co zapobiega wyciekom pamięci.
+    Oznacza komponent do sprawdzenia przy nowej wartości, więc działa z OnPush i zoneless.
+    Z sygnałami często zastępuje go toSignal().
+
+- id: 30
+  text: Czym jest content projection (ng-content)?
+  answer: |
+    Content projection pozwala wstawić treść z rodzica do szablonu komponentu potomnego.
+    <ng-content /> wstawia całą treść, a <ng-content select="[header]" /> - tylko pasującą do selektora.
+    Pozwala budować elastyczne komponenty, np. karty, modale, layouty.
+    Do treści projektowanej odwołuje się przez contentChild() i contentChildren().
+
+- id: 31
+  text: Czym są viewChild i contentChild?
+  answer: |
+    viewChild() pobiera referencję do elementu lub komponentu z własnego szablonu komponentu.
+    contentChild() pobiera referencję z treści projektowanej przez ng-content.
+    W wersjach sygnałowych zwracają sygnały, np. input = viewChild<ElementRef>('search'), a wariant .required gwarantuje istnienie.
+    Zastępują dekoratory @ViewChild i @ContentChild.
+
+- id: 32
+  text: Czym są ng-template, ng-container i ngTemplateOutlet?
+  answer: |
+    ng-template definiuje fragment szablonu, który nie jest renderowany, dopóki ktoś go nie użyje.
+    ng-container to element grupujący, który nie tworzy węzła w DOM.
+    ngTemplateOutlet renderuje szablon w danym miejscu, z opcjonalnym kontekstem.
+    Pozwalają przekazywać szablony do komponentów, np. własny wygląd wiersza tabeli.
+
+- id: 33
+  text: Jak komponenty komunikują się ze sobą?
+  answer: |
+    Rodzic do dziecka - przez input(); dziecko do rodzica - przez output().
+    Dwukierunkowo - przez model().
+    Między niepowiązanymi komponentami - przez wspólny serwis ze stanem w sygnałach lub Observable.
+    Dodatkowo przez viewChild, routing (parametry) lub bibliotekę zarządzania stanem.
+
+- id: 34
+  text: Jak skonfigurować routing w aplikacji standalone?
+  answer: |
+    Trasy definiuje się jako tablicę Routes: [{ path: 'users/:id', component: UserDetail }].
+    Rejestruje się je w appConfig przez provideRouter(routes, withComponentInputBinding()).
+    W szablonie używa się <router-outlet /> oraz routerLink i routerLinkActive.
+    withComponentInputBinding pozwala odbierać parametry trasy bezpośrednio przez input().
+
+- id: 35
+  text: Jak działa lazy loading w routingu?
+  answer: |
+    Komponent ładuje się leniwie przez loadComponent: () => import('./admin/admin').then(m => m.Admin).
+    Całą grupę tras ładuje się przez loadChildren: () => import('./admin/admin.routes').
+    Kod jest dzielony na osobne chunki ładowane dopiero przy wejściu na trasę.
+    Strategie preloadingu (withPreloading(PreloadAllModules)) mogą doładowywać chunki w tle.
+
+- id: 36
+  text: Czym są guardy w routingu?
+  answer: |
+    Guardy decydują, czy nawigacja może się odbyć: canActivate, canActivateChild, canDeactivate, canMatch.
+    Nowoczesne guardy to funkcje: export const authGuard: CanActivateFn = () => inject(AuthService).isLoggedIn() || inject(Router).createUrlTree(['/login']);
+    Mogą zwracać boolean, UrlTree (przekierowanie) lub Observable/Promise tych wartości.
+    canMatch pozwala w ogóle nie dopasować trasy, np. dla innego zestawu ról.
+
+- id: 37
+  text: Czym są resolvery?
+  answer: |
+    Resolver pobiera dane przed aktywacją trasy, więc komponent dostaje je od razu.
+    Funkcyjny resolver: resolve: { user: (route) => inject(UserService).get(route.paramMap.get('id')!) }.
+    Dane odbiera się przez ActivatedRoute.data lub bezpośrednio przez input() z withComponentInputBinding.
+    Wadą jest opóźnienie nawigacji do czasu załadowania danych, więc często woli się ładowanie w komponencie ze stanem loading.
+
+- id: 38
+  text: Jak odczytać parametry trasy?
+  answer: |
+    Przez ActivatedRoute: route.paramMap, route.queryParamMap lub snapshot.
+    Z withComponentInputBinding parametry trafiają bezpośrednio do input() o tej samej nazwie.
+    paramMap jako Observable obsługuje sytuację, gdy komponent jest ponownie użyty z innym parametrem.
+    Z sygnałami można użyć toSignal(route.paramMap).
+
+- id: 39
+  text: Jak używać HttpClient w Angularze?
+  answer: |
+    Rejestruje się go przez provideHttpClient(withInterceptors([...]), withFetch()) w appConfig.
+    W serwisie: private http = inject(HttpClient); getUsers() { return this.http.get<User[]>('/api/users'); }
+    Metody zwracają zimne Observable - żądanie wysyła się dopiero przy subskrypcji.
+    Alternatywnie dane można pobierać przez httpResource, otrzymując sygnały wartości i stanu.
+
+- id: 40
+  text: Czym są interceptory HTTP?
+  answer: |
+    Interceptory przechwytują żądania i odpowiedzi HttpClient, np. by dodać token, logować lub obsłużyć błędy globalnie.
+    Nowoczesne interceptory to funkcje HttpInterceptorFn: (req, next) => next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })).
+    Rejestruje się je przez provideHttpClient(withInterceptors([authInterceptor])).
+    Żądania są niemutowalne, więc modyfikuje się je przez clone().
+
+- id: 41
+  text: Czym różnią się Template-driven forms od Reactive forms?
+  answer: |
+    Template-driven forms definiuje się w szablonie przez ngModel - są proste i dobre do małych formularzy.
+    Reactive forms definiuje się w kodzie przez FormGroup, FormControl i FormBuilder - są przewidywalne, testowalne i lepsze do złożonych formularzy.
+    Reactive forms są silnie typowane od Angular 14.
+    W przyszłości dochodzą Signal Forms (eksperymentalne w kolejnych wersjach).
+
+- id: 42
+  text: Jak dodać walidację do Reactive forms?
+  answer: |
+    Wbudowane walidatory: Validators.required, minLength, maxLength, email, pattern, min, max.
+    Przykład: email = new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] });
+    Własny walidator to funkcja (control) => ValidationErrors | null; walidatory asynchroniczne zwracają Observable lub Promise.
+    Walidację między polami (np. potwierdzenie hasła) dodaje się na poziomie FormGroup.
+
+- id: 43
+  text: Czym są typed forms?
+  answer: |
+    Od Angular 14 Reactive forms są silnie typowane - FormControl<string> wie, jakiego typu jest jego wartość.
+    Opcja nonNullable sprawia, że reset przywraca wartość początkową zamiast null.
+    form.getRawValue() zwraca wartości także z wyłączonych pól.
+    NonNullableFormBuilder (fb.nonNullable) ułatwia budowanie takich formularzy.
+
+- id: 44
+  text: Czym jest ControlValueAccessor?
+  answer: |
+    ControlValueAccessor to interfejs pozwalający własnemu komponentowi działać jak kontrolka formularza (ngModel, formControlName).
+    Implementuje metody writeValue, registerOnChange, registerOnTouched i opcjonalnie setDisabledState.
+    Komponent rejestruje się przez provider NG_VALUE_ACCESSOR z useExisting i multi: true.
+    Stosuje się go dla własnych pól, np. datepickerów czy selektorów.
+
+- id: 45
+  text: Jak RxJS jest używany w Angularze?
+  answer: |
+    RxJS dostarcza Observable - strumienie wartości w czasie, z operatorami do ich przekształcania.
+    Angular używa go w HttpClient, Router, Reactive forms (valueChanges) i EventEmitter.
+    Typowe operatory: map, filter, switchMap, debounceTime, distinctUntilChanged, catchError, combineLatest.
+    Z sygnałami RxJS zostaje głównie do złożonych przepływów asynchronicznych, a stan trzyma się w sygnałach.
+
+- id: 46
+  text: Czym różnią się switchMap, mergeMap, concatMap i exhaustMap?
+  answer: |
+    switchMap anuluje poprzedni wewnętrzny strumień przy nowej wartości - idealny do wyszukiwania w trakcie pisania.
+    mergeMap uruchamia wszystkie strumienie równolegle.
+    concatMap wykonuje je po kolei, zachowując kolejność - np. kolejne zapisy.
+    exhaustMap ignoruje nowe wartości, dopóki trwa bieżący strumień - np. zapobiega wielokrotnemu kliknięciu "Zapisz".
+
+- id: 47
+  text: Czym różnią się Subject, BehaviorSubject i ReplaySubject?
+  answer: |
+    Subject to Observable i Observer jednocześnie - emituje wartości tylko subskrybentom obecnym w chwili emisji.
+    BehaviorSubject wymaga wartości początkowej i od razu przekazuje nowemu subskrybentowi ostatnią wartość.
+    ReplaySubject odtwarza nowym subskrybentom zadaną liczbę ostatnich wartości.
+    AsyncSubject emituje tylko ostatnią wartość po zakończeniu; do stanu w serwisach dziś często używa się sygnałów.
+
+- id: 48
+  text: Jak łączyć sygnały z Observable?
+  answer: |
+    toSignal(observable$, { initialValue }) zamienia Observable na sygnał i automatycznie zarządza subskrypcją.
+    toObservable(signal) zamienia sygnał na Observable, np. do użycia z debounceTime i switchMap.
+    Oba pochodzą z @angular/core/rxjs-interop i działają w kontekście wstrzykiwania.
+    outputFromObservable i outputToObservable łączą output() z RxJS.
+
+- id: 49
+  text: Jak unikać wycieków pamięci w Angularze?
+  answer: |
+    Używać async pipe lub toSignal zamiast ręcznych subskrypcji.
+    Ręczne subskrypcje kończyć przez takeUntilDestroyed() lub unsubscribe w ngOnDestroy.
+    Usuwać ręcznie dodane listenery zdarzeń, timery i obiekty zewnętrznych bibliotek.
+    HttpClient kończy strumień po odpowiedzi, ale długie strumienie (interval, WebSocket, valueChanges) wymagają sprzątania.
+
+- id: 50
+  text: Jak zarządzać stanem w aplikacji Angular?
+  answer: |
+    Dla prostych przypadków wystarczą sygnały w komponentach i serwisach (signal store w serwisie z providedIn: 'root').
+    Dla większych aplikacji popularne są NgRx Store (Redux z akcjami i reducerami) oraz NgRx SignalStore.
+    Inne opcje to Elf czy NGXS.
+    Zasada: stan lokalny trzymaj lokalnie, a globalny tylko to, co naprawdę współdzielone.
+
+- id: 51
+  text: Czym jest NgRx SignalStore?
+  answer: |
+    SignalStore to lekka biblioteka stanu NgRx oparta na sygnałach.
+    Definiuje się go funkcją signalStore z withState, withComputed, withMethods i withHooks.
+    Jest znacznie mniej rozwlekły niż klasyczny NgRx Store z akcjami, reducerami i efektami.
+    Można go dostarczać globalnie lub per komponent, a rozszerzenia (np. withEntities) dodają typowe funkcje.
+
+- id: 52
+  text: Czym jest SSR i hydration w Angularze?
+  answer: |
+    SSR (Server-Side Rendering) renderuje HTML na serwerze, co przyspiesza pierwsze wyświetlenie i poprawia SEO.
+    Hydration pozwala przeglądarce przejąć wyrenderowany HTML bez niszczenia i odtwarzania DOM.
+    Włącza się ją przez provideClientHydration(); ng new --ssr tworzy projekt z serwerem.
+    Angular wspiera też prerendering (SSG) i tryby renderowania per trasa (server routes).
+
+- id: 53
+  text: Czym jest incremental hydration?
+  answer: |
+    Incremental hydration pozwala hydratować fragmenty strony stopniowo, dopiero gdy są potrzebne.
+    Opiera się na blokach @defer z wyzwalaczami hydrate on viewport, hydrate on interaction itd.
+    Do momentu hydratacji fragment jest statycznym HTML-em, a jego kod JS nie jest pobierany.
+    Włącza się ją przez provideClientHydration(withIncrementalHydration()) i jest stabilna od Angular 20.
+
+- id: 54
+  text: Jak działa Angular CLI i jakie są najważniejsze komendy?
+  answer: |
+    ng new - tworzy projekt; ng serve - serwer deweloperski z hot reload.
+    ng generate (ng g) - generuje komponenty, serwisy, guardy itd.; ng build - buduje wersję produkcyjną.
+    ng test i ng e2e - testy; ng update - aktualizuje Angulara z automatycznymi migracjami.
+    ng add - dodaje biblioteki z konfiguracją, np. ng add @angular/material.
+
+- id: 55
+  text: Jakiego systemu budowania używa współczesny Angular?
+  answer: |
+    Domyślnym builderem jest application builder oparty na esbuild i Vite (od Angular 17).
+    Jest znacznie szybszy od dawnego webpacka.
+    Wspiera SSR, prerendering i hot module replacement dla stylów i szablonów.
+    Starsze projekty migruje się przez ng update lub schematic use-application-builder.
+
+- id: 56
+  text: Jak testować aplikację Angular?
+  answer: |
+    Testy jednostkowe pisze się z TestBed, który konfiguruje środowisko DI i komponenty.
+    Karma jest przestarzała - w Angular 20 eksperymentalnie dostępny jest Vitest, popularny jest też Jest.
+    HttpClient testuje się przez provideHttpClientTesting i HttpTestingController.
+    Do testów E2E używa się Playwright lub Cypress, a Angular Testing Library ułatwia testy zorientowane na użytkownika.
+
+- id: 57
+  text: Jak przetestować komponent z input() i output()?
+  answer: |
+    W TestBed tworzy się komponent przez TestBed.createComponent(MyComponent).
+    Wejścia ustawia się przez fixture.componentRef.setInput('name', 'Jan'), a potem wywołuje fixture.detectChanges() lub await fixture.whenStable().
+    Wyjścia testuje się, subskrybując component.saved lub szpiegując emit.
+    Wartości sygnałów sprawdza się bezpośrednio, np. expect(component.total()).toBe(10).
+
+- id: 58
+  text: Jak optymalizować wydajność aplikacji Angular?
+  answer: |
+    Stosować OnPush i sygnały, a docelowo tryb zoneless.
+    Używać track w @for, lazy loadingu tras i @defer dla ciężkich fragmentów.
+    Unikać wywoływania metod w szablonach (zamiast tego computed lub pure pipe) i używać NgOptimizedImage dla obrazów.
+    Analizować bundle (np. source-map-explorer), stosować SSR z hydration i wirtualne przewijanie (CDK) dla długich list.
+
+- id: 59
+  text: Czym jest NgOptimizedImage?
+  answer: |
+    NgOptimizedImage to dyrektywa ngSrc dla elementów img, wymuszająca dobre praktyki ładowania obrazów.
+    Automatycznie ustawia lazy loading, fetchpriority dla obrazów priority oraz generuje srcset.
+    Wymaga podania wymiarów (width i height) lub fill, co zapobiega przesunięciom layoutu (CLS).
+    Wspiera loadery dla CDN-ów obrazów.
+
+- id: 60
+  text: Jak Angular chroni przed XSS?
+  answer: |
+    Angular domyślnie traktuje wszystkie wartości jako niezaufane i sanityzuje je przy wstawianiu do DOM.
+    Interpolacja i property binding automatycznie usuwają niebezpieczny HTML, URL-e i style.
+    Ominięcie zabezpieczeń przez DomSanitizer.bypassSecurityTrustHtml należy stosować tylko dla zaufanych danych.
+    Należy unikać bezpośredniej manipulacji DOM (innerHTML przez ElementRef) i korzystać z Content Security Policy oraz Trusted Types.
+
+- id: 61
+  text: Czym jest ViewEncapsulation?
+  answer: |
+    ViewEncapsulation określa, jak style komponentu są izolowane.
+    Emulated (domyślne) dodaje unikalne atrybuty do elementów i selektorów, więc style nie wyciekają.
+    ShadowDom używa natywnego Shadow DOM przeglądarki.
+    None wyłącza izolację - style stają się globalne.
+
+- id: 62
+  text: Czym jest Angular Material i CDK?
+  answer: |
+    Angular Material to oficjalna biblioteka komponentów UI zgodnych z Material Design 3.
+    CDK (Component Dev Kit) to zestaw niestylowanych narzędzi: overlay, drag and drop, virtual scroll, a11y, portale.
+    CDK pozwala budować własne komponenty bez narzucania wyglądu.
+    Theming opiera się na tokenach i Sass API, z obsługą trybu ciemnego.
+
+- id: 63
+  text: Czym różni się Observable od Promise?
+  answer: |
+    Promise reprezentuje jedną przyszłą wartość i wykonuje się od razu po utworzeniu (eager).
+    Observable może emitować wiele wartości w czasie i jest leniwy - działa dopiero po subskrypcji.
+    Observable można anulować przez unsubscribe i przekształcać bogatym zestawem operatorów.
+    W Angularze HTTP zwraca Observable, ale resource w API sygnałowym używa Promise.
+
+- id: 64
+  text: Jakie zmiany wprowadza nowy style guide Angular 20?
+  answer: |
+    Pliki i klasy nie mają już sufiksów typu .component, .service czy Component - np. user-profile.ts i klasa UserProfile.
+    Zaleca inject() zamiast wstrzykiwania przez konstruktor.
+    Zaleca organizację według funkcjonalności (feature), a nie według typu pliku.
+    Zaleca protected dla składowych używanych tylko w szablonie i readonly dla input, output, model i zapytań.
+
+- id: 65
+  text: Jak obsługiwać błędy globalnie w Angularze?
+  answer: |
+    Własny ErrorHandler przechwytuje nieobsłużone wyjątki: { provide: ErrorHandler, useClass: AppErrorHandler }.
+    W Angular 20 provideBrowserGlobalErrorListeners() przekazuje do ErrorHandler także globalne błędy przeglądarki.
+    Błędy HTTP obsługuje się centralnie w interceptorze z catchError.
+    Do monitoringu produkcyjnego integruje się narzędzia jak Sentry lub Application Insights.
+
+- id: 66
+  text: Jak przekazać konfigurację środowiskową do aplikacji Angular?
+  answer: |
+    Klasycznie przez pliki environment.ts i fileReplacements w angular.json dla różnych konfiguracji.
+    Wada: konfiguracja jest wkompilowana, więc obraz trzeba budować osobno dla każdego środowiska.
+    W kontenerach i Kubernetes lepiej ładować config.json w czasie działania (np. przez provideAppInitializer) i przekazać go przez InjectionToken.
+    Dzięki temu jeden obraz Dockera działa na wszystkich środowiskach.
+
+- id: 67
+  text: Czym jest provideAppInitializer?
+  answer: |
+    provideAppInitializer rejestruje funkcję wykonywaną przy starcie aplikacji, przed jej pełnym uruchomieniem.
+    Jeśli funkcja zwróci Promise lub Observable, start aplikacji czeka na jego zakończenie.
+    Typowe zastosowania: wczytanie konfiguracji, inicjalizacja uwierzytelniania, wstępne pobranie danych.
+    Zastąpił przestarzały token APP_INITIALIZER.

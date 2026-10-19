@@ -7,20 +7,23 @@
 
 <ul>
 	<li>
-		<a href={resolve('/questions?category=dotnet')}>Przejdź to pytań z .NET</a>
+		<a href={resolve('/questions?category=dotnet')}>Przejdź do pytań z .NET</a>
 	</li>
 	<li>
-		<a href={resolve('/questions?category=python')}>Przejdź to pytań z Pythona</a>
+		<a href={resolve('/questions?category=python')}>Przejdź do pytań z Pythona</a>
 	</li>
 	<li>
-		<a href={resolve('/questions?category=javascript')}>Przejdź to pytań z JavaScript</a>
+		<a href={resolve('/questions?category=javascript')}>Przejdź do pytań z JavaScript</a>
 	</li>
 	<li>
-		<a href={resolve('/questions?category=sql')}>Przejdź to pytań z SQL</a>
+		<a href={resolve('/questions?category=angular')}>Przejdź do pytań z Angulara</a>
+	</li>
+	<li>
+		<a href={resolve('/questions?category=sql')}>Przejdź do pytań z SQL</a>
 	</li>
 	<li>
 		<a href={resolve('/questions?category=system-design')}
-			>Przejdź to pytań z projektowania systemów</a
+			>Przejdź do pytań z projektowania systemów</a
 		>
 	</li>
 </ul>

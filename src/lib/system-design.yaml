@@ -1,0 +1,559 @@
+- id: 1
+  text: Jak podejść do zadania z projektowania systemu na rozmowie rekrutacyjnej?
+  answer: |
+    Zacznij od doprecyzowania wymagań funkcjonalnych i niefunkcjonalnych (skala, opóźnienia, dostępność, spójność).
+    Oszacuj obciążenie: liczbę użytkowników, żądań na sekundę, wielkość danych i ich przyrost.
+    Narysuj architekturę wysokiego poziomu, zdefiniuj API i model danych, a potem zagłęb się w krytyczne komponenty.
+    Na koniec omów wąskie gardła, skalowanie, awarie i kompromisy - liczy się uzasadnienie decyzji, a nie jedna "poprawna" odpowiedź.
+
+- id: 2
+  text: Czym różnią się wymagania funkcjonalne od niefunkcjonalnych?
+  answer: |
+    Wymagania funkcjonalne opisują, co system robi, np. "użytkownik może wystawić fakturę".
+    Niefunkcjonalne opisują, jak dobrze to robi: wydajność, dostępność, skalowalność, bezpieczeństwo, spójność, koszty.
+    Te drugie najbardziej wpływają na architekturę.
+    Warto je wyrażać liczbowo, np. p99 < 200 ms, dostępność 99,9%.
+
+- id: 3
+  text: Jak robić szacunki typu back-of-the-envelope?
+  answer: |
+    Zaczyna się od liczby użytkowników aktywnych dziennie i liczby akcji na użytkownika.
+    Dzień ma około 86 400 sekund, więc 1 mln żądań dziennie to około 12 żądań na sekundę średnio; szczyt przyjmuje się 2-10 razy wyżej.
+    Rozmiar danych = liczba rekordów x rozmiar rekordu x okres przechowywania, plus replikacja.
+    Celem jest rząd wielkości, który decyduje np. o tym, czy wystarczy jedna baza, czy trzeba shardować.
+
+- id: 4
+  text: Czym różni się skalowanie pionowe od poziomego?
+  answer: |
+    Skalowanie pionowe (scale up) to dokładanie zasobów jednej maszynie: CPU, RAM, szybszych dysków.
+    Jest proste, ale ma twardy limit i tworzy pojedynczy punkt awarii.
+    Skalowanie poziome (scale out) to dodawanie kolejnych instancji za load balancerem.
+    Wymaga bezstanowych usług i rozproszenia danych, ale daje niemal nieograniczoną skalę i odporność na awarie.
+
+- id: 5
+  text: Czym jest load balancer i jakie są algorytmy równoważenia?
+  answer: |
+    Load balancer rozdziela ruch między wiele instancji usługi i usuwa z puli niezdrowe instancje (health checks).
+    Algorytmy: round robin, weighted round robin, least connections, IP hash i consistent hashing.
+    Load balancery L4 działają na poziomie TCP/UDP, L7 - na poziomie HTTP (routing po ścieżce, nagłówkach).
+    Przykłady: Nginx, HAProxy, Envoy, Azure Load Balancer i Application Gateway, w Kubernetes - Service i Ingress.
+
+- id: 6
+  text: Dlaczego usługi powinny być bezstanowe?
+  answer: |
+    Bezstanowa usługa nie trzyma stanu sesji w pamięci instancji - każde żądanie może obsłużyć dowolna instancja.
+    Ułatwia to skalowanie poziome, rolling deploymenty i odporność na awarie.
+    Stan przenosi się do zewnętrznych magazynów: bazy, Redis, tokeny JWT po stronie klienta.
+    Sticky sessions to obejście, które komplikuje skalowanie i failover.
+
+- id: 7
+  text: Czym jest twierdzenie CAP?
+  answer: |
+    CAP mówi, że system rozproszony przy podziale sieci (Partition) musi wybrać między spójnością (Consistency) a dostępnością (Availability).
+    Podziały sieci są nieuniknione, więc realny wybór to CP lub AP podczas awarii.
+    Systemy CP (np. bazy z konsensusem) odrzucają żądania, by nie zwrócić nieaktualnych danych; AP odpowiadają zawsze, akceptując niespójność.
+    PACELC rozszerza CAP: bez awarii wybiera się między opóźnieniem (Latency) a spójnością.
+
+- id: 8
+  text: Czym różni się silna spójność od spójności ostatecznej (eventual consistency)?
+  answer: |
+    Przy silnej spójności każdy odczyt zwraca najnowszy zapis - jak w pojedynczej bazie z transakcjami.
+    Przy spójności ostatecznej repliki mogą chwilowo się różnić, ale po ustaniu zapisów zbiegną się do tego samego stanu.
+    Ostateczna spójność daje lepszą dostępność i niższe opóźnienia.
+    Pośrednie modele to read-your-writes, monotonic reads i causal consistency.
+
+- id: 9
+  text: Czym różnią się ACID od BASE?
+  answer: |
+    ACID (Atomicity, Consistency, Isolation, Durability) to gwarancje transakcji w klasycznych bazach relacyjnych.
+    BASE (Basically Available, Soft state, Eventual consistency) to filozofia wielu systemów rozproszonych i NoSQL.
+    ACID upraszcza logikę aplikacji kosztem skalowalności, BASE poświęca natychmiastową spójność dla skali i dostępności.
+    Dla danych finansowych, np. faktur, zwykle wybiera się ACID.
+
+- id: 10
+  text: Kiedy wybrać bazę SQL, a kiedy NoSQL?
+  answer: |
+    SQL - gdy dane są relacyjne, potrzebne są transakcje, złożone zapytania i spójność (finanse, zamówienia, faktury).
+    NoSQL - gdy potrzebna jest ogromna skala zapisu, elastyczny schemat lub specyficzny model danych.
+    Rodzaje NoSQL: dokumentowe (MongoDB, Cosmos DB), klucz-wartość (Redis, DynamoDB), kolumnowe (Cassandra), grafowe (Neo4j).
+    Współczesne bazy SQL też dobrze się skalują i obsługują JSON, więc SQL to rozsądny domyślny wybór.
+
+- id: 11
+  text: Czym jest replikacja bazy danych?
+  answer: |
+    Replikacja to utrzymywanie kopii danych na wielu serwerach.
+    W modelu leader-follower (primary-replica) zapisy idą do lidera, a odczyty mogą trafiać do replik.
+    Replikacja synchroniczna daje spójność kosztem opóźnienia, asynchroniczna - szybkość kosztem ryzyka utraty danych i lagu replik.
+    Model multi-leader i leaderless pozwalają zapisywać w wielu miejscach, ale wymagają rozwiązywania konfliktów.
+
+- id: 12
+  text: Czym jest sharding (partycjonowanie poziome)?
+  answer: |
+    Sharding dzieli dane między wiele baz według klucza, np. tenant_id lub user_id.
+    Każdy shard przechowuje część danych, więc rośnie przepustowość zapisu i pojemność.
+    Strategie: zakresowa (range), haszowa (hash) i oparta na katalogu (lookup).
+    Wyzwania to gorące shardy, zapytania przekrojowe, transakcje między shardami i resharding.
+
+- id: 13
+  text: Czym jest consistent hashing?
+  answer: |
+    Consistent hashing rozmieszcza węzły i klucze na wirtualnym pierścieniu haszy.
+    Klucz trafia do pierwszego węzła zgodnie z ruchem wskazówek zegara.
+    Dodanie lub usunięcie węzła przenosi tylko niewielką część kluczy, a nie prawie wszystkie jak przy hash % N.
+    Wirtualne węzły wyrównują rozkład; stosuje się go w cache rozproszonych, Cassandrze i load balancerach.
+
+- id: 14
+  text: Czym jest cache i gdzie można go zastosować?
+  answer: |
+    Cache przechowuje często odczytywane dane w szybszym magazynie, by zmniejszyć opóźnienia i obciążenie źródła.
+    Poziomy: przeglądarka, CDN, reverse proxy, cache aplikacji w pamięci, cache rozproszony (Redis), cache bazy.
+    Najlepiej sprawdza się dla danych często czytanych i rzadko zmienianych.
+    Najtrudniejsze jest unieważnianie (invalidation) i spójność z danymi źródłowymi.
+
+- id: 15
+  text: Jakie są strategie cache'owania?
+  answer: |
+    Cache-aside (lazy loading) - aplikacja czyta z cache, a przy chybieniu pobiera z bazy i zapisuje do cache; najpopularniejsza.
+    Read-through - cache sam pobiera dane ze źródła przy chybieniu.
+    Write-through - zapis idzie jednocześnie do cache i bazy; write-behind - najpierw do cache, a do bazy asynchronicznie.
+    Write-around - zapis tylko do bazy, cache wypełnia się przy odczycie.
+
+- id: 16
+  text: Jakie są polityki usuwania danych z cache (eviction)?
+  answer: |
+    LRU (Least Recently Used) - usuwa najdawniej używane wpisy; najczęstsza.
+    LFU (Least Frequently Used) - usuwa najrzadziej używane.
+    FIFO - usuwa najstarsze wpisy, a TTL - wpisy po upływie czasu życia.
+    W praktyce łączy się politykę z TTL, by dane nie były zbyt długo nieaktualne.
+
+- id: 17
+  text: Czym jest problem cache stampede (thundering herd)?
+  answer: |
+    Gdy popularny wpis w cache wygaśnie, wiele żądań jednocześnie trafia do bazy, by go odtworzyć, i przeciąża ją.
+    Rozwiązania: blokada lub single-flight (tylko jedno żądanie odtwarza wpis), losowe TTL (jitter) i wcześniejsze odświeżanie w tle.
+    Pomaga też serwowanie nieaktualnej wartości podczas odświeżania (stale-while-revalidate).
+    HybridCache w .NET 9 ma wbudowaną ochronę przed stampede.
+
+- id: 18
+  text: Czym jest CDN?
+  answer: |
+    CDN (Content Delivery Network) to sieć serwerów rozmieszczonych geograficznie, serwujących treści z lokalizacji najbliższej użytkownikowi.
+    Cache'uje pliki statyczne: JS, CSS, obrazy, wideo, a czasem też odpowiedzi API.
+    Zmniejsza opóźnienia, odciąża serwery źródłowe i chroni przed DDoS.
+    Nowe wersje plików publikuje się z hashem w nazwie lub przez purge cache.
+
+- id: 19
+  text: Czym są kolejki komunikatów i po co się je stosuje?
+  answer: |
+    Kolejka komunikatów pozwala usługom komunikować się asynchronicznie - producent wysyła wiadomość, konsument przetwarza ją później.
+    Oddziela usługi, wyrównuje skoki obciążenia (buforowanie) i pozwala skalować konsumentów niezależnie.
+    Zwiększa odporność - wiadomości czekają, gdy konsument jest niedostępny.
+    Przykłady: RabbitMQ, Azure Service Bus, Amazon SQS, Kafka.
+
+- id: 20
+  text: Czym różni się kolejka (point-to-point) od pub/sub?
+  answer: |
+    W kolejce każdą wiadomość odbiera jeden konsument - służy do rozdzielania pracy.
+    W pub/sub wiadomość trafia do wszystkich subskrybentów tematu - służy do rozgłaszania zdarzeń.
+    W Azure Service Bus odpowiednikami są Queues i Topics z Subscriptions.
+    Kafka łączy oba modele przez grupy konsumentów.
+
+- id: 21
+  text: Czym różni się Kafka od RabbitMQ?
+  answer: |
+    Kafka to rozproszony log zdarzeń - wiadomości są trwale przechowywane i mogą być odczytywane wielokrotnie przez różne grupy konsumentów.
+    Zapewnia ogromną przepustowość i kolejność w obrębie partycji, dobrze nadaje się do event streamingu i event sourcingu.
+    RabbitMQ to klasyczny broker z elastycznym routingiem (exchange'e), potwierdzeniami i usuwaniem wiadomości po przetworzeniu.
+    RabbitMQ lepiej sprawdza się w kolejkach zadań, Kafka - w strumieniach danych.
+
+- id: 22
+  text: Jakie są gwarancje dostarczenia wiadomości?
+  answer: |
+    At-most-once - wiadomość dotrze najwyżej raz, może zginąć.
+    At-least-once - wiadomość dotrze co najmniej raz, mogą być duplikaty; to najczęstszy model.
+    Exactly-once - dokładnie raz; w praktyce osiąga się go przez at-least-once połączone z idempotentnym przetwarzaniem.
+    Dlatego konsumenci powinni być idempotentni.
+
+- id: 23
+  text: Czym jest idempotentność i jak ją zapewnić?
+  answer: |
+    Operacja idempotentna daje ten sam efekt bez względu na to, ile razy zostanie wykonana.
+    Jest kluczowa przy ponowieniach i dostarczaniu at-least-once.
+    Zapewnia się ją kluczem idempotentności (Idempotency-Key) zapisywanym razem z wynikiem, unikalnymi constraintami lub tabelą przetworzonych wiadomości.
+    Przykład: ponowne wysłanie żądania płatności z tym samym kluczem nie obciąży klienta drugi raz.
+
+- id: 24
+  text: Czym jest wzorzec Transactional Outbox?
+  answer: |
+    Outbox rozwiązuje problem atomowego zapisu do bazy i wysłania wiadomości do brokera.
+    W tej samej transakcji zapisuje się dane biznesowe i wiadomość do tabeli outbox.
+    Osobny proces odczytuje tabelę i publikuje wiadomości do brokera, oznaczając je jako wysłane.
+    Gwarantuje at-least-once, więc konsumenci muszą być idempotentni; odpowiednikiem po stronie odbiorcy jest inbox.
+
+- id: 25
+  text: Czym jest dead letter queue?
+  answer: |
+    Dead letter queue (DLQ) to kolejka, do której trafiają wiadomości, których nie udało się przetworzyć po określonej liczbie prób.
+    Zapobiega blokowaniu kolejki przez "trujące" wiadomości (poison messages).
+    Wiadomości z DLQ analizuje się, poprawia przyczynę i ewentualnie przetwarza ponownie.
+    Warto ustawić alerty na rosnącą liczbę wiadomości w DLQ.
+
+- id: 26
+  text: Czym różni się monolit od mikroserwisów?
+  answer: |
+    Monolit to jedna aplikacja wdrażana jako całość - prosta w rozwoju, testowaniu i wdrażaniu, z łatwymi transakcjami.
+    Mikroserwisy to wiele małych, niezależnie wdrażanych usług z własnymi danymi.
+    Mikroserwisy dają niezależne skalowanie i wdrożenia oraz autonomię zespołów, ale wprowadzają złożoność systemów rozproszonych.
+    Mikroserwisy rozwiązują głównie problemy organizacyjne dużych zespołów - małemu zespołowi częściej służy monolit.
+
+- id: 27
+  text: Czym jest modularny monolit?
+  answer: |
+    Modularny monolit to jedna aplikacja podzielona na moduły o wyraźnych granicach, odpowiadających kontekstom biznesowym.
+    Moduły komunikują się przez publiczne API lub zdarzenia i nie sięgają do swoich danych bezpośrednio (np. osobne schematy bazy).
+    Daje prostotę wdrożenia monolitu i dyscyplinę granic jak w mikroserwisach.
+    Ułatwia późniejsze wydzielenie modułu do osobnej usługi, jeśli zajdzie taka potrzeba.
+
+- id: 28
+  text: Jak wyznaczać granice usług lub modułów?
+  answer: |
+    Najlepiej według domeny biznesowej - bounded contextów z Domain-Driven Design.
+    Moduł powinien mieć wysoką spójność wewnętrzną i niskie powiązania z innymi.
+    Pomaga Event Storming i analiza, które dane i reguły zmieniają się razem.
+    Złym podziałem jest podział techniczny (warstwy) lub według tabel - prowadzi do "rozproszonego monolitu".
+
+- id: 29
+  text: Czym jest API Gateway?
+  answer: |
+    API Gateway to pojedynczy punkt wejścia dla klientów do wielu usług backendowych.
+    Obsługuje routing, uwierzytelnianie, rate limiting, cache, transformację żądań i agregację odpowiedzi.
+    Upraszcza klientów i ukrywa wewnętrzną strukturę systemu.
+    Przykłady: Azure API Management, Kong, YARP; wariant BFF (Backend for Frontend) to osobna bramka per typ klienta.
+
+- id: 30
+  text: Czym różnią się REST, gRPC i GraphQL?
+  answer: |
+    REST opiera się na zasobach i HTTP z JSON - prosty, uniwersalny i dobrze cache'owalny.
+    gRPC używa HTTP/2 i Protobuf - jest szybki, silnie typowany, wspiera streaming; idealny do komunikacji między usługami.
+    GraphQL pozwala klientowi określić dokładnie, jakich danych potrzebuje, w jednym zapytaniu.
+    GraphQL rozwiązuje over- i under-fetching, ale komplikuje cache'owanie, autoryzację i kontrolę kosztu zapytań.
+
+- id: 31
+  text: Czym różnią się komunikacja synchroniczna i asynchroniczna między usługami?
+  answer: |
+    Synchroniczna (HTTP, gRPC) - wywołujący czeka na odpowiedź; prosta, ale tworzy powiązanie czasowe i kaskady awarii.
+    Asynchroniczna (kolejki, zdarzenia) - wywołujący nie czeka; usługi są luźno powiązane i odporne na chwilową niedostępność.
+    Asynchroniczna komplikuje debugowanie i wprowadza spójność ostateczną.
+    Zapytania potrzebujące natychmiastowej odpowiedzi zostają synchroniczne, a skutki uboczne idą asynchronicznie.
+
+- id: 32
+  text: Jak projektować dobre REST API?
+  answer: |
+    Zasoby jako rzeczowniki w liczbie mnogiej (/invoices/123), operacje przez metody HTTP i poprawne kody statusu.
+    Stronicowanie, filtrowanie i sortowanie przez parametry zapytania; błędy w spójnym formacie (np. ProblemDetails, RFC 9457).
+    Wersjonowanie API (w URL lub nagłówku) i zachowanie kompatybilności wstecznej.
+    Idempotentne PUT i DELETE, klucze idempotentności dla POST, dokumentacja OpenAPI.
+
+- id: 33
+  text: Jak wersjonować API?
+  answer: |
+    W ścieżce URL (/v1/invoices) - najprostsze i najczytelniejsze.
+    W nagłówku (Api-Version) lub w typie mediów (Accept: application/vnd.firma.v2+json).
+    W parametrze zapytania (?api-version=2.0), co stosuje np. Azure.
+    Najlepiej unikać łamania kontraktu: dodawać pola zamiast zmieniać istniejące i utrzymywać stare wersje przez okres przejściowy.
+
+- id: 34
+  text: Czym jest rate limiting i jakie są jego algorytmy?
+  answer: |
+    Rate limiting ogranicza liczbę żądań od klienta w czasie, chroniąc system przed przeciążeniem i nadużyciami.
+    Token bucket - tokeny przybywają w stałym tempie, a każde żądanie zużywa jeden; pozwala na krótkie skoki.
+    Leaky bucket wygładza ruch, fixed window liczy w stałych oknach, a sliding window łagodzi skoki na granicach okien.
+    Przekroczenie limitu zwraca 429 Too Many Requests z nagłówkiem Retry-After; w rozproszonym systemie liczniki trzyma się np. w Redis.
+
+- id: 35
+  text: Czym jest wzorzec Circuit Breaker?
+  answer: |
+    Circuit Breaker przerywa wywołania do usługi, która często zawodzi, zamiast ją dalej obciążać.
+    Ma stany: Closed (normalnie), Open (od razu zwraca błąd) i Half-Open (przepuszcza próbne żądania).
+    Zapobiega kaskadowym awariom i daje usłudze czas na powrót.
+    W .NET implementuje go Polly, a Microsoft.Extensions.Http.Resilience dodaje go do HttpClient.
+
+- id: 36
+  text: Jak poprawnie implementować ponowienia (retry)?
+  answer: |
+    Ponawia się tylko błędy przejściowe (timeouty, 503, 429) i tylko operacje idempotentne.
+    Stosuje się wykładniczy backoff z losowym jitterem, żeby klienci nie ponawiali jednocześnie.
+    Trzeba ograniczyć liczbę prób i łączny czas oraz łączyć retry z circuit breakerem.
+    Ponowienia na wielu warstwach naraz mnożą obciążenie (retry storm) - należy je koordynować.
+
+- id: 37
+  text: Czym jest wzorzec Bulkhead?
+  answer: |
+    Bulkhead izoluje zasoby (pule wątków, połączeń, instancje) dla różnych części systemu, jak grodzie w statku.
+    Awaria lub przeciążenie jednej zależności nie wyczerpuje zasobów dla pozostałych.
+    Przykład: osobne pule połączeń HTTP dla usługi płatności i rekomendacji.
+    Często stosuje się go razem z timeoutami i circuit breakerem.
+
+- id: 38
+  text: Czym jest wzorzec Saga?
+  answer: |
+    Saga zarządza transakcją biznesową obejmującą wiele usług bez rozproszonej transakcji.
+    Składa się z sekwencji lokalnych transakcji, a w razie błędu wykonuje transakcje kompensujące, cofające wcześniejsze kroki.
+    Choreografia - usługi reagują na zdarzenia innych usług; orkiestracja - centralny koordynator steruje krokami.
+    Orkiestracja jest łatwiejsza do śledzenia przy wielu krokach, choreografia - prostsza przy kilku.
+
+- id: 39
+  text: Czym jest CQRS?
+  answer: |
+    CQRS (Command Query Responsibility Segregation) oddziela model zapisu (komendy) od modelu odczytu (zapytania).
+    Model odczytu może być zdenormalizowany i zoptymalizowany pod konkretne widoki, nawet w innej bazie.
+    Pozwala skalować odczyty i zapisy niezależnie i upraszcza złożoną logikę domeny.
+    Kosztem jest większa złożoność i często spójność ostateczna między modelami.
+
+- id: 40
+  text: Czym jest Event Sourcing?
+  answer: |
+    Event Sourcing zapisuje stan jako sekwencję zdarzeń (np. FakturaWystawiona, PłatnośćZaksięgowana), a nie jako bieżący stan.
+    Aktualny stan odtwarza się przez odtworzenie zdarzeń, często wspierane snapshotami.
+    Daje pełną historię zmian, audyt i możliwość odtworzenia stanu z dowolnej chwili.
+    Wyzwania to wersjonowanie zdarzeń, złożoność zapytań (zwykle łączy się go z CQRS) i krzywa uczenia.
+
+- id: 41
+  text: Czym jest architektura sterowana zdarzeniami (event-driven)?
+  answer: |
+    W architekturze event-driven usługi publikują zdarzenia o tym, co się stało, a inne reagują na nie asynchronicznie.
+    Daje luźne powiązania, łatwe dodawanie nowych konsumentów i dobrą skalowalność.
+    Zdarzenia mogą zawierać tylko identyfikator (notification) lub pełne dane (event-carried state transfer).
+    Wymaga dobrej obserwowalności, idempotentności i zarządzania schematami zdarzeń.
+
+- id: 42
+  text: Jak zapewnić wysoką dostępność systemu?
+  answer: |
+    Eliminować pojedyncze punkty awarii przez redundancję instancji, baz i stref dostępności.
+    Stosować health checki, automatyczny failover i load balancing.
+    Projektować z myślą o awariach: timeouty, retry, circuit breakery, graceful degradation.
+    Mierzyć dostępność przez SLO i testować awarie (chaos engineering, ćwiczenia DR).
+
+- id: 43
+  text: Co oznaczają poziomy dostępności 99,9%, 99,99% i 99,999%?
+  answer: |
+    99,9% ("trzy dziewiątki") to około 8,8 godziny niedostępności rocznie, czyli około 43 minuty miesięcznie.
+    99,99% to około 53 minuty rocznie, a 99,999% - około 5 minut rocznie.
+    Dostępność systemu zależnego szeregowo od kilku usług to iloczyn ich dostępności, więc jest niższa niż każdej z osobna.
+    Każda dodatkowa dziewiątka znacząco podnosi koszt i złożoność.
+
+- id: 44
+  text: Czym są SLA, SLO i SLI?
+  answer: |
+    SLI (Service Level Indicator) to mierzona metryka, np. odsetek żądań obsłużonych poniżej 200 ms.
+    SLO (Service Level Objective) to wewnętrzny cel dla SLI, np. 99,9% żądań w miesiącu.
+    SLA (Service Level Agreement) to umowa z klientem z konsekwencjami (np. rabatami) przy niedotrzymaniu.
+    Error budget to dopuszczalny margines awarii wynikający z SLO, pomagający wyważyć tempo zmian i stabilność.
+
+- id: 45
+  text: Czym różnią się RPO i RTO?
+  answer: |
+    RPO (Recovery Point Objective) określa, ile danych można maksymalnie utracić - np. 15 minut, czyli kopie co najmniej co 15 minut.
+    RTO (Recovery Time Objective) określa, jak szybko system musi wrócić do działania po awarii.
+    Niższe wartości wymagają droższych rozwiązań: replikacji synchronicznej, aktywnych replik w innym regionie.
+    Strategie DR to backup & restore, pilot light, warm standby i active-active.
+
+- id: 46
+  text: Czym jest obserwowalność (observability)?
+  answer: |
+    Obserwowalność to zdolność zrozumienia stanu systemu na podstawie danych, które emituje.
+    Opiera się na trzech filarach: logach, metrykach i śladach rozproszonych (traces).
+    OpenTelemetry to standard zbierania tych danych niezależny od dostawcy.
+    Narzędzia: Prometheus i Grafana, Azure Monitor i Application Insights, Jaeger, Loki, Elastic.
+
+- id: 47
+  text: Czym jest distributed tracing?
+  answer: |
+    Distributed tracing śledzi pojedyncze żądanie przechodzące przez wiele usług.
+    Każde żądanie ma trace ID, a każda operacja to span z czasem trwania i metadanymi.
+    Kontekst przekazuje się między usługami w nagłówkach (W3C Trace Context - traceparent).
+    Pozwala znaleźć wąskie gardła i źródło błędów w systemach rozproszonych.
+
+- id: 48
+  text: Jakie metryki warto monitorować?
+  answer: |
+    Metoda RED dla usług: Rate (liczba żądań), Errors (błędy), Duration (czas odpowiedzi).
+    Metoda USE dla zasobów: Utilization, Saturation, Errors (CPU, pamięć, dysk, sieć).
+    Four golden signals Google: latency, traffic, errors, saturation.
+    Czasy odpowiedzi mierzy się percentylami (p50, p95, p99), a nie średnią, która ukrywa wolne żądania.
+
+- id: 49
+  text: Jak zaprojektować skracacz linków (URL shortener)?
+  answer: |
+    API: POST /links tworzy krótki kod, GET /{code} zwraca przekierowanie 301 lub 302.
+    Kod generuje się przez kodowanie Base62 unikalnego licznika (np. z rozproszonego generatora ID) lub hash z obsługą kolizji.
+    Odczyty dominują nad zapisami, więc kluczowy jest cache (Redis, CDN) przed bazą klucz-wartość.
+    Do omówienia: niestandardowe aliasy, wygasanie linków, analityka kliknięć (asynchronicznie przez kolejkę) i ochrona przed nadużyciami.
+
+- id: 50
+  text: Jak zaprojektować rate limiter dla API?
+  answer: |
+    Wybór algorytmu: zwykle token bucket lub sliding window, z limitami per użytkownik, klucz API lub IP.
+    Rate limiter umieszcza się w API Gateway lub middleware, a liczniki trzyma we współdzielonym Redis (atomowe operacje lub skrypty Lua).
+    Klient dostaje 429 i nagłówki z limitem, pozostałą liczbą żądań i czasem resetu.
+    Do omówienia: zachowanie przy awarii Redisa (fail open czy fail closed), limity per region i różne limity dla planów.
+
+- id: 51
+  text: Jak zaprojektować system powiadomień?
+  answer: |
+    Usługa przyjmuje żądanie powiadomienia, sprawdza preferencje użytkownika i szablony, a potem wrzuca zadanie do kolejki per kanał.
+    Workerzy dla e-mail, SMS i push wysyłają wiadomości przez zewnętrznych dostawców.
+    Potrzebne są ponowienia z backoffem, DLQ, deduplikacja (klucz idempotentności) i rate limiting per użytkownik.
+    Do omówienia: priorytety (powiadomienia transakcyjne przed marketingowymi), śledzenie statusu dostarczenia i rezygnacja z subskrypcji.
+
+- id: 52
+  text: Jak zaprojektować system generowania i wysyłki faktur?
+  answer: |
+    Wystawienie faktury to transakcja ACID w bazie relacyjnej z unikalną, ciągłą numeracją per seria i okres.
+    Generowanie PDF i wysyłka (e-mail, w Polsce także KSeF) idą asynchronicznie przez kolejkę z wzorcem outbox.
+    Integracja z zewnętrznym systemem wymaga ponowień, idempotentności i przechowywania statusów oraz numerów nadanych przez system zewnętrzny.
+    Faktur się nie usuwa ani nie edytuje po wystawieniu - zmiany robi się korektą, a historię zachowuje audyt.
+
+- id: 53
+  text: Jak zaprojektować czat w czasie rzeczywistym?
+  answer: |
+    Klienci utrzymują trwałe połączenia WebSocket (np. przez SignalR) z serwerami bramek.
+    Wiadomości zapisuje się do bazy zoptymalizowanej pod zapis i odczyt per konwersacja (np. klucz: id rozmowy + czas).
+    Między serwerami wiadomości rozsyła się przez pub/sub (Redis, Kafka), bo odbiorca może być połączony z innym serwerem.
+    Do omówienia: status online, potwierdzenia doręczenia i przeczytania, powiadomienia push dla offline, czaty grupowe i kolejność wiadomości.
+
+- id: 54
+  text: Jak zaprojektować feed aktualności (jak Twitter/Facebook)?
+  answer: |
+    Fan-out on write - przy publikacji post trafia do gotowych feedów obserwujących (szybkie odczyty, drogie zapisy).
+    Fan-out on read - feed jest składany przy odczycie z postów obserwowanych (tanie zapisy, wolne odczyty).
+    W praktyce stosuje się podejście hybrydowe: fan-out on write dla zwykłych kont, on read dla celebrytów z milionami obserwujących.
+    Feedy trzyma się w cache (np. Redis), a ranking i stronicowanie kursorem dopełniają projekt.
+
+- id: 55
+  text: Jak zaprojektować wyszukiwarkę z podpowiedziami (typeahead/autocomplete)?
+  answer: |
+    Podpowiedzi opierają się na strukturze trie lub indeksie prefiksowym z najpopularniejszymi frazami w węzłach.
+    Wyniki dla popularnych prefiksów są prekalkulowane i trzymane w cache, by odpowiedź mieściła się w kilkudziesięciu ms.
+    Popularność fraz liczy się offline z logów wyszukiwań i okresowo aktualizuje indeks.
+    Po stronie klienta stosuje się debounce i cache; do pełnotekstowego wyszukiwania - Elasticsearch, OpenSearch lub Azure AI Search.
+
+- id: 56
+  text: Jak zaprojektować generator unikalnych identyfikatorów w systemie rozproszonym?
+  answer: |
+    UUID - generowany lokalnie bez koordynacji, ale losowe UUIDv4 źle indeksują się w bazach; lepszy jest sortowalny UUIDv7.
+    Snowflake ID - 64 bity: znacznik czasu, ID maszyny i licznik sekwencji; jest sortowalny i kompaktowy.
+    Sekwencja w bazie lub serwis rezerwujący zakresy ID - prosty, ale wymaga koordynacji.
+    Trzeba uwzględnić synchronizację zegarów i unikalność ID maszyn.
+
+- id: 57
+  text: Jak przechowywać i serwować duże pliki?
+  answer: |
+    Pliki trzyma się w magazynie obiektowym (Azure Blob Storage, S3), a w bazie tylko metadane i ścieżki.
+    Upload i download realizuje się bezpośrednio z klientem przez podpisane URL-e (SAS, presigned URL), omijając serwer aplikacji.
+    Duże pliki wysyła się w częściach (multipart, resumable upload).
+    Popularne pliki serwuje CDN, a polityki cyklu życia przenoszą stare dane do tańszych warstw.
+
+- id: 58
+  text: Jak projektować system multi-tenant?
+  answer: |
+    Model izolacji: wspólna baza ze wspólnym schematem i kolumną TenantId, schemat per tenant albo baza per tenant.
+    Wspólna baza jest najtańsza, ale wymaga ścisłego filtrowania (globalne filtry, Row-Level Security) i grozi "hałaśliwym sąsiadem".
+    Baza per tenant daje najlepszą izolację i łatwe przywracanie danych klienta, ale zwiększa koszty i złożoność migracji.
+    Tenant ustala się z tokenu lub domeny i propaguje przez cały request, w tym do logów i cache.
+
+- id: 59
+  text: Czym są wdrożenia blue-green i canary?
+  answer: |
+    Blue-green - dwa identyczne środowiska; nowa wersja trafia na nieaktywne, a ruch przełącza się w całości, z szybkim powrotem.
+    Canary - nowa wersja dostaje najpierw mały procent ruchu, a przy dobrych metrykach stopniowo więcej.
+    Rolling update (domyślny w Kubernetes) wymienia instancje stopniowo.
+    Feature flags pozwalają oddzielić wdrożenie kodu od włączenia funkcji.
+
+- id: 60
+  text: Jak wdrażać zmiany schematu bazy bez przestojów?
+  answer: |
+    Stosuje się wzorzec expand/contract (parallel change).
+    Najpierw rozszerza się schemat kompatybilnie (nowa kolumna, nullable), wdraża kod zapisujący do starej i nowej struktury, migruje dane.
+    Potem przełącza się odczyt na nową strukturę, a dopiero w kolejnym wydaniu usuwa starą.
+    Dzięki temu stara i nowa wersja aplikacji działają równocześnie podczas rolling deploymentu.
+
+- id: 61
+  text: Czym jest Kubernetes i jakie problemy rozwiązuje?
+  answer: |
+    Kubernetes to platforma orkiestracji kontenerów: uruchamia, skaluje i nadzoruje aplikacje na klastrze maszyn.
+    Zapewnia self-healing (restart i przenoszenie podów), service discovery, load balancing i rolling updates.
+    Autoskalowanie realizują HPA (pody) i cluster autoscaler (węzły).
+    Konfigurację i sekrety przekazuje się przez ConfigMap i Secret, a ruch zewnętrzny przez Ingress lub Gateway API.
+
+- id: 62
+  text: Czym jest service mesh?
+  answer: |
+    Service mesh to warstwa infrastruktury obsługująca komunikację między usługami, zwykle przez proxy sidecar (lub w trybie ambient bez sidecarów).
+    Daje mTLS między usługami, retry, timeouty, circuit breaking, routing ruchu (canary) i telemetrię bez zmian w kodzie.
+    Przykłady: Istio, Linkerd, Consul.
+    Dodaje złożoność operacyjną, więc opłaca się przy wielu usługach.
+
+- id: 63
+  text: Jak zabezpieczyć system rozproszony?
+  answer: |
+    Uwierzytelnianie przez OAuth 2.0 i OpenID Connect z centralnym dostawcą tożsamości (np. Entra ID, Keycloak), a autoryzacja na podstawie claims i polityk.
+    Szyfrowanie w tranzycie (TLS, mTLS między usługami) i w spoczynku.
+    Sekrety w Key Vault zamiast w kodzie i konfiguracji, zasada najmniejszych uprawnień, managed identity.
+    Do tego WAF, rate limiting, audyt, skanowanie zależności i obrazów w CI/CD oraz model zero trust.
+
+- id: 64
+  text: Czym różni się uwierzytelnianie sesyjne od tokenowego w kontekście skalowania?
+  answer: |
+    Sesja po stronie serwera wymaga współdzielonego magazynu sesji lub sticky sessions przy wielu instancjach.
+    Tokeny (JWT) są samowystarczalne - każda instancja weryfikuje podpis bez odpytywania wspólnego magazynu.
+    Wadą JWT jest trudne natychmiastowe unieważnienie, więc stosuje się krótkie access tokeny i refresh tokeny.
+    Dla aplikacji SPA w przeglądarce popularny jest wzorzec BFF z ciasteczkiem HttpOnly zamiast tokenu w JavaScript.
+
+- id: 65
+  text: Czym jest backpressure?
+  answer: |
+    Backpressure to mechanizm, w którym wolniejszy konsument sygnalizuje producentowi, by zwolnił.
+    Bez niego kolejki i bufory rosną bez ograniczeń, aż system się przeciąży lub zabraknie pamięci.
+    Realizuje się go przez ograniczone kolejki, odrzucanie żądań (load shedding, 503), limity współbieżności i strumienie z kontrolą przepływu.
+    W .NET pomocne są System.Threading.Channels z ograniczoną pojemnością.
+
+- id: 66
+  text: Czym jest problem dual write i jak go uniknąć?
+  answer: |
+    Dual write to zapis do dwóch systemów (np. bazy i brokera lub bazy i cache) bez wspólnej transakcji.
+    Jeśli jeden zapis się uda, a drugi nie, systemy stają się niespójne.
+    Rozwiązania: wzorzec outbox, Change Data Capture (np. Debezium odczytujący log bazy) lub zapis tylko do jednego źródła prawdy.
+    Rozproszone transakcje (2PC) są możliwe, ale wolne i słabo wspierane w nowoczesnych systemach.
+
+- id: 67
+  text: Czym jest Change Data Capture (CDC)?
+  answer: |
+    CDC przechwytuje zmiany w bazie danych (INSERT, UPDATE, DELETE) i udostępnia je jako strumień zdarzeń.
+    Zwykle odczytuje log transakcji, więc nie obciąża aplikacji i nie wymaga zmian w kodzie.
+    SQL Server ma wbudowane CDC i Change Tracking; Debezium przesyła zmiany do Kafki.
+    Stosuje się je do synchronizacji z hurtownią danych, cache, wyszukiwarką i do integracji między systemami.
+
+- id: 68
+  text: Czym są wzorce Strangler Fig i Anti-Corruption Layer?
+  answer: |
+    Strangler Fig to stopniowa migracja ze starego systemu - nowe funkcje i przepisane fragmenty przejmują ruch, aż stary system można wyłączyć.
+    Ruch kieruje się przez fasadę lub proxy, które decyduje, czy żądanie obsłuży stary, czy nowy system.
+    Anti-Corruption Layer to warstwa tłumacząca model starego lub zewnętrznego systemu na model nowej domeny.
+    Razem pozwalają modernizować system bez ryzykownego "big bang rewrite".
+
+- id: 69
+  text: Jak radzić sobie z gorącymi kluczami (hot keys/hot partitions)?
+  answer: |
+    Gorący klucz to rekord lub partycja otrzymujące nieproporcjonalnie dużo ruchu, np. konto celebryty lub popularny produkt.
+    Rozwiązania: cache wielopoziomowy (także lokalny w instancji), replikowanie gorących danych do odczytu.
+    Przy zapisach - rozbicie klucza na kilka podkluczy (salting) z późniejszą agregacją, np. liczniki shardowane.
+    Ważne jest wykrywanie gorących kluczy przez monitoring rozkładu ruchu.
+
+- id: 70
+  text: Jakie są typowe kompromisy w projektowaniu systemów?
+  answer: |
+    Spójność kontra dostępność i opóźnienie (CAP, PACELC).
+    Normalizacja kontra wydajność odczytu, prostota monolitu kontra elastyczność mikroserwisów.
+    Przetwarzanie synchroniczne kontra asynchroniczne, cache kontra świeżość danych.
+    Koszt kontra wydajność i redundancja - dobra odpowiedź nazywa kompromis i uzasadnia wybór wymaganiami.
