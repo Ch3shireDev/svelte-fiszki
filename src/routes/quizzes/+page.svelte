@@ -16,6 +16,8 @@
 	import systemDesignRaw from '#lib/system-design-quiz.yaml?raw';
 
 	import Quiz from '#lib/Quiz.svelte';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	const category = $derived((browser && page.url.searchParams.get('category')) || 'all');
 
@@ -68,6 +70,22 @@
 	let title = $derived(titles[category] ?? 'Pytania rekrutacyjne');
 
 	let index = $state(0);
+
+	function readIndexFromUrl() {
+		const n = Number(page.url.searchParams.get('index'));
+		return Number.isInteger(n) && n >= 0 && n < questions.length ? n : 0;
+	}
+
+	function syncUrl() {
+		const url = new URL(page.url.href);
+		url.searchParams.set('index', String(index));
+		goto(url, { shallow: true, replace: true, state: {} });
+	}
+
+	onMount(() => {
+		index = readIndexFromUrl();
+	});
+
 	let direction = $state<1 | -1>(1);
 
 	let current = $derived(questions[index]);
@@ -83,6 +101,7 @@
 		if (next < 0 || next >= questions.length) return;
 		direction = step;
 		index = next;
+		syncUrl();
 	}
 
 	function onkeydown(e: KeyboardEvent) {
