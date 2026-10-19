@@ -9,20 +9,55 @@
 	import { parse } from 'yaml';
 	import type { Question as QuestionType } from '#lib/question.type.ts';
 	import dotnetRaw from '#lib/dotnet.yaml?raw';
+	import pythonRaw from '#lib/python.yaml?raw';
+	import javascriptRaw from '#lib/javascript.yaml?raw';
+	import sqlRaw from '#lib/sql.yaml?raw';
+	import systemDesignRaw from '#lib/system-design.yaml?raw';
 
 	import Question from '#lib/Question.svelte';
 
-	const questions: QuestionType[] = parse(dotnetRaw).sort(() => Math.random() - 0.5);
+	import angularRaw from '#lib/angular.yaml?raw';
+
+	let category = $derived((browser && page.url.searchParams.get('category')) || 'all');
+
+	let questions: QuestionType[] = [];
+
+	if (category === 'dotnet') {
+		questions.push(...parse(dotnetRaw).sort(() => Math.random() - 0.5));
+	}
+	if (category === 'angular') {
+		questions.push(...parse(angularRaw).sort(() => Math.random() - 0.5));
+	}
+	if (category === 'python') {
+		questions.push(...parse(pythonRaw).sort(() => Math.random() - 0.5));
+	}
+	if (category === 'javascript') {
+		questions.push(...parse(javascriptRaw).sort(() => Math.random() - 0.5));
+	}
+	if (category === 'sql') {
+		questions.push(...parse(sqlRaw).sort(() => Math.random() - 0.5));
+	}
+	if (category === 'system-design') {
+		questions.push(...parse(systemDesignRaw).sort(() => Math.random() - 0.5));
+	}
+	if (category === 'all') {
+		questions.push(...parse(dotnetRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(angularRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(pythonRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(javascriptRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(sqlRaw).sort(() => Math.random() - 0.5));
+		questions.push(...parse(systemDesignRaw).sort(() => Math.random() - 0.5));
+	}
 
 	const titles: Record<string, string> = {
 		dotnet: 'Pytania z .NET',
 		python: 'Pytania z Pythona',
 		javascript: 'Pytania z JavaScript',
 		sql: 'Pytania z SQL',
-		'system-design': 'Pytania z projektowania systemów'
+		'system-design': 'Pytania z projektowania systemów',
+		angular: 'Pytania z Angulara'
 	};
 
-	let category = $derived((browser && page.url.searchParams.get('category')) || 'all');
 	let title = $derived(titles[category] ?? 'Pytania rekrutacyjne');
 
 	let index = $state(0);
