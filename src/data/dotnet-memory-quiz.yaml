@@ -1,0 +1,979 @@
+- id: 1
+  question: Gdzie trafia instancja klasy utworzona przez `new` w metodzie?
+  answers:
+    - text: Na stos wątku, bo jest tworzona wewnątrz metody i znika po jej zakończeniu
+      correct: false
+    - text: Do pamięci niezarządzanej, którą zwalnia się przez `Dispose()`
+      correct: false
+    - text: Na zarządzaną stertę, a zmienna lokalna przechowuje tylko referencję do niej
+      correct: true
+    - text: Do rejestrów procesora, jeśli obiekt jest mniejszy niż 64 bajty
+      correct: false
+  explanation: |
+    Obiekty typów referencyjnych są alokowane na zarządzanej stercie, a na stosie (lub w rejestrze) ląduje jedynie referencja.
+    Miejsce alokacji nie zależy od tego, czy `new` wywołano w metodzie - po jej zakończeniu znika referencja, a obiekt sprząta później GC.
+    Rozmiar obiektu nie przenosi go do rejestrów, a `Dispose()` nie ma nic wspólnego z miejscem alokacji.
+
+- id: 2
+  question: Które stwierdzenie o typach wartościowych (`struct`) jest prawdziwe?
+  answers:
+    - text: Mogą leżeć na stercie, np. jako pole klasy, element tablicy lub po boxingu
+      correct: true
+    - text: Zawsze są przechowywane na stercie, ale kopiowane przy przypisaniu
+      correct: false
+    - text: Są przechowywane na stosie tylko w trybie Release, a w Debug na stercie
+      correct: false
+    - text: Zawsze są przechowywane na stosie, niezależnie od kontekstu użycia
+      correct: false
+  explanation: |
+    "Struktury żyją na stosie" to uproszczenie - wartość leży tam, gdzie jej kontener.
+    Lokalna zmienna typu `struct` zwykle trafia na stos, ale pole `struct` w klasie leży na stercie razem z obiektem, tablica `int[]` jest obiektem na stercie, a boxing kopiuje wartość do nowego obiektu na stercie.
+    Tryb kompilacji nie zmienia tej zasady, a stwierdzenie "zawsze na stercie" jest równie błędne jak "zawsze na stosie".
+
+- id: 3
+  question: Jak .NET ustala, które obiekty można usunąć?
+  answers:
+    - text: Usuwa obiekty w kolejności odwrotnej do utworzenia, gdy sterta się zapełni
+      correct: false
+    - text: Sprawdza osiągalność od korzeni, np. stosów i pól statycznych
+      correct: true
+    - text: Zlicza referencje i usuwa obiekt w chwili, gdy licznik spadnie do zera
+      correct: false
+    - text: Usuwa obiekty, które nie były używane przez określony czas (domyślnie 5 minut)
+      correct: false
+  explanation: |
+    GC w .NET jest śledzący (tracing): w fazie mark przechodzi graf obiektów od korzeni i oznacza wszystko, co osiągalne; reszta to śmieci.
+    Zliczanie referencji to model np. Pythona czy COM - .NET go nie używa, dlatego cykliczne referencje nie powodują wycieków.
+    GC nie mierzy czasu nieużywania obiektu ani nie zwalnia ich w kolejności LIFO.
+
+- id: 4
+  question: Ile generacji ma sterta obiektów małych w .NET?
+  answers:
+    - text: "Cztery: 0, 1, 2 i 3"
+      correct: false
+    - text: "Trzy: 0, 1 i 2"
+      correct: true
+    - text: "Dwie: młodą i starą"
+      correct: false
+    - text: Jedną - generacje istnieją tylko w Javie
+      correct: false
+  explanation: |
+    Sterta małych obiektów (SOH) ma generacje 0, 1 i 2. Nowe obiekty trafiają do gen 0, a te, które przetrwają odśmiecanie, są promowane do kolejnej generacji.
+    Dodatkowo istnieją sterty LOH i POH, ale to nie są kolejne generacje - LOH jest logicznie zbierana razem z gen 2.
+    Podział na "młodą i starą" to uproszczenie znane z JVM, a generacji 3 nie ma.
+
+- id: 5
+  question: Na jakim założeniu opiera się generacyjny GC?
+  answers:
+    - text: Większość obiektów umiera młodo, więc młode generacje sprząta się często
+      correct: true
+    - text: Starsze obiekty częściej stają się śmieciami, więc trzeba je sprzątać najczęściej
+      correct: false
+    - text: Obiekty o podobnym rozmiarze żyją podobnie długo, więc grupuje się je według wielkości
+      correct: false
+    - text: Każdy obiekt żyje dokładnie tyle, ile metoda, która go utworzyła
+      correct: false
+  explanation: |
+    Hipoteza generacyjna mówi, że większość obiektów (tymczasowe stringi, DTO, lambdy) żyje bardzo krótko.
+    Dlatego gen 0 jest mała i zbierana często i tanio, a gen 2 rzadko, bo pełne odśmiecanie jest kosztowne.
+    Grupowanie po rozmiarze to osobny mechanizm (LOH), a czas życia obiektu nie jest powiązany z metodą, która go stworzyła.
+
+- id: 6
+  question: Od jakiego rozmiaru obiekt trafia na Large Object Heap?
+  answers:
+    - text: Od 64 KB (65 536 bajtów)
+      correct: false
+    - text: Od 8 192 bajtów
+      correct: false
+    - text: Od 85 000 bajtów
+      correct: true
+    - text: Od 1 MB
+      correct: false
+  explanation: |
+    Domyślny próg LOH to 85 000 bajtów - w praktyce dotyczy to głównie dużych tablic, np. `byte[]` czy `string` z kilkudziesięcioma tysiącami znaków.
+    Próg można zmienić ustawieniem `GCLOHThreshold`, ale 8 KB, 64 KB czy 1 MB nie są wartościami domyślnymi.
+
+- id: 7
+  question: Czym charakteryzuje się Large Object Heap?
+  answers:
+    - text: Jest zawsze kompaktowana, dlatego alokacja dużych obiektów jest darmowa
+      correct: false
+    - text: Jest zbierana przy każdym GC gen 0, bo duże obiekty szybko zajmują pamięć
+      correct: false
+    - text: Jest zbierana z gen 2 i domyślnie się nie kompaktuje, więc się fragmentuje
+      correct: true
+    - text: Przechowuje obiekty poza kontrolą GC, które trzeba zwolnić ręcznie przez `Dispose()`
+      correct: false
+  explanation: |
+    Przenoszenie dużych obiektów jest drogie, więc LOH domyślnie się nie kompaktuje - wolne miejsca są zapisywane na liście i ponownie używane, co sprzyja fragmentacji.
+    LOH jest zbierana tylko przy pełnym GC (gen 2), więc częste alokowanie dużych tymczasowych tablic podbija liczbę kosztownych odśmieceń.
+    Obiekty na LOH są normalnymi obiektami zarządzanymi, więc `Dispose()` niczego tu nie zwalnia.
+
+- id: 8
+  question: Jak wymusić jednorazową kompaktację LOH?
+  answers:
+    - text: Nie da się - LOH nigdy nie może zostać skompaktowana
+      correct: false
+    - text: "`GC.Compact(GCHeap.Large)` wywołane w dowolnym miejscu aplikacji"
+      correct: false
+    - text: "`GC.Collect(3)`, bo LOH jest traktowana jako generacja 3"
+      correct: false
+    - text: Ustawić `LargeObjectHeapCompactionMode` na `CompactOnce` i wykonać pełny GC
+      correct: true
+  explanation: |
+    Ustawienie `CompactOnce` sprawia, że najbliższy blokujący pełny GC skompaktuje też LOH, po czym tryb sam wraca do `Default`.
+    Metoda `GC.Compact` nie istnieje, a `GC.Collect(3)` nie oznacza LOH - LOH nie jest osobną generacją.
+    Kompaktacja LOH jest więc możliwa, ale kosztowna, dlatego robi się ją wyjątkowo.
+
+- id: 9
+  question: Do czego służy Pinned Object Heap (POH) wprowadzony w .NET 5?
+  answers:
+    - text: Do przechowywania obiektów, które przetrwały co najmniej trzy pełne odśmiecania gen 2
+      correct: false
+    - text: Do przechowywania obiektów z finalizerami do czasu wywołania metody Finalize
+      correct: false
+    - text: Do alokacji przypiętych obiektów bez fragmentowania zwykłych generacji
+      correct: true
+    - text: Do alokacji obiektów w pamięci GPU na potrzeby obliczeń równoległych
+      correct: false
+  explanation: |
+    Przypięty obiekt nie może zostać przeniesiony, więc w środku gen 0 czy gen 1 blokuje kompaktację i tworzy dziury.
+    POH zbiera takie obiekty w jednym miejscu; alokuje się na nim przez `GC.AllocateArray<T>(length, pinned: true)` lub `GC.AllocateUninitializedArray<T>(length, pinned: true)`.
+    Nie ma osobnej sterty dla obiektów, które przetrwały wiele GC (od tego jest gen 2), obiekty z finalizerami nie mają własnej sterty, a pamięcią GPU GC nie zarządza.
+
+- id: 10
+  question: Czym jest przypinanie (pinning) obiektu?
+  answers:
+    - text: Przeniesieniem obiektu do generacji 2, aby nie był sprawdzany przy kolejnych odśmiecaniach
+      correct: false
+    - text: Zablokowaniem przenoszenia obiektu przez GC, np. dla kodu natywnego
+      correct: true
+    - text: Zapisaniem obiektu w cache procesora w celu przyspieszenia dostępu do jego pól
+      correct: false
+    - text: Oznaczeniem obiektu jako niezniszczalnego, który GC nigdy nie usunie, nawet bez referencji
+      correct: false
+  explanation: |
+    GC podczas kompaktacji przesuwa obiekty, więc adres przekazany do kodu natywnego mógłby się zdezaktualizować.
+    Przypięcie (`fixed`, `GCHandle.Alloc(obj, GCHandleType.Pinned)`, POH) gwarantuje stały adres, ale tylko dopóki trwa przypięcie, i nie wpływa na generację obiektu.
+    Długie przypinanie w gen 0 utrudnia kompaktację i fragmentuje stertę.
+
+- id: 11
+  question: Które słowo kluczowe C# przypina obiekt na czas wykonywania bloku kodu?
+  answers:
+    - text: "`pinned`"
+      correct: false
+    - text: "`fixed`"
+      correct: true
+    - text: "`lock`"
+      correct: false
+    - text: "`volatile`"
+      correct: false
+  explanation: |
+    `fixed (byte* p = buffer) { ... }` przypina tablicę w kontekście `unsafe` i zwalnia przypięcie po wyjściu z bloku.
+    `lock` służy do synchronizacji wątków, `volatile` do semantyki dostępu do pamięci, a słowa kluczowego `pinned` w C# nie ma (istnieje jedynie jako modyfikator w IL).
+
+- id: 12
+  question: Czym różni się Workstation GC od Server GC?
+  answers:
+    - text: Workstation GC działa tylko na Windows, a Server GC tylko na Linuxie
+      correct: false
+    - text: Server GC ma osobną stertę i wątek GC na każdy rdzeń, co daje przepustowość kosztem pamięci
+      correct: true
+    - text: Server GC nie ma generacji i zawsze wykonuje pełne odśmiecanie całej sterty
+      correct: false
+    - text: Workstation GC jest wyłącznie dla aplikacji desktopowych i nie da się go włączyć w ASP.NET Core
+      correct: false
+  explanation: |
+    Server GC tworzy stertę i dedykowany wątek GC dla każdego procesora logicznego, więc lepiej skaluje się przy dużym ruchu, ale zużywa więcej pamięci.
+    Workstation GC ma jedną stertę i jest domyślny dla aplikacji klienckich; oba tryby działają na wszystkich platformach i oba mają generacje.
+    W ASP.NET Core domyślny jest Server GC, ale można go wyłączyć ustawieniem `<ServerGarbageCollection>false</ServerGarbageCollection>`.
+
+- id: 13
+  question: Jak włączyć Server GC w projekcie .NET?
+  answers:
+    - text: Właściwością `ServerGarbageCollection` w pliku `.csproj`
+      correct: true
+    - text: "Dodając atrybut `[assembly: ServerGC]` w pliku `AssemblyInfo.cs`"
+      correct: false
+    - text: Wywołując `GC.EnableServerMode()` na początku metody `Main`
+      correct: false
+    - text: Instalując pakiet NuGet `Microsoft.GC.Server`
+      correct: false
+  explanation: |
+    Tryb GC wybiera się przed startem procesu - przez właściwość MSBuild w `.csproj`, `System.GC.Server` w `runtimeconfig.json` lub zmienną środowiskową `DOTNET_gcServer=1`.
+    W runtime można tylko sprawdzić bieżący tryb przez `GCSettings.IsServerGC`.
+    Metoda `GC.EnableServerMode()`, atrybut `ServerGC` ani taki pakiet NuGet nie istnieją.
+
+- id: 14
+  question: Czym jest Background GC?
+  answers:
+    - text: Wątkiem, który co minutę wywołuje `GC.Collect()`, aby zapobiec wyciekom pamięci
+      correct: false
+    - text: Odśmiecaniem wykonywanym w osobnym procesie systemowym zamiast w procesie aplikacji
+      correct: false
+    - text: Odśmiecaniem gen 2 działającym współbieżnie z wątkami aplikacji
+      correct: true
+    - text: Trybem, w którym GC działa wyłącznie wtedy, gdy aplikacja jest bezczynna
+      correct: false
+  explanation: |
+    Background GC (następca concurrent GC) dotyczy tylko pełnych odśmieceń gen 2 - pozwala aplikacji działać w ich trakcie, a w tym czasie mogą się odbywać krótkie, blokujące GC gen 0 i 1.
+    Jest domyślnie włączony zarówno w Workstation, jak i Server GC.
+    Nie polega na cyklicznym `GC.Collect()`, nie czeka na bezczynność i nie działa w osobnym procesie.
+
+- id: 15
+  question: Co zmieniło się w GC w .NET 7 na 64-bitowych platformach?
+  answers:
+    - text: GC zaczął zliczać referencje zamiast śledzić graf obiektów
+      correct: false
+    - text: LOH została zlikwidowana, a duże obiekty trafiają do gen 0
+      correct: false
+    - text: Segmenty zastąpiono regionami - małymi, elastycznymi blokami pamięci
+      correct: true
+    - text: Usunięto generację 1, więc obiekty przechodzą bezpośrednio z gen 0 do gen 2
+      correct: false
+  explanation: |
+    W .NET 7 domyślnie włączono regiony - sterta składa się z wielu małych regionów, które można przenosić między generacjami i zwracać systemowi, co zmniejsza fragmentację.
+    Generacje 0, 1 i 2 oraz LOH nadal istnieją, a model śledzący się nie zmienił.
+
+- id: 16
+  question: Czym jest DATAS w GC .NET?
+  answers:
+    - text: Dynamicznym doborem liczby stert Server GC do obciążenia
+      correct: true
+    - text: Formatem pliku konfiguracyjnego GC, zastępującym `runtimeconfig.json`
+      correct: false
+    - text: Narzędziem CLI do analizy zrzutów pamięci, następcą `dotnet-dump`
+      correct: false
+    - text: Algorytmem kompresji obiektów w gen 2, zmniejszającym zużycie pamięci o połowę
+      correct: false
+  explanation: |
+    DATAS (Dynamic Adaptation To Application Sizes) pozwala Server GC zaczynać od małej liczby stert i dodawać kolejne w miarę obciążenia, dzięki czemu aplikacje w kontenerach zużywają mniej pamięci.
+    Pojawił się jako opcja w .NET 8, a w .NET 9 jest domyślnie włączony dla Server GC.
+    Nie jest narzędziem diagnostycznym, kompresją ani formatem konfiguracji.
+
+- id: 17
+  question: Jak GC zachowuje się w kontenerze z limitem pamięci (cgroups)?
+  answers:
+    - text: Ignoruje limity kontenera i widzi całą pamięć fizyczną hosta
+      correct: false
+    - text: Uwzględnia limit kontenera i domyślnie ogranicza stertę do 75% dostępnej pamięci
+      correct: true
+    - text: Wyłącza się całkowicie, a pamięć zwalnia dopiero orkiestrator przy restarcie poda
+      correct: false
+    - text: Działa tylko w trybie Workstation, bo Server GC nie jest wspierany w kontenerach
+      correct: false
+  explanation: |
+    Od .NET Core 3.0 GC rozpoznaje limity cgroups i domyślnie ustawia twardy limit sterty (`GCHeapHardLimit`) na 75% limitu pamięci kontenera.
+    Limit można zmienić przez `GCHeapHardLimit` lub `GCHeapHardLimitPercent`.
+    Server GC działa w kontenerach normalnie, a GC się nie wyłącza.
+
+- id: 18
+  question: Kiedy wykonywany jest finalizer obiektu?
+  answers:
+    - text: W nieokreślonym momencie, na osobnym wątku finalizatora
+      correct: true
+    - text: Natychmiast, gdy ostatnia zmienna wskazująca na obiekt wyjdzie poza zasięg
+      correct: false
+    - text: Zawsze przy zamykaniu aplikacji, w kolejności tworzenia obiektów
+      correct: false
+    - text: Na wątku, który utworzył obiekt, przy jego następnym wywołaniu dowolnej metody
+      correct: false
+  explanation: |
+    Obiekt z finalizerem po uznaniu za nieosiągalny trafia do kolejki f-reachable, a jego metodę `Finalize` wywołuje osobny wątek finalizatora.
+    Nie da się przewidzieć, kiedy to nastąpi, a kolejność finalizacji nie jest gwarantowana.
+    W .NET Core/.NET 5+ finalizery nie są nawet uruchamiane przy zamykaniu procesu.
+
+- id: 19
+  question: Dlaczego obiekty z finalizerem są droższe dla GC?
+  answers:
+    - text: Przed usunięciem muszą przeżyć dodatkowe odśmiecanie
+      correct: true
+    - text: Są zawsze alokowane na LOH, niezależnie od rozmiaru
+      correct: false
+    - text: Blokują wszystkie wątki aplikacji na czas wykonywania finalizera
+      correct: false
+    - text: Są kopiowane przy każdym GC do nowej lokalizacji, nawet bez kompaktacji
+      correct: false
+  explanation: |
+    Nieosiągalny obiekt z finalizerem nie może zostać od razu usunięty - jest promowany (wraz z obiektami, do których się odwołuje), czeka na wątek finalizatora i dopiero kolejny GC go zbiera.
+    Dodatkowo rejestracja w kolejce finalizacji spowalnia samą alokację.
+    Finalizer nie przenosi obiektu na LOH i działa na osobnym wątku, nie wstrzymując aplikacji.
+
+- id: 20
+  question: Czy w .NET 8 finalizery są uruchamiane przy zamykaniu aplikacji?
+  answers:
+    - text: Tak, ale tylko dla obiektów oznaczonych atrybutem `[Finalize]`
+      correct: false
+    - text: Tak, jeśli aplikacja kończy się przez `Environment.Exit(0)`
+      correct: false
+    - text: Tak, zawsze, dla wszystkich obiektów pozostałych na stercie
+      correct: false
+    - text: Nie - przy zamknięciu procesu finalizery nie są uruchamiane
+      correct: true
+  explanation: |
+    W przeciwieństwie do .NET Framework, .NET Core nie wywołuje finalizerów przy zamykaniu procesu, więc nie można na nich polegać przy zapisie danych czy zamykaniu zasobów.
+    Do sprzątania przy wyjściu służą `Dispose`, `IHostApplicationLifetime` czy `AppDomain.ProcessExit`.
+    Atrybut `[Finalize]` nie istnieje, a `Environment.Exit` niczego tu nie zmienia.
+
+- id: 21
+  question: Do czego służy `GC.SuppressFinalize(this)` w metodzie `Dispose()`?
+  answers:
+    - text: Wyłącza GC dla całej aplikacji do momentu zakończenia metody
+      correct: false
+    - text: Blokuje możliwość ponownego wywołania `Dispose()` na tym samym obiekcie
+      correct: false
+    - text: Usuwa obiekt z kolejki finalizacji, bo finalizer jest już zbędny
+      correct: true
+    - text: Natychmiast zwalnia pamięć obiektu, nie czekając na GC
+      correct: false
+  explanation: |
+    Po jawnym `Dispose()` finalizer nie ma nic do roboty, więc `SuppressFinalize` informuje GC, że obiekt można zebrać normalnie, bez dodatkowego cyklu finalizacji.
+    Metoda nie zwalnia pamięci, nie zabezpiecza przed wielokrotnym `Dispose()` (to robi się własną flagą) i nie wyłącza GC.
+
+- id: 22
+  question: Co oznacza parametr `disposing` w klasycznym wzorcu `Dispose(bool disposing)`?
+  answers:
+    - text: "`true`, jeśli obiekt został już wcześniej zwolniony, a `false` przy pierwszym wywołaniu"
+      correct: false
+    - text: "`true`, jeśli metodę wywołał GC, a `false`, jeśli programista"
+      correct: false
+    - text: "`true`, jeśli zwalniane mają być tylko zasoby niezarządzane, a `false` dla wszystkich zasobów"
+      correct: false
+    - text: "`true` przy wywołaniu z `Dispose()`, a `false` z finalizera"
+      correct: true
+  explanation: |
+    Przy wywołaniu z finalizera inne obiekty zarządzane mogły już zostać sfinalizowane, więc wolno ruszać tylko zasoby niezarządzane - stąd `disposing: false`.
+    Przy jawnym `Dispose()` (`disposing: true`) zwalnia się zarówno zasoby zarządzane, jak i niezarządzane.
+    Informację o wcześniejszym zwolnieniu trzyma się w osobnym polu, np. `_disposed`.
+
+- id: 23
+  question: Kiedy klasa powinna mieć własny finalizer?
+  answers:
+    - text: Zawsze, gdy trzyma referencje do innych obiektów implementujących `IDisposable`
+      correct: false
+    - text: Zawsze, gdy implementuje `IDisposable`
+      correct: false
+    - text: Gdy sama trzyma surowy zasób niezarządzany, bez `SafeHandle`
+      correct: true
+    - text: Gdy chcemy, aby GC szybciej zwolnił pamięć zajmowaną przez obiekt
+      correct: false
+  explanation: |
+    Finalizer jest siatką bezpieczeństwa dla zasobów niezarządzanych (uchwytów, wskaźników), gdyby ktoś zapomniał o `Dispose()`.
+    Klasa, która tylko opakowuje inne obiekty `IDisposable`, potrzebuje `Dispose()`, ale nie finalizera - tamte obiekty same o siebie zadbają.
+    Dziś zamiast surowych uchwytów używa się `SafeHandle`, który ma własny, krytyczny finalizer, a dodanie finalizera spowalnia zwalnianie pamięci, zamiast je przyspieszać.
+
+- id: 24
+  question: Czym jest `SafeHandle`?
+  answers:
+    - text: Typem wskaźnika dostępnym w kodzie `unsafe`, sprawdzanym przez kompilator
+      correct: false
+    - text: Uchwytem GC, który przypina obiekt w pamięci na stałe
+      correct: false
+    - text: Interfejsem, który zastępuje `IDisposable` w nowych wersjach .NET
+      correct: false
+    - text: Klasą opakowującą natywny uchwyt z krytycznym finalizerem
+      correct: true
+  explanation: |
+    `SafeHandle` (np. `SafeFileHandle`) bezpiecznie zarządza uchwytem systemowym: zlicza jego użycia w wywołaniach P/Invoke i gwarantuje zwolnienie w krytycznym finalizerze.
+    Dzięki temu własne klasy rzadko potrzebują finalizerów.
+    Nie przypina obiektów (to robi `GCHandle`), nie zastępuje `IDisposable` (sam go implementuje) i nie jest typem wskaźnikowym.
+
+- id: 25
+  question: Czy wywołanie `Dispose()` zwalnia pamięć zajmowaną przez obiekt na stercie?
+  answers:
+    - text: Tak, ale tylko jeśli obiekt znajduje się w generacji 0
+      correct: false
+    - text: Nie - zwalnia zasoby, a pamięć obiektu odzyska później GC
+      correct: true
+    - text: Tak, o ile wcześniej wywołano `GC.SuppressFinalize`
+      correct: false
+    - text: Tak, natychmiast oddaje pamięć obiektu systemowi operacyjnemu
+      correct: false
+  explanation: |
+    `IDisposable` służy do deterministycznego zwalniania zasobów, a nie pamięci zarządzanej.
+    Po `Dispose()` obiekt nadal istnieje na stercie, dopóki jest osiągalny, i zostanie usunięty przy najbliższym odpowiednim GC.
+    Ani generacja, ani `SuppressFinalize` nie zmieniają tej zasady.
+
+- id: 26
+  question: Co robi deklaracja `using var stream = File.OpenRead(path);`?
+  answers:
+    - text: Zarejestruje `stream` do zwolnienia przy zamknięciu aplikacji
+      correct: false
+    - text: Wywoła `Dispose()` natychmiast po wykonaniu tej linii
+      correct: false
+    - text: Przypnie `stream` w pamięci do końca metody
+      correct: false
+    - text: Wywoła `Dispose()` na końcu zakresu, także przy wyjątku
+      correct: true
+  explanation: |
+    `using` declaration (C# 8) działa jak blok `using`, który kończy się wraz z zakresem - kompilator generuje `try/finally` z `Dispose()`.
+    Zasób żyje więc do końca bloku, a nie jednej linii, i nie czeka na zamknięcie aplikacji.
+    `using` nie ma związku z przypinaniem obiektów.
+
+- id: 27
+  question: Czym różni się `IAsyncDisposable` od `IDisposable`?
+  answers:
+    - text: Jest wywoływany automatycznie przez GC, więc nie trzeba go wywoływać ręcznie
+      correct: false
+    - text: Pozwala zwolnić zasób wielokrotnie, a `IDisposable` tylko raz
+      correct: false
+    - text: Ma `DisposeAsync()` do sprzątania wymagającego I/O (`await using`)
+      correct: true
+    - text: Zwalnia pamięć obiektu w tle, na wątku puli, zamiast na wątku wywołującym
+      correct: false
+  explanation: |
+    `IAsyncDisposable` przydaje się, gdy zamknięcie zasobu wymaga operacji asynchronicznej, np. opróżnienia bufora strumienia czy zamknięcia połączenia sieciowego.
+    `await using var x = ...;` wywoła `DisposeAsync()` na końcu zakresu.
+    Nie zwalnia pamięci, GC go nie wywołuje i nie ma reguły o liczbie wywołań różnej od `IDisposable`.
+
+- id: 28
+  question: Które obiekty zwalnia (wywołuje na nich `Dispose`) kontener DI w ASP.NET Core?
+  answers:
+    - text: Tylko serwisy transient, natychmiast po wstrzyknięciu
+      correct: false
+    - text: Wszystkie obiekty implementujące `IDisposable`, także te przekazane jako gotowa instancja
+      correct: false
+    - text: Żadne - zwalnianie serwisów jest zawsze obowiązkiem programisty
+      correct: false
+    - text: Te, które sam utworzył - np. scoped na końcu żądania i singletony przy zamknięciu aplikacji
+      correct: true
+  explanation: |
+    Kontener zwalnia instancje, które sam stworzył: scoped przy końcu scope'u (żądania), singletony przy zamknięciu `ServiceProvider`, a transient przy końcu scope'u, w którym je utworzył.
+    Instancji przekazanej ręcznie, np. `AddSingleton(new Foo())`, nie zwalnia - właścicielem jest ten, kto ją utworzył.
+    Transient `IDisposable` rozwiązywane z root providera żyją aż do końca aplikacji, co bywa źródłem wycieków.
+
+- id: 29
+  question: Która sytuacja jest klasycznym wyciekiem pamięci w .NET?
+  answers:
+    - text: Subskrypcja zdarzenia singletona, z której obiekt nigdy się nie wypisuje
+      correct: true
+    - text: Metoda tworzy w pętli wiele tymczasowych stringów
+      correct: false
+    - text: Obiekt implementuje `IDisposable`, ale jest używany w bloku `using`
+      correct: false
+    - text: Dwa obiekty odwołują się do siebie nawzajem i nie są osiągalne z żadnego korzenia
+      correct: false
+  explanation: |
+    Publikator zdarzenia trzyma referencję do delegata, a delegat do subskrybenta - jeśli publikator żyje długo (np. singleton albo pole statyczne), subskrybent nigdy nie zostanie zebrany.
+    Cykliczne referencje bez korzenia GC normalnie usuwa, tymczasowe stringi to presja na GC, a nie wyciek, a `using` jest poprawnym wzorcem.
+
+- id: 30
+  question: Dlaczego pole statyczne bywa źródłem wycieku pamięci?
+  answers:
+    - text: Pola statyczne są korzeniami GC i żyją do końca procesu
+      correct: true
+    - text: Pola statyczne są zawsze alokowane na LOH, która nie jest kompaktowana
+      correct: false
+    - text: Pola statyczne są przechowywane w pamięci niezarządzanej, której GC nie sprawdza
+      correct: false
+    - text: Kompilator kopiuje pole statyczne przy każdym odwołaniu, tworząc wiele instancji
+      correct: false
+  explanation: |
+    Statyka żyje tak długo jak jej typ, czyli zwykle przez cały proces, i jest korzeniem GC.
+    Statyczna lista czy słownik użyte jako cache bez limitu i bez usuwania wpisów rośnie bez końca.
+    Statyki nie leżą w pamięci niezarządzanej, nie są kopiowane przy odwołaniu i nie trafiają na LOH tylko dlatego, że są statyczne.
+
+- id: 31
+  question: Jak domknięcie (closure) w lambdzie wpływa na alokacje?
+  answers:
+    - text: Domknięcia są zawsze alokowane na stosie, więc nie obciążają GC
+      correct: false
+    - text: Lambda kopiuje przechwycone zmienne przy każdym wywołaniu, tworząc nowy obiekt
+      correct: false
+    - text: Przechwycenie zmiennej przypina ją w pamięci do końca działania aplikacji
+      correct: false
+    - text: Przechwycone zmienne trafiają do obiektu na stercie
+      correct: true
+  explanation: |
+    Kompilator przenosi przechwycone zmienne do klasy pomocniczej (display class), której instancja jest alokowana na stercie; zmienne żyją, dopóki żyje delegat.
+    Lambda w gorącej ścieżce, która coś przechwytuje, alokuje więc przy każdym wykonaniu metody.
+    Nie ma kopiowania przy każdym wywołaniu ani przypinania; `static` lambda (C# 9) blokuje przypadkowe przechwycenie.
+
+- id: 32
+  question: Co daje modyfikator `static` przy lambdzie, np. `static x => x * 2`?
+  answers:
+    - text: Lambda będzie wykonywana zawsze na tym samym wątku
+      correct: false
+    - text: Kompilator zabroni przechwytywania stanu, więc nie powstanie domknięcie
+      correct: true
+    - text: Lambda zostanie skompilowana do kodu natywnego przy starcie aplikacji
+      correct: false
+    - text: Delegat zostanie zapisany w polu statycznym i nigdy nie zostanie zebrany przez GC
+      correct: false
+  explanation: |
+    `static` lambda (C# 9) nie może przechwycić stanu, więc kompilator gwarantuje brak display class - a przy okazji chroni przed przypadkowym przechwyceniem.
+    Nie zmienia sposobu kompilacji ani wątku wykonania.
+    To, że kompilator może cache'ować delegat bez przechwyceń, jest szczegółem implementacji, a nie celem tego modyfikatora.
+
+- id: 33
+  question: Dlaczego `Span<T>` nie może być polem klasy?
+  answers:
+    - text: Bo jest typem referencyjnym, a pola klas mogą przechowywać tylko typy wartościowe
+      correct: false
+    - text: Bo kompilator nie pozwala używać typów generycznych jako pól klas
+      correct: false
+    - text: Może, ale tylko w klasach oznaczonych jako `sealed`
+      correct: false
+    - text: Jest `ref struct`, więc może istnieć tylko na stosie i nie może trafić na stertę
+      correct: true
+  explanation: |
+    `Span<T>` może wskazywać na pamięć stosu (np. `stackalloc`), więc nie wolno mu przeżyć ramki stosu - dlatego jest `ref struct` i nie może być polem klasy, nie może być boxowany ani przechowany w lambdzie.
+    Do przechowywania na stercie służy `Memory<T>`, z którego w razie potrzeby pobiera się `.Span`.
+    Ograniczenie nie ma związku z typami generycznymi ani z `sealed`.
+
+- id: 34
+  question: Czym `Memory<T>` różni się od `Span<T>`?
+  answers:
+    - text: Tylko `Memory<T>` można trzymać w polu i używać przez `await`
+      correct: true
+    - text: "`Memory<T>` działa tylko z tablicami bajtów, a `Span<T>` z dowolnymi typami"
+      correct: false
+    - text: "`Memory<T>` jest przestarzały i zastąpiony przez `Span<T>` od .NET 6"
+      correct: false
+    - text: "`Memory<T>` zawsze kopiuje dane, a `Span<T>` pracuje na oryginale"
+      correct: false
+  explanation: |
+    `Memory<T>` to zwykła struktura bez ograniczeń `ref struct`, więc można ją trzymać w polach i przekazywać przez `await`.
+    Właściwość `.Span` daje szybki dostęp do danych w synchronicznym fragmencie kodu.
+    Żaden z tych typów nie kopiuje danych - oba są widokiem na istniejącą pamięć - i oba są generyczne i wspierane.
+
+- id: 35
+  question: Co robi `Span<byte> buffer = stackalloc byte[256];`?
+  answers:
+    - text: Alokuje 256 bajtów na stosie, bez udziału GC i bez potrzeby kodu `unsafe`
+      correct: true
+    - text: Alokuje 256 bajtów na LOH, bo stackalloc służy do dużych buforów
+      correct: false
+    - text: Alokuje tablicę na stercie i przypina ją na czas działania metody
+      correct: false
+    - text: Rezerwuje pamięć, która zostanie zwolniona dopiero przy wywołaniu `Dispose()`
+      correct: false
+  explanation: |
+    `stackalloc` przydziela pamięć w ramce stosu, która znika po wyjściu z metody, więc nie generuje pracy dla GC.
+    Przypisanie do `Span<T>` sprawia, że kod nie wymaga `unsafe`, a dostęp jest sprawdzany pod kątem zakresu.
+    Stos jest mały (zwykle od 1 do kilku MB), więc `stackalloc` stosuje się do małych, ograniczonych buforów, a nie dużych.
+
+- id: 36
+  question: Jakie ryzyko wiąże się z `stackalloc` z rozmiarem zależnym od danych wejściowych?
+  answers:
+    - text: "`stackalloc` zawsze rzuca wyjątek, gdy rozmiar nie jest stałą czasu kompilacji"
+      correct: false
+    - text: Przepełnienie stosu, które zabija proces bez możliwości obsługi
+      correct: true
+    - text: Pamięć z `stackalloc` może zostać zebrana przez GC w trakcie działania metody
+      correct: false
+    - text: Rozmiar większy niż 64 bajty powoduje automatyczne przeniesienie bufora na stertę
+      correct: false
+  explanation: |
+    Przepełnienie stosu natychmiast kończy proces, a `StackOverflowException` nie da się obsłużyć w `catch`.
+    Typowy wzorzec to próg: `Span<byte> buf = len <= 256 ? stackalloc byte[256] : new byte[len];` lub użycie `ArrayPool<T>`.
+    GC nie zarządza pamięcią stosu, nie ma automatycznego przenoszenia, a rozmiar nie musi być stałą.
+
+- id: 37
+  question: Na co trzeba uważać, korzystając z `ArrayPool<T>.Shared.Rent(n)`?
+  answers:
+    - text: Tablica może być dłuższa niż `n` i trzeba ją oddać przez `Return`
+      correct: true
+    - text: Tablicę trzeba zwolnić przez `Dispose()`, bo pochodzi z pamięci niezarządzanej
+      correct: false
+    - text: Zwrócona tablica ma zawsze dokładnie `n` elementów i jest wyzerowana
+      correct: false
+    - text: Wypożyczona tablica jest przypinana, więc nie można jej przekazywać do innych metod
+      correct: false
+  explanation: |
+    `Rent` zwraca tablicę o długości co najmniej `n` (często zaokrągloną do potęgi dwójki) i potencjalnie z danymi poprzedniego użytkownika - trzeba pracować na zakresie `0..n`.
+    Po `Return` tablica wraca do puli i dalsze używanie jej to błąd porównywalny z use-after-free.
+    To zwykłe zarządzane tablice: nie implementują `IDisposable` i nie są przypinane.
+
+- id: 38
+  question: Co oznacza, że string w .NET jest niemutowalny?
+  answers:
+    - text: Każda "modyfikacja" tworzy nowy obiekt, a oryginał pozostaje niezmieniony
+      correct: true
+    - text: String można zmienić tylko w obrębie metody, w której został utworzony
+      correct: false
+    - text: Kompilator zabrania przypisywania nowej wartości do zmiennej typu `string`
+      correct: false
+    - text: String jest przechowywany w pamięci tylko do odczytu systemu operacyjnego
+      correct: false
+  explanation: |
+    Metody typu `Replace`, `ToUpper` czy operator `+` zwracają nowe instancje - stąd koszt sklejania stringów w pętli.
+    Zmienną można oczywiście przypisać ponownie; niemutowalny jest obiekt, a nie zmienna.
+    Stringi leżą na zwykłej zarządzanej stercie, a nie w specjalnej pamięci systemu.
+
+- id: 39
+  question: Czym jest interning stringów?
+  answers:
+    - text: Kompresowaniem długich stringów w pamięci do formatu UTF-8
+      correct: false
+    - text: Przenoszeniem stringów na stos w celu przyspieszenia porównań
+      correct: false
+    - text: Współdzieleniem jednej instancji identycznych literałów
+      correct: true
+    - text: Automatycznym usuwaniem duplikatów stringów przez GC przy każdym odśmiecaniu
+      correct: false
+  explanation: |
+    Literały w kodzie są internowane - dwa identyczne literały wskazują ten sam obiekt; ręcznie można to zrobić przez `string.Intern`.
+    Internowane stringi żyją zwykle do końca procesu, więc internowanie danych dynamicznych może zwiększać zużycie pamięci.
+    GC nie deduplikuje stringów samodzielnie, a interning nie zmienia kodowania ani miejsca alokacji.
+
+- id: 40
+  question: Jak pobrać fragment stringa bez alokacji nowego obiektu?
+  answers:
+    - text: Przez `text.Substring(start, length)`, który zawsze współdzieli pamięć z oryginałem
+      correct: false
+    - text: Przez `string.Copy(text)`, który tworzy lekką referencję zamiast kopii
+      correct: false
+    - text: Przez `text.Clone()`, który zwraca widok na fragment stringa
+      correct: false
+    - text: Przez `text.AsSpan(start, length)`, co daje `ReadOnlySpan<char>` na oryginalne dane
+      correct: true
+  explanation: |
+    `AsSpan` tworzy widok na istniejące znaki, więc parsowanie (np. `int.Parse(span)`) może działać bez alokacji.
+    `Substring` alokuje nowy string (poza przypadkami brzegowymi, np. pełnego zakresu), `string.Copy` tworzy pełną kopię i jest przestarzały, a `Clone()` zwraca tę samą instancję, a nie fragment.
+
+- id: 41
+  question: Ile wynosi minimalny rozmiar obiektu (np. pustej klasy) na 64-bitowym .NET?
+  answers:
+    - text: 64 bajty
+      correct: false
+    - text: 24 bajty
+      correct: true
+    - text: 0 bajtów
+      correct: false
+    - text: 8 bajtów
+      correct: false
+  explanation: |
+    Każdy obiekt na stercie ma nagłówek (8 bajtów) i wskaźnik na tablicę metod (8 bajtów), a minimalny rozmiar obiektu to 24 bajty na x64.
+    Dlatego miliony drobnych obiektów kosztują dużo więcej niż suma ich pól, a tablica struktur bywa znacznie oszczędniejsza.
+
+- id: 42
+  question: Jakiego rozmiaru struktur (`struct`) zalecają wytyczne projektowe .NET?
+  answers:
+    - text: Najlepiej nie większych niż ok. 16 bajtów
+      correct: true
+    - text: Rozmiar nie ma znaczenia, bo struktury są przekazywane przez referencję
+      correct: false
+    - text: Co najmniej 1 KB, żeby uniknąć narzutu nagłówka obiektu
+      correct: false
+    - text: Dokładnie 64 bajty, by pasowały do linii cache procesora
+      correct: false
+  explanation: |
+    Struktury są kopiowane przy przekazywaniu i przypisaniu, więc duże struktury powodują kosztowne kopie - wytyczne mówią o rozmiarze poniżej 16 bajtów, małej liczbie pól i niemutowalności.
+    Domyślnie struktury przekazuje się przez wartość, a nie referencję; `in`/`ref` to jawny wybór programisty.
+
+- id: 43
+  question: Co daje przekazanie dużej struktury jako parametru `in`?
+  answers:
+    - text: Przypięcie struktury na stercie na czas wywołania metody
+      correct: false
+    - text: Przekazanie kopii, którą metoda może dowolnie modyfikować
+      correct: false
+    - text: Boxing struktury, aby mogła zostać przekazana jako `object`
+      correct: false
+    - text: Przekazanie przez referencję tylko do odczytu, bez kopii
+      correct: true
+  explanation: |
+    `in` przekazuje strukturę przez referencję, ale kompilator zabrania jej modyfikacji.
+    Przy strukturze, która nie jest `readonly struct`, wywołanie jej metody może wymusić tzw. defensywną kopię, dlatego `in` najlepiej łączyć z `readonly struct`.
+    Nie ma tu boxingu ani przypinania.
+
+- id: 44
+  question: Kiedy iteracja `foreach` po `List<T>` alokuje obiekt enumeratora na stercie?
+  answers:
+    - text: Zawsze, bo każdy enumerator jest klasą alokowaną na stercie
+      correct: false
+    - text: Nigdy, bo kompilator zawsze zamienia `foreach` na pętlę `for`
+      correct: false
+    - text: Gdy iteruje się przez `IEnumerable<T>`, bo enumerator jest boxowany
+      correct: true
+    - text: Tylko wtedy, gdy lista ma więcej niż 85 000 elementów
+      correct: false
+  explanation: |
+    `List<T>.GetEnumerator()` zwraca strukturę `List<T>.Enumerator`, więc `foreach` po zmiennej typu `List<T>` nie alokuje.
+    Przez interfejs `IEnumerable<T>` wywoływana jest metoda zwracająca `IEnumerator<T>`, co wymaga zapakowania struktury w obiekt.
+    Kompilator nie przepisuje `foreach` na `for` dla list, a próg LOH nie ma tu znaczenia.
+
+- id: 45
+  question: Kiedy wywołanie metody interfejsu na strukturze powoduje boxing?
+  answers:
+    - text: Zawsze, gdy struktura implementuje jakikolwiek interfejs
+      correct: false
+    - text: Tylko przy wywołaniu metody `ToString()` na strukturze z nadpisaną implementacją
+      correct: false
+    - text: Gdy struktura trafia do zmiennej typu interfejsu
+      correct: true
+    - text: Nigdy - struktury nie mogą implementować interfejsów
+      correct: false
+  explanation: |
+    Przypisanie struktury do zmiennej interfejsu wymaga obiektu na stercie, więc następuje boxing.
+    Generyczne ograniczenie, np. `void Sort<T>(T x) where T : IComparable<T>`, pozwala wywołać metodę interfejsu bez boxingu, bo JIT generuje kod specjalizowany dla struktur.
+    Struktury mogą implementować interfejsy, a nadpisany `ToString()` wywołany bezpośrednio na strukturze nie boxuje.
+
+- id: 46
+  question: Kiedy `ValueTask<T>` jest lepszym wyborem niż `Task<T>`?
+  answers:
+    - text: Gdy wynik trzeba przekazać do `Task.WhenAll` w wielu miejscach
+      correct: false
+    - text: Zawsze, bo `ValueTask<T>` jest szybszy i można go dowolnie wielokrotnie awaitować
+      correct: false
+    - text: Gdy metoda trwa długo, bo `ValueTask<T>` działa na osobnym wątku
+      correct: false
+    - text: Gdy metoda często kończy się synchronicznie, np. z cache
+      correct: true
+  explanation: |
+    `ValueTask<T>` pozwala zwrócić wynik bez alokowania obiektu `Task`, gdy operacja zakończyła się synchronicznie - to typowe w gorących ścieżkach z cache.
+    Ma ograniczenia: nie wolno go awaitować wielokrotnie ani równolegle, a do kombinatorów jak `WhenAll` trzeba go zamienić przez `AsTask()`.
+    Nie uruchamia niczego na osobnym wątku.
+
+- id: 47
+  question: Czym jest `WeakReference<T>`?
+  answers:
+    - text: Referencją do obiektu na stosie, która wygasa po wyjściu z metody
+      correct: false
+    - text: Referencją, która przypina obiekt w pamięci, ale pozwala go przenieść
+      correct: false
+    - text: Referencją tylko do odczytu, przez którą nie można modyfikować obiektu
+      correct: false
+    - text: Referencją, która nie chroni obiektu przed zebraniem przez GC
+      correct: true
+  explanation: |
+    Słaba referencja pozwala dostać się do obiektu (`TryGetTarget`), dopóki ten żyje dzięki innym, silnym referencjom; gdy ich zabraknie, GC może go zebrać.
+    Nie ogranicza zapisu, nie dotyczy obiektów na stosie i nie przypina.
+
+- id: 48
+  question: Dlaczego `WeakReference` słabo nadaje się na mechanizm cache?
+  answers:
+    - text: Bo obiekty dostępne przez `WeakReference` nigdy nie są zbierane, co powoduje wycieki
+      correct: false
+    - text: Bo `WeakReference` działa tylko dla stringów i typów prostych
+      correct: false
+    - text: Bo odczyt przez `WeakReference` zawsze kopiuje cały obiekt
+      correct: false
+    - text: Bo obiekt może zniknąć przy dowolnym, nawet najmłodszym GC
+      correct: true
+  explanation: |
+    Cache powinien decydować o wygaszaniu na podstawie czasu, rozmiaru czy częstotliwości użycia, a słaba referencja oddaje tę decyzję GC, który sprząta często i bez związku z wartością danych.
+    Do cache'owania lepiej używać `MemoryCache` z limitami lub `HybridCache`.
+    `WeakReference` działa z dowolnymi typami referencyjnymi, nie powoduje wycieków i nie kopiuje obiektu.
+
+- id: 49
+  question: Do czego służy `ConditionalWeakTable<TKey, TValue>`?
+  answers:
+    - text: Do przechowywania słabych referencji do wartości przy silnych referencjach do kluczy
+      correct: false
+    - text: Do dołączania danych do obiektów bez przedłużania ich życia - wpis znika razem z kluczem
+      correct: true
+    - text: Do synchronizacji dostępu do słownika z wielu wątków bez blokad
+      correct: false
+    - text: Do cache'owania wyników zapytań z automatycznym wygasaniem po czasie
+      correct: false
+  explanation: |
+    Klucze są trzymane słabo, a wartość żyje tak długo jak jej klucz - to sposób na "doklejenie" stanu do cudzego obiektu (np. w bibliotekach) bez wycieku.
+    Odwrotny układ, wygasanie czasowe czy współbieżność bez blokad to zadania innych typów (`MemoryCache`, `ConcurrentDictionary`).
+
+- id: 50
+  question: Co robi `GC.KeepAlive(obj)`?
+  answers:
+    - text: Przenosi obiekt do generacji 2, aby żył do końca aplikacji
+      correct: false
+    - text: Odnawia licznik referencji obiektu, aby nie został zwolniony
+      correct: false
+    - text: Przypina obiekt, aby GC nie mógł go przenieść podczas kompaktacji
+      correct: false
+    - text: Utrzymuje obiekt przy życiu do miejsca tego wywołania
+      correct: true
+  explanation: |
+    W trybie Release JIT może uznać obiekt za martwy już po ostatnim użyciu, nawet w środku metody - to problem, gdy kod natywny wciąż korzysta z jego zasobu (a finalizer mógłby go zwolnić).
+    `GC.KeepAlive` to pusta metoda, której wywołanie wydłuża życie obiektu do tego punktu.
+    Nie przypina, nie zmienia generacji i nie ma liczników referencji w .NET.
+
+- id: 51
+  question: Kiedy JIT w trybie Release może uznać lokalny obiekt za nieosiągalny?
+  answers:
+    - text: Dopiero po przypisaniu zmiennej wartości `null`
+      correct: false
+    - text: Już po ostatnim użyciu, choć zmienna jest w zasięgu
+      correct: true
+    - text: Dopiero po wyjściu z metody, w której została zadeklarowana zmienna
+      correct: false
+    - text: Nigdy w trakcie działania metody - lokalne obiekty żyją do końca wątku
+      correct: false
+  explanation: |
+    JIT śledzi faktyczne użycie zmiennych, więc obiekt może zostać zebrany przed końcem metody.
+    W Debug życie zmiennych jest wydłużane do końca zakresu, żeby ułatwić debugowanie - stąd różnice w zachowaniu.
+    Ręczne przypisywanie `null` do zmiennych lokalnych w Release zazwyczaj niczego nie daje.
+
+- id: 52
+  question: Do czego służy `GC.AddMemoryPressure(bytes)`?
+  answers:
+    - text: Ogranicza maksymalną wielkość sterty zarządzanej do podanej liczby bajtów
+      correct: false
+    - text: Informuje GC o pamięci niezarządzanej trzymanej przez obiekt
+      correct: true
+    - text: Rezerwuje podaną liczbę bajtów na stercie zarządzanej na przyszłe alokacje
+      correct: false
+    - text: Wymusza natychmiastowe pełne odśmiecanie, gdy zajętość sterty przekroczy podaną wartość
+      correct: false
+  explanation: |
+    GC widzi tylko pamięć zarządzaną - obiekt, który ma kilka bajtów, ale trzyma np. 100 MB natywnej pamięci, wydaje się tani i GC nie spieszy się z jego zebraniem.
+    `AddMemoryPressure` (i odpowiadające mu `RemoveMemoryPressure`) koryguje to postrzeganie.
+    Nie rezerwuje pamięci, nie wymusza GC przy progu i nie ustawia limitu sterty (to robi `GCHeapHardLimit`).
+
+- id: 53
+  question: Jak poprawnie zaalokować i zwolnić pamięć niezarządzaną w nowoczesnym .NET?
+  answers:
+    - text: Przez `NativeMemory.Alloc` i `NativeMemory.Free`
+      correct: true
+    - text: Przez `new byte[n]` i `Dispose()` na tablicy
+      correct: false
+    - text: Przez `GC.AllocateUninitializedArray` i `GC.Free`
+      correct: false
+    - text: Przez `stackalloc` i `GC.Collect()` po zakończeniu pracy
+      correct: false
+  explanation: |
+    Pamięć niezarządzaną trzeba zwolnić ręcznie odpowiadającą metodą - najlepiej w `Dispose()` lub `SafeHandle`, inaczej to klasyczny wyciek.
+    `NativeMemory` (od .NET 6) to nowoczesna nakładka na `malloc/free`.
+    `new byte[n]` i `GC.AllocateUninitializedArray` dają pamięć zarządzaną, tablice nie mają `Dispose()`, metoda `GC.Free` nie istnieje, a `stackalloc` zwalnia się sam po wyjściu z metody.
+
+- id: 54
+  question: Do czego służy `GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency`?
+  answers:
+    - text: Ustawia priorytet wątku GC na najniższy w systemie
+      correct: false
+    - text: Całkowicie wyłącza GC, dopóki tryb nie zostanie przywrócony
+      correct: false
+    - text: Ogranicza blokujące pełne GC kosztem zużycia pamięci
+      correct: true
+    - text: Przyspiesza alokację, przenosząc wszystkie nowe obiekty od razu do gen 2
+      correct: false
+  explanation: |
+    `SustainedLowLatency` unika blokujących odśmieceń gen 2 (gdy działa background GC), co zmniejsza przestoje w aplikacjach wrażliwych na opóźnienia.
+    Do niemal całkowitego wstrzymania GC na krótki fragment służy osobne `GC.TryStartNoGCRegion`.
+    Tryb nie zmienia miejsca alokacji ani priorytetów wątków.
+
+- id: 55
+  question: Do czego służy `GC.TryStartNoGCRegion(totalSize)`?
+  answers:
+    - text: Do trwałego wyłączenia GC w całej aplikacji bez możliwości ponownego włączenia
+      correct: false
+    - text: Do wykonania fragmentu bez GC w zadeklarowanym budżecie alokacji
+      correct: true
+    - text: Do zarezerwowania pamięci, której GC nigdy nie będzie kompaktował
+      correct: false
+    - text: Do oznaczenia regionu kodu, w którym obiekty są alokowane na stosie zamiast na stercie
+      correct: false
+  explanation: |
+    Metoda próbuje z góry przygotować pamięć na `totalSize` bajtów i wstrzymuje GC, dopóki nie wywołasz `GC.EndNoGCRegion()` albo alokacje nie przekroczą budżetu.
+    Przydaje się np. w krótkich fragmentach o twardych wymaganiach czasowych.
+    Nie wyłącza GC na stałe i nie zmienia miejsca alokacji.
+
+- id: 56
+  question: Czym jest kryzys średniego wieku (mid-life crisis) w kontekście GC?
+  answers:
+    - text: Sytuacja, w której aplikacja po kilku godzinach zaczyna zużywać dwukrotnie więcej pamięci
+      correct: false
+    - text: Błąd GC w .NET Framework 4.0, naprawiony w .NET Core
+      correct: false
+    - text: Obiekty trafiają do gen 2 i zaraz potem umierają
+      correct: true
+    - text: Moment, w którym LOH zapełnia się do połowy i wymusza kompaktację
+      correct: false
+  explanation: |
+    Gen 2 jest zbierana rzadko i kosztownie, więc obiekty "średnio żyjące" (np. trzymane chwilę w cache czy kolejce) zapychają ją i zwiększają liczbę pełnych GC.
+    Rozwiązania to skrócenie ich życia, wydłużenie do naprawdę długiego, albo pule obiektów.
+    To wzorzec zachowania aplikacji, a nie błąd runtime'u czy próg zapełnienia.
+
+- id: 57
+  question: Jakie narzędzie najlepiej nadaje się do porównania zawartości sterty w czasie, by znaleźć wyciek?
+  answers:
+    - text: "`dotnet-counters` - pokazuje listę obiektów na stercie z ich typami"
+      correct: false
+    - text: "`dotnet-trace` z domyślnym profilem CPU"
+      correct: false
+    - text: "`dotnet build -c Release`, który usuwa wycieki przez optymalizację"
+      correct: false
+    - text: "`dotnet-gcdump` - porównanie dwóch zrzutów sterty"
+      correct: true
+  explanation: |
+    `dotnet-gcdump` zbiera lekki zrzut grafu obiektów zarządzanych; porównanie dwóch zrzutów pokazuje, które typy rosną i co je trzyma przy życiu.
+    `dotnet-counters` monitoruje metryki (rozmiar sterty, liczbę GC, alokacje), ale nie listuje obiektów - dobrze sprawdza się do wykrycia, że problem istnieje.
+    Profil CPU w `dotnet-trace` dotyczy czasu procesora, a kompilacja Release wycieków nie usuwa.
+
+- id: 58
+  question: Która metryka w `dotnet-counters` najszybciej wskaże, że kod generuje dużą presję na GC?
+  answers:
+    - text: Tempo alokacji i liczba GC na generację
+      correct: true
+    - text: Liczba aktywnych żądań HTTP na sekundę
+      correct: false
+    - text: Rozmiar kodu wygenerowanego przez JIT
+      correct: false
+    - text: Liczba wątków w puli wątków (`ThreadPool`)
+      correct: false
+  explanation: |
+    Wysokie tempo alokacji przekłada się na częste GC gen 0, a rosnąca liczba GC gen 2 i czas spędzony w GC (`% Time in GC`) pokazują, że odśmiecanie zaczyna kosztować.
+    Liczba wątków czy żądań to inne problemy, a rozmiar kodu JIT nie mówi nic o presji na GC.
+
+- id: 59
+  question: Co zwraca `GC.GetTotalMemory(false)`?
+  answers:
+    - text: Maksymalny rozmiar sterty ustawiony w konfiguracji GC
+      correct: false
+    - text: Przybliżoną bieżącą zajętość sterty zarządzanej
+      correct: true
+    - text: Dokładną liczbę bajtów zaalokowanych od startu aplikacji
+      correct: false
+    - text: Całkowitą pamięć procesu, łącznie z pamięcią niezarządzaną i kodem
+      correct: false
+  explanation: |
+    Parametr `false` oznacza, że metoda nie czeka na odśmiecanie, więc wynik jest przybliżeniem bieżącej zajętości sterty zarządzanej.
+    Pamięć całego procesu to np. `Process.WorkingSet64`, łączne alokacje od startu daje `GC.GetTotalAllocatedBytes()`, a szczegóły konfiguracji i limitów - `GC.GetGCMemoryInfo()`.
+
+- id: 60
+  question: Dlaczego alokacja małego obiektu w .NET jest zwykle bardzo tania?
+  answers:
+    - text: Bo polega na przesunięciu wskaźnika w buforze wątku
+      correct: true
+    - text: Bo .NET alokuje małe obiekty zawsze na stosie, a nie na stercie
+      correct: false
+    - text: Bo obiekty są alokowane z gotowej puli, która jest odtwarzana przez GC raz na minutę
+      correct: false
+    - text: Bo pamięć dla obiektu jest alokowana leniwie, dopiero przy pierwszym zapisie do pola
+      correct: false
+  explanation: |
+    Każdy wątek dostaje fragment gen 0 (allocation context) i alokuje w nim, przesuwając wskaźnik - bez blokad i przeszukiwania wolnych bloków, co umożliwia kompaktująca natura GC.
+    Prawdziwy koszt alokacji to późniejsza praca GC, a nie samo `new`.
+    Nie ma minutowej puli, leniwej alokacji pól ani automatycznego przenoszenia obiektów na stos.
+
+- id: 61
+  question: Po co GC używa tablicy kart (card table)?
+  answers:
+    - text: Aby szyfrować zawartość sterty w pamięci
+      correct: false
+    - text: Aby przechowywać liczniki referencji do każdego obiektu na stercie
+      correct: false
+    - text: Aby szybko znaleźć referencje ze starych generacji do młodych
+      correct: true
+    - text: Aby zapisywać historię wszystkich alokacji na potrzeby narzędzi diagnostycznych
+      correct: false
+  explanation: |
+    Przy GC gen 0 nie przegląda się całej gen 2, ale stary obiekt może wskazywać na młody - bez tego młody zostałby błędnie zebrany.
+    Bariera zapisu przy przypisaniu referencji oznacza "brudne" karty, a GC skanuje tylko te fragmenty starszych generacji.
+    Liczników referencji ani historii alokacji tu nie ma.
+
+- id: 62
+  question: Kiedy warto użyć `ObjectPool<T>` z `Microsoft.Extensions.ObjectPool`?
+  answers:
+    - text: Zawsze, dla każdej klasy, bo pule całkowicie eliminują pracę GC
+      correct: false
+    - text: Dla często tworzonych, drogich obiektów, które da się zresetować
+      correct: true
+    - text: Dla obiektów, które trzeba przechowywać przez cały czas działania aplikacji, np. konfiguracji
+      correct: false
+    - text: Dla obiektów niemutowalnych, których stanu nie da się zmienić po utworzeniu
+      correct: false
+  explanation: |
+    Pula opłaca się, gdy tworzenie obiektu jest drogie lub obiekty są duże i często używane - zmniejsza alokacje i presję na GC.
+    Pule mają swój koszt (synchronizacja, ryzyko użycia po zwrocie, trzymanie pamięci), więc stosowanie ich do wszystkiego to przesada.
+    Obiekty żyjące przez cały proces nie potrzebują puli, a niemutowalnych nie da się "zresetować" do ponownego użycia, za to można je po prostu współdzielić.

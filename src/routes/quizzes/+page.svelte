@@ -24,12 +24,13 @@
 	import type { Quiz as QuizType } from '#lib/quiz.type.ts';
 
 	// `?raw` to funkcja Vite: zamiast wykonywać plik, wkleja jego zawartość jako string.
-	import dotnetRaw from '#lib/dotnet-quiz.yaml?raw';
-	import angularRaw from '#lib/angular-quiz.yaml?raw';
-	import pythonRaw from '#lib/python-quiz.yaml?raw';
-	import javascriptRaw from '#lib/javascript-quiz.yaml?raw';
-	import sqlRaw from '#lib/sql-quiz.yaml?raw';
-	import systemDesignRaw from '#lib/system-design-quiz.yaml?raw';
+	import dotnetRaw from '#data/dotnet-quiz.yaml?raw';
+	import angularRaw from '#data/angular-quiz.yaml?raw';
+	import pythonRaw from '#data/python-quiz.yaml?raw';
+	import javascriptRaw from '#data/javascript-quiz.yaml?raw';
+	import sqlRaw from '#data/sql-quiz.yaml?raw';
+	import systemDesignRaw from '#data/system-design-quiz.yaml?raw';
+	import dotnetMemoryRaw from '#data/dotnet-memory-quiz.yaml?raw';
 
 	/**
 	 * Pytanie wzbogacone o unikalny klucz.
@@ -52,7 +53,8 @@
 		{ id: 'python', title: 'Pytania z Pythona', raw: pythonRaw },
 		{ id: 'javascript', title: 'Pytania z JavaScript', raw: javascriptRaw },
 		{ id: 'sql', title: 'Pytania z SQL', raw: sqlRaw },
-		{ id: 'system-design', title: 'Pytania z projektowania systemów', raw: systemDesignRaw }
+		{ id: 'system-design', title: 'Pytania z projektowania systemów', raw: systemDesignRaw },
+		{ id: 'dotnet-memory', title: 'Pytania z pamięci .NET', raw: dotnetMemoryRaw }
 	];
 
 	/** Parsuje YAML jednej kategorii i dokleja każdemu pytaniu unikalny klucz. */

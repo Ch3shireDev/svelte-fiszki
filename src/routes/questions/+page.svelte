@@ -24,12 +24,12 @@
 	import type { Question as QuestionType } from '#lib/question.type.ts';
 
 	// `?raw` — funkcja Vite: zawartość pliku trafia do kodu jako zwykły string.
-	import dotnetRaw from '#lib/dotnet.yaml?raw';
-	import angularRaw from '#lib/angular.yaml?raw';
-	import pythonRaw from '#lib/python.yaml?raw';
-	import javascriptRaw from '#lib/javascript.yaml?raw';
-	import sqlRaw from '#lib/sql.yaml?raw';
-	import systemDesignRaw from '#lib/system-design.yaml?raw';
+	import dotnetRaw from '#data/dotnet.yaml?raw';
+	import angularRaw from '#data/angular.yaml?raw';
+	import pythonRaw from '#data/python.yaml?raw';
+	import javascriptRaw from '#data/javascript.yaml?raw';
+	import sqlRaw from '#data/sql.yaml?raw';
+	import systemDesignRaw from '#data/system-design.yaml?raw';
 
 	/**
 	 * Fiszka wzbogacona o unikalny klucz `kategoria:id`, np. `sql:4`.
@@ -63,9 +63,7 @@
 	);
 
 	/** Tytuły kategorii: { dotnet: 'Pytania z .NET', ... } */
-	const TITLES: Record<string, string> = Object.fromEntries(
-		CATEGORIES.map((c) => [c.id, c.title])
-	);
+	const TITLES: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.title]));
 
 	/**
 	 * Wszystkie fiszki naraz, dla kategorii "all".

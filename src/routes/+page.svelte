@@ -22,9 +22,7 @@
 		<a href={resolve('/questions?category=sql')}>Przejdź do pytań z SQL</a>
 	</li>
 	<li>
-		<a href={resolve('/questions?category=system-design')}
-			>Przejdź do pytań z projektowania systemów</a
-		>
+		<a href={resolve('/questions?category=system-design')}>Przejdź do pytań z system design</a>
 	</li>
 	<li>
 		<a href={resolve('/quizzes?category=dotnet')}>Przejdź do zadań z .NET</a>
@@ -42,8 +40,9 @@
 		<a href={resolve('/quizzes?category=sql')}>Przejdź do zadań z SQL</a>
 	</li>
 	<li>
-		<a href={resolve('/quizzes?category=system-design')}
-			>Przejdź do zadań z projektowania systemów</a
-		>
+		<a href={resolve('/quizzes?category=system-design')}>Przejdź do zadań z system design</a>
+	</li>
+	<li>
+		<a href={resolve('/quizzes?category=dotnet-memory')}>Przejdź do zadań z pamięci .NET</a>
 	</li>
 </ul>
